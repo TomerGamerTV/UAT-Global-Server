@@ -56,7 +56,7 @@
               </div>
             </div>
             <!-- 限时模块: 富士奇石的表演秀模式 -->
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-3">
                 <div class="form-group">
                   <label>⏰ 富士奇石的表演秀模式</label>
@@ -74,7 +74,7 @@
                   </select>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="row">
               <div class="col-8">
                 <div class="form-group">
@@ -165,13 +165,19 @@
               <div class="form-group">
                 <div>⭐ 额外权重</div>
               </div>
-              <p>调整ai对训练的倾向, 不影响最终目标属性, 一般用于提前完成某一种训练的目标属性，建议权重范围 [-1.0 ~ 1.0], 0即为不使用额外权重;</p>
+              <p>调整ai对训练的倾向, 不影响最终目标属性, 一般用于提前完成某一种训练的目标属性, 可设置权重范围 [-1.0 ~ 1.0], 0即为不使用额外权重;</p>
+              <p>❗ 将权重设置成-1, 则会跳过该训练</p>
+              <p>❗ 同一年内, 权重不能全部为-1</p>
               <p>支援卡或种马强度低时, 建议增加在一个属性权重的同时减少其他属性同样数值的权重</p>
               <div style="margin-bottom: 10px;">第一年</div>
               <div class="row">
                 <div v-for="v,i in extraWeight1" class="col">
                   <div class="form-group">
-                      <input type="number" v-model="extraWeight1[i]" class="form-control" id="speed-value-input">
+                    <input type="number"
+                           v-model="extraWeight1[i]"
+                           class="form-control"
+                           @input="onExtraWeightInput(extraWeight1, i)"
+                           id="speed-value-input">
                   </div>
                 </div>
               </div>
@@ -179,7 +185,11 @@
               <div class="row">
                 <div v-for="v,i in extraWeight2" class="col">
                   <div class="form-group">
-                      <input type="number" v-model="extraWeight2[i]" class="form-control" id="speed-value-input">
+                    <input type="number"
+                           v-model="extraWeight2[i]"
+                           class="form-control"
+                           @input="onExtraWeightInput(extraWeight2, i)"
+                           id="speed-value-input">
                   </div>
                 </div>
               </div>
@@ -187,7 +197,11 @@
               <div class="row">
                 <div v-for="v,i in extraWeight3" class="col">
                   <div class="form-group">
-                      <input type="number" v-model="extraWeight3[i]" class="form-control" id="speed-value-input">
+                    <input type="number"
+                           v-model="extraWeight3[i]"
+                           class="form-control"
+                           @input="onExtraWeightInput(extraWeight3, i)"
+                           id="speed-value-input">
                   </div>
                 </div>
               </div>
@@ -387,6 +401,14 @@
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body">
             ✔ 预设保存成功
+          </div>
+        </div>
+      </div>
+      <!-- 权重警告通知 -->
+      <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
+        <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+          <div class="toast-body" style="color: #856404;">
+            ⚠️ <b>同一年权重不能全部为-1</b>
           </div>
         </div>
       </div>
@@ -928,9 +950,9 @@ export default {
 
       if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != [])
       {
-        this.extraWeight1 =  this.presetsUse.extraWeight[0]
-        this.extraWeight2 =  this.presetsUse.extraWeight[1]
-        this.extraWeight3 =  this.presetsUse.extraWeight[2]
+        this.extraWeight1 =  this.presetsUse.extraWeight[0].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight2 =  this.presetsUse.extraWeight[1].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight3 =  this.presetsUse.extraWeight[2].map(v => Math.max(-1, Math.min(1, v)));
       }
       else
       {
@@ -995,7 +1017,11 @@ export default {
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,
-        extraWeight: [this.extraWeight1,this.extraWeight2,this.extraWeight3]
+        extraWeight: [
+          this.extraWeight1.map(v => Math.max(-1, Math.min(1, v))),
+          this.extraWeight2.map(v => Math.max(-1, Math.min(1, v))),
+          this.extraWeight3.map(v => Math.max(-1, Math.min(1, v)))
+        ]
       }
       
       // 仅当选择青春杯剧本时，才保存青春杯配置
@@ -1022,7 +1048,30 @@ export default {
           this.getPresets()
         } 
       )
-    }
+    },
+    onExtraWeightInput(arr, idx) {
+      // 限制输入范围 [-1, 1]
+      if (arr[idx] > 1) arr[idx] = 1;
+      if (arr[idx] < -1) arr[idx] = -1;
+      // 检查是否全为-1，若是则重置最后一个输入为0并弹出警告
+      if (arr.filter(v => v === -1).length === arr.length) {
+        arr[idx] = 0;
+        // 显示警告通知
+        this.showWeightWarning();
+      }
+    },
+    showWeightWarning() {
+      // 参考保存成功的通知实现
+      let warnToast = document.getElementById('weightWarningToast');
+      if (warnToast) {
+        warnToast.classList.remove('hide');
+        warnToast.classList.add('show');
+        setTimeout(() => {
+          warnToast.classList.remove('show');
+          warnToast.classList.add('hide');
+        }, 2000);
+      }
+    },
   },
   watch:{
 

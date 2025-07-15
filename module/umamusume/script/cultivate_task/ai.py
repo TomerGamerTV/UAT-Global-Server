@@ -18,8 +18,11 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
 
     attribute_result_max = np.max(attribute_result)
     attribute_result_min = np.min(attribute_result)
-    normalized_attribute_result = (attribute_result - attribute_result_min) / (
-            attribute_result_max - attribute_result_min)
+    if attribute_result_max != attribute_result_min:
+        normalized_attribute_result = (attribute_result - attribute_result_min) / (
+                attribute_result_max - attribute_result_min)
+    else:
+        normalized_attribute_result = [1, 1, 1, 1, 1]
 
     support_card_max = np.max(support_card_result)
     support_card_min = np.min(support_card_result)
@@ -77,6 +80,21 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     for i in range(5):
         training_score.append(normalized_attribute_result[i] * attr_weight + normalized_support_card_result[i] *
                               support_card_weight + normalized_training_level_result[i] * training_level_weight)
+    # 将权重为-1的训练得分置为0    
+    extra_weight = [0, 0, 0, 0, 0]
+    date = ctx.cultivate_detail.turn_info.date
+    if len(ctx.cultivate_detail.extra_weight) == 3:
+        if 0 < date <= 24:
+            extra_weight = ctx.cultivate_detail.extra_weight[0]
+        elif 24 < date <= 48:
+            extra_weight = ctx.cultivate_detail.extra_weight[1]
+        elif 48 < date:
+            extra_weight = ctx.cultivate_detail.extra_weight[2]
+    if -1 in extra_weight:
+        log.debug("将权重为-1的训练得分设置为0")
+        for i in range(5):
+            if extra_weight[i] <= -1:
+                training_score[i] = 0
     log.debug("训练综合得分：" + str(training_score))
 
     # 出道战成功才能参加比赛

@@ -102,41 +102,69 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         def _parse_training_in_thread(ctx, img, train_type):
-                    """Helper function to run parsing in a separate thread."""
-                    parse_training_result(ctx, img, train_type)
-                    parse_training_support_card(ctx, img, train_type)
+            """Helper function to run parsing in a separate thread."""
+            parse_training_result(ctx, img, train_type)
+            parse_training_support_card(ctx, img, train_type)
+        
+        def _clear_training(ctx: UmamusumeContext, train_type: TrainingType):
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].speed_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].stamina_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].power_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].will_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].intelligence_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].skill_point_incr = 0
+            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].support_card_info_list = []
+            
         
         threads :list[threading.Thread] = []
+
+        # 获取当年的额外权重
+        date = ctx.cultivate_detail.turn_info.date
+        if date == 0:
+            extra_weight = [0, 0, 0, 0, 0]
+        elif date <= 24:
+            extra_weight = ctx.cultivate_detail.extra_weight[0]
+        elif date <= 48:
+            extra_weight = ctx.cultivate_detail.extra_weight[1]
+        else:
+            extra_weight = ctx.cultivate_detail.extra_weight[2]
 
         img = ctx.current_screen
         train_type = parse_train_type(ctx, img)
         if train_type == TrainingType.TRAINING_TYPE_UNKNOWN:
             return
         viewed = train_type.value
-        thread = threading.Thread(target=_parse_training_in_thread,
-                                          args=(ctx, img, train_type))
-        threads.append(thread)
-        thread.start()
+        # 仅当权重不为-1时, 开始parse, 否则清零
+        if extra_weight[viewed-1] > -1:
+            thread = threading.Thread(target=_parse_training_in_thread,
+                                            args=(ctx, img, train_type))
+            threads.append(thread)
+            thread.start()
+        else:
+            _clear_training(ctx, train_type)
 
         for i in range(5):
             if i != (viewed - 1):
-                retry = 0
-                max_retry = 3
-                ctx.ctrl.click_by_point(TRAINING_POINT_LIST[i])
-                img = ctx.ctrl.get_screen()
-                while parse_train_type(ctx, img) != TrainingType(i + 1) and retry < max_retry:
-                    if retry > 2:
-                        ctx.ctrl.click_by_point(TRAINING_POINT_LIST[i])
-                    time.sleep(0.2)
+                if extra_weight[i] > -1:
+                    retry = 0
+                    max_retry = 3
+                    ctx.ctrl.click_by_point(TRAINING_POINT_LIST[i])
                     img = ctx.ctrl.get_screen()
-                    retry += 1
-                if retry == max_retry:
-                    return
-                
-                thread = threading.Thread(target=_parse_training_in_thread,
-                                          args=(ctx, img, TrainingType(i + 1)))
-                threads.append(thread)
-                thread.start()
+                    while parse_train_type(ctx, img) != TrainingType(i + 1) and retry < max_retry:
+                        if retry > 2:
+                            ctx.ctrl.click_by_point(TRAINING_POINT_LIST[i])
+                        time.sleep(0.2)
+                        img = ctx.ctrl.get_screen()
+                        retry += 1
+                    if retry == max_retry:
+                        return
+                    
+                    thread = threading.Thread(target=_parse_training_in_thread,
+                                            args=(ctx, img, TrainingType(i + 1)))
+                    threads.append(thread)
+                    thread.start()
+                else:
+                    _clear_training(ctx, TrainingType(i + 1))
 
         for thread in threads:
             thread.join()
