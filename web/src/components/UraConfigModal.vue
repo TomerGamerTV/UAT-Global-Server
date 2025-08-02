@@ -4,7 +4,7 @@
       <div class="modal-content" @click.stop>
         <h5 class="modal-header">URA Configuration</h5>
         <div class="modal-body">
-          <!-- 技能启发选择额外权重 -->
+          <!-- Skill Inspiration Selection Extra Weight -->
           <div class="form-group">
             <h5><b>(Test)</b> Support Card Inspiration (!) Additional Weight</h5>
             <p>Additional weight provided for training selection when support cards show inspiration (!). Multiple exclamation marks in a single training only count once.</p>
@@ -58,7 +58,7 @@
             </div>
           </div>
           
-          <!-- 重置技能启发权重配置 -->
+          <!-- Reset Skill Inspiration Weight Configuration -->
           <div class="form-group">
             <label for="ura-reset-skill-event-weight-list">Reset skill inspiration weight to 0 after learning these skills</label>
             <textarea 
@@ -187,16 +187,16 @@ export default {
 </script>
 
 <style scoped>
-/* 确保URA配置modal在最顶层 */
+/* Ensure URA config modal is at the top layer */
 #ura-config-modal.modal {
-  z-index: 1060; /* 比TaskEditModal和遮罩层更高 */
+  z-index: 1060; /* Higher than TaskEditModal and overlay layer */
 }
 
 #ura-config-modal .modal-dialog {
   z-index: 1061;
 }
 
-/* 取消按钮样式 */
+/* Cancel button style */
 .cancel-btn {
   background-color: #dc3545 !important;
   color: white !important;
@@ -215,7 +215,7 @@ export default {
   color: white !important;
 }
 
-/* 放大确认按钮 */
+/* Enlarge confirm button */
 .confirm-btn-large {
   background-color: #0faedf !important;
   color: white !important;

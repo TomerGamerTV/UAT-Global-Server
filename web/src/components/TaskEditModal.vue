@@ -50,7 +50,7 @@
                 </div>
               </div>
             </div>
-            <!-- URA额外配置 -->
+            <!-- URA Extra Configuration -->
             <div class="row" v-if="selectedScenario === 1">
               <div class="col-4">
                 <div class="form-group">
@@ -58,7 +58,7 @@
                 </div>
               </div>
             </div>
-            <!-- 青春杯额外配置 -->
+            <!-- Aoharu Cup Extra Configuration -->
             <div class="row" v-if="selectedScenario === 2">
               <div class="col-4">
                 <div class="form-group">
@@ -66,20 +66,20 @@
                 </div>
               </div>
             </div>
-            <!-- 限时模块: 富士奇石的表演秀模式 -->
+            <!-- Limited Time Module: Fujikiseki Show Mode -->
             <!-- <div class="row">
               <div class="col-3">
                 <div class="form-group">
-                  <label>⏰ 富士奇石的表演秀模式</label>
+                  <label>⏰ Fujikiseki Show Mode</label>
                   <select v-model="fujikisekiShowMode" class="form-control">
-                    <option :value=true>是</option>
-                    <option :value=false>否</option>
+                                          <option :value=true>Yes</option>
+                      <option :value=false>No</option>
                   </select>
                 </div>
               </div>
               <div class="col-2">
                 <div class="form-group">
-                  <label :style="{ color: fujikisekiShowMode ? '' : 'lightgrey' }">选择难度</label>
+                                      <label :style="{ color: fujikisekiShowMode ? '' : 'lightgrey' }">Select Difficulty</label>
                   <select v-model="fujikisekiShowDifficulty" class="form-control" :disabled="!fujikisekiShowMode">
                     <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
                   </select>
@@ -550,9 +550,9 @@
         @cancel="closeSupportCardSelectModal"
         @confirm="handleSupportCardConfirm"
       ></SupportCardSelectModal>
-      <!-- 遮罩层，支持两种弹窗 -->
+              <!-- Overlay layer, supports two types of modals -->
       <div v-if="showAoharuConfigModal || showSupportCardSelectModal || showUraConfigModal" class="modal-backdrop-overlay" @click.stop></div>
-      <!-- 通知 -->
+              <!-- Notification -->
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body">
@@ -560,7 +560,7 @@
           </div>
         </div>
       </div>
-      <!-- 权重警告通知 -->
+              <!-- Weight Warning Notification -->
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body" style="color: #856404;">
@@ -616,32 +616,32 @@ export default {
         }
       ],
       umamusumeList:[
-        {id:1, name:'特别周'},
-        {id:2, name:'无声铃鹿'},
-        {id:3, name:'东海帝王'},
-        {id:4, name:'丸善斯基'},
-        {id:5, name:'小栗帽'},
-        {id:6, name:'大树快车'},
-        {id:7, name:'目白麦昆'},
-        {id:8, name:'好歌剧'},
-        {id:9, name:'鲁道夫象征'},
-        {id:10, name:'米浴'},
-        {id:11, name:'黄金船'},
-        {id:12, name:'伏特加'},
-        {id:13, name:'大和赤骥'},
-        {id:14, name:'草上飞'},
-        {id:15, name:'神鹰'},
-        {id:16, name:'气槽'},
-        {id:17, name:'重炮'},
-        {id:18, name:'超级小海湾'},
-        {id:19, name:'目白赖恩'},
-        {id:20, name:'爱丽速子'},
-        {id:21, name:'胜利奖券'},
-        {id:22, name:'樱花进王'},
-        {id:23, name:'春乌拉拉'},
-        {id:24, name:'待兼福来'},
-        {id:25, name:'优秀素质'},
-        {id:26, name:'帝王光环'},
+        {id:1, name:'Special Week'},
+        {id:2, name:'Silence Suzuka'},
+        {id:3, name:'Tokai Teio'},
+        {id:4, name:'Maruzensky'},
+        {id:5, name:'Oguri Cap'},
+        {id:6, name:'Daiwa Scarlet'},
+        {id:7, name:'Mejiro McQueen'},
+        {id:8, name:'Nice Nature'},
+        {id:9, name:'Rudolf Symbol'},
+        {id:10, name:'Rice Shower'},
+        {id:11, name:'Gold Ship'},
+        {id:12, name:'Vodka'},
+        {id:13, name:'Daiwa Major'},
+        {id:14, name:'Grass Wonder'},
+        {id:15, name:'Seeking the Pearl'},
+        {id:16, name:'Air Groove'},
+        {id:17, name:'Mayano Top Gun'},
+        {id:18, name:'Super Creek'},
+        {id:19, name:'Mejiro Ryan'},
+        {id:20, name:'Agnes Tachyon'},
+        {id:21, name:'Winning Ticket'},
+        {id:22, name:'Sakura Bakushin O'},
+        {id:23, name:'Haru Urara'},
+        {id:24, name:'Machikane Fukukitaru'},
+        {id:25, name:'El Condor Pasa'},
+        {id:26, name:'Symboli Rudolf'},
       ],
               umamusumeRaceList_1:[
          {id:2003, name:'Chukyo Junior Stakes',date: 'Junior Year Late Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
