@@ -279,61 +279,9 @@
               <div v-if="showRaceList">
                 <!-- Race Filter Controls -->
                 <div class="row mb-3">
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <label>🔍 Search Races:</label>
                     <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
-                  </div>
-                  <div class="col-md-4">
-                    <label>🏆 Filter by Grade:</label>
-                    <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGI, 'btn-outline-primary': !showGI}" @click="showGI = !showGI">
-                        <span style="background-color: #3485E3; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GI</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGII, 'btn-outline-primary': !showGII}" @click="showGII = !showGII">
-                        <span style="background-color: #F75A86; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GII</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGIII, 'btn-outline-primary': !showGIII}" @click="showGIII = !showGIII">
-                        <span style="background-color: #58C471; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GIII</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showOP, 'btn-outline-primary': !showOP}" @click="showOP = !showOP">
-                        <span style="background-color: #FFA500; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">OP</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP}" @click="showPREOP = !showPREOP">
-                        <span style="background-color: #9370DB; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">PRE-OP</span>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label>🌱 Filter by Terrain:</label>
-                    <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-sm" :class="{'btn-success': showTurf, 'btn-outline-success': !showTurf}" @click="showTurf = !showTurf">
-                        <span style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Turf</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-warning': showDirt, 'btn-outline-warning': !showDirt}" @click="showDirt = !showDirt">
-                        <span style="background-color: #ffc107; color: black; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Dirt</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Distance Filter -->
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label>📏 Filter by Distance:</label>
-                    <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-sm" :class="{'btn-info': showSprint, 'btn-outline-info': !showSprint}" @click="showSprint = !showSprint">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Sprint</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-info': showMile, 'btn-outline-info': !showMile}" @click="showMile = !showMile">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Mile</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-info': showMedium, 'btn-outline-info': !showMedium}" @click="showMedium = !showMedium">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Medium</span>
-                      </button>
-                      <button type="button" class="btn btn-sm" :class="{'btn-info': showLong, 'btn-outline-info': !showLong}" @click="showLong = !showLong">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Long</span>
-                      </button>
-                    </div>
                   </div>
                   <div class="col-md-6">
                     <label>🏁 Quick Selection:</label>
@@ -342,6 +290,58 @@
                       <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All GII</button>
                       <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All GIII</button>
                       <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear All</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="row mb-3">
+                  <div class="col-md-3">
+                    <label>🏆 Grade:</label>
+                    <div class="btn-group btn-group-sm d-flex" role="group">
+                      <button type="button" class="btn" :class="{'btn-primary': showGI, 'btn-outline-primary': !showGI}" @click="showGI = !showGI">
+                        <span style="background-color: #3485E3; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GI</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-primary': showGII, 'btn-outline-primary': !showGII}" @click="showGII = !showGII">
+                        <span style="background-color: #F75A86; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GII</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-primary': showGIII, 'btn-outline-primary': !showGIII}" @click="showGIII = !showGIII">
+                        <span style="background-color: #58C471; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GIII</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-primary': showOP, 'btn-outline-primary': !showOP}" @click="showOP = !showOP">
+                        <span style="background-color: #FFA500; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">OP</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP}" @click="showPREOP = !showPREOP">
+                        <span style="background-color: #9370DB; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">PRE-OP</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label>🌱 Terrain:</label>
+                    <div class="btn-group btn-group-sm d-flex" role="group">
+                      <button type="button" class="btn" :class="{'btn-success': showTurf, 'btn-outline-success': !showTurf}" @click="showTurf = !showTurf">
+                        <span style="background-color: #28a745; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Turf</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-warning': showDirt, 'btn-outline-warning': !showDirt}" @click="showDirt = !showDirt">
+                        <span style="background-color: #ffc107; color: black; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Dirt</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label>📏 Distance:</label>
+                    <div class="btn-group btn-group-sm d-flex" role="group">
+                      <button type="button" class="btn" :class="{'btn-info': showSprint, 'btn-outline-info': !showSprint}" @click="showSprint = !showSprint">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Sprint</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-info': showMile, 'btn-outline-info': !showMile}" @click="showMile = !showMile">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Mile</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-info': showMedium, 'btn-outline-info': !showMedium}" @click="showMedium = !showMedium">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Medium</span>
+                      </button>
+                      <button type="button" class="btn" :class="{'btn-info': showLong, 'btn-outline-info': !showLong}" @click="showLong = !showLong">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Long</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -705,218 +705,218 @@ export default {
          {id:2059, name:'Junior Cup',date: 'Classic Year Early Jan', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
          {id:2060, name:'Keisei Hai',date: 'Classic Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
          {id:2061, name:'Kobai Stakes',date: 'Classic Year Early Jan', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
-         {id:2062, name:'Shinzan Kinen',date: 'Classic Year Early Jan', type: 'GIII'},
-         {id:2063, name:'Crocus Stakes',date: 'Classic Year Late Jan', type: 'OP'},
-         {id:2064, name:'Wakagoma Stakes',date: 'Classic Year Late Jan', type: 'OP'},
-         {id:2065, name:'Elfin Stakes',date: 'Classic Year Early Feb', type: 'OP'},
-         {id:2066, name:'Kisaragi Sho',date: 'Classic Year Early Feb', type: 'GIII'},
-         {id:2067, name:'Kyodo News Hai',date: 'Classic Year Early Feb', type: 'GIII'},
-         {id:2068, name:'Queen Cup',date: 'Classic Year Early Feb', type: 'GIII'},
-         {id:2069, name:'Hyacinth Stakes',date: 'Classic Year Late Feb', type: 'OP'},
-         {id:2070, name:'Marguerite Stakes',date: 'Classic Year Late Feb', type: 'OP'},
-         {id:2071, name:'Sumire Stakes',date: 'Classic Year Late Feb', type: 'OP'},
-         {id:2072, name:'Anemone Stakes',date: 'Classic Year Early Mar', type: 'OP'},
-         {id:2073, name:'Fillies\' Revue',date: 'Classic Year Early Mar', type: 'GII'},
-         {id:2074, name:'Shoryu Stakes',date: 'Classic Year Early Mar', type: 'OP'},
-         {id:2075, name:'Tulip Sho',date: 'Classic Year Early Mar', type: 'GII'},
-         {id:2076, name:'Yayoi Sho',date: 'Classic Year Early Mar', type: 'GII'},
-         {id:2077, name:'Falcon Stakes',date: 'Classic Year Late Mar', type: 'GIII'},
-         {id:2078, name:'Flower Cup',date: 'Classic Year Late Mar', type: 'GIII'},
-         {id:2079, name:'Spring Stakes',date: 'Classic Year Late Mar', type: 'GII'},
-         {id:2080, name:'Mainichi Hai',date: 'Classic Year Late Mar', type: 'GIII'},
-         {id:2081, name:'Wakaba Stakes',date: 'Classic Year Late Mar', type: 'OP'},
-         {id:2082, name:'Arlington Cup',date: 'Classic Year Early Apr', type: 'GIII'},
-         {id:2083, name:'Fukuryu Stakes',date: 'Classic Year Early Apr', type: 'OP'},
-         {id:2084, name:'New Zealand Trophy',date: 'Classic Year Early Apr', type: 'GII'},
-         {id:2085, name:'Oka Sho',date: 'Classic Year Early Apr', type: 'GI'},
-         {id:2086, name:'Satsuki Sho',date: 'Classic Year Early Apr', type: 'GI'},
-         {id:2087, name:'Wasurenagusa Sho',date: 'Classic Year Early Apr', type: 'OP'},
-         {id:2088, name:'Aoba Sho',date: 'Classic Year Late Apr', type: 'GII'},
-         {id:2089, name:'Flora Stakes',date: 'Classic Year Late Apr', type: 'GII'},
-         {id:2090, name:'Sweetpea Stakes',date: 'Classic Year Late Apr', type: 'OP'},
-         {id:2091, name:'Tachibana Stakes',date: 'Classic Year Late Apr', type: 'OP'},
-         {id:2092, name:'Tango Stakes',date: 'Classic Year Late Apr', type: 'OP'},
-         {id:2093, name:'Kyoto Shimbun Hai',date: 'Classic Year Early May', type: 'GII'},
-         {id:2094, name:'NHK Mile Cup',date: 'Classic Year Early May', type: 'GI'},
-         {id:2095, name:'Principal Stakes',date: 'Classic Year Early May', type: 'OP'},
-         {id:2096, name:'Seiryu Stakes',date: 'Classic Year Early May', type: 'OP'},
-         {id:2097, name:'Aoi Stakes',date: 'Classic Year Late May', type: 'GIII'},
-         {id:2098, name:'Hosu Stakes',date: 'Classic Year Late May', type: 'OP'},
-         {id:2099, name:'Japanese Oaks',date: 'Classic Year Late May', type: 'GI'},
-         {id:2100, name:'Shirayuri Stakes',date: 'Classic Year Late May', type: 'OP'},
-         {id:2101, name:'Tokyo Yushun (Japanese Derby)',date: 'Classic Year Late May', type: 'GI'},
-         {id:2102, name:'Epsom Cup',date: 'Classic Year Early Jun', type: 'GIII'},
-         {id:2103, name:'Mermaid Stakes',date: 'Classic Year Early Jun', type: 'GIII'},
-         {id:2104, name:'Naruo Kinen',date: 'Classic Year Early Jun', type: 'GIII'},
-         {id:2105, name:'Sleipnir Stakes',date: 'Classic Year Early Jun', type: 'OP'},
-         {id:2106, name:'Tempozan Stakes',date: 'Classic Year Early Jun', type: 'OP'},
-         {id:2107, name:'Yasuda Kinen',date: 'Classic Year Early Jun', type: 'GI'},
-         {id:2108, name:'Akhalteke Stakes',date: 'Classic Year Late Jun', type: 'OP'},
-         {id:2109, name:'Hakodate Sprint Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
-         {id:2110, name:'Onuma Stakes',date: 'Classic Year Late Jun', type: 'OP'},
-         {id:2111, name:'Paradise Stakes',date: 'Classic Year Late Jun', type: 'OP'},
-         {id:2112, name:'Sannomiya Stakes',date: 'Classic Year Late Jun', type: 'OP'},
-         {id:2113, name:'Takarazuka Kinen',date: 'Classic Year Late Jun', type: 'GI'},
-         {id:2114, name:'Unicorn Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
-         {id:2115, name:'Yonago Stakes',date: 'Classic Year Late Jun', type: 'OP'},
-         {id:2116, name:'CBC Sho',date: 'Classic Year Early Jul', type: 'GIII'},
-         {id:2117, name:'Hakodate Kinen',date: 'Classic Year Early Jul', type: 'GIII'},
-         {id:2118, name:'Japan Dirt Derby',date: 'Classic Year Early Jul', type: 'GI'},
-         {id:2119, name:'Marine Stakes',date: 'Classic Year Early Jul', type: 'OP'},
-         {id:2120, name:'Meitetsu Hai',date: 'Classic Year Early Jul', type: 'OP'},
-         {id:2121, name:'Procyon Stakes',date: 'Classic Year Early Jul', type: 'GIII'},
-         {id:2122, name:'Radio Nikkei Sho',date: 'Classic Year Early Jul', type: 'GIII'},
-         {id:2123, name:'Tanabata Sho',date: 'Classic Year Early Jul', type: 'GIII'},
-         {id:2124, name:'Tomoe Sho',date: 'Classic Year Early Jul', type: 'OP'},
-         {id:2125, name:'Chukyo Kinen',date: 'Classic Year Late Jul', type: 'GIII'},
-         {id:2126, name:'Fukushima TV Open',date: 'Classic Year Late Jul', type: 'OP'},
-         {id:2127, name:'Ibis Summer Dash',date: 'Classic Year Late Jul', type: 'GIII'},
-         {id:2128, name:'Queen Stakes',date: 'Classic Year Late Jul', type: 'GIII'},
-         {id:2129, name:'Aso Stakes',date: 'Classic Year Early Aug', type: 'OP'},
-         {id:2130, name:'Elm Stakes',date: 'Classic Year Early Aug', type: 'GIII'},
-         {id:2131, name:'Kanetsu Stakes',date: 'Classic Year Early Aug', type: 'OP'},
-         {id:2132, name:'Kokura Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
-         {id:2133, name:'Sapporo Nikkei Open',date: 'Classic Year Early Aug', type: 'OP'},
-         {id:2134, name:'Sekiya Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
-         {id:2135, name:'UHB Sho',date: 'Classic Year Early Aug', type: 'OP'},
-         {id:2136, name:'BSN Sho',date: 'Classic Year Late Aug', type: 'OP'},
-         {id:2137, name:'Keeneland Cup',date: 'Classic Year Late Aug', type: 'GIII'},
-         {id:2138, name:'Kitakyushu Kinen',date: 'Classic Year Late Aug', type: 'GIII'},
-         {id:2139, name:'Kokura Nikkei Open',date: 'Classic Year Late Aug', type: 'OP'},
-         {id:2140, name:'NST Sho',date: 'Classic Year Late Aug', type: 'OP'},
-         {id:2141, name:'Toki Stakes',date: 'Classic Year Late Aug', type: 'OP'},
-         {id:2142, name:'Sapporo Kinen',date: 'Classic Year Late Aug', type: 'GII'},
-         {id:2143, name:'Centaur Stakes',date: 'Classic Year Early Sep', type: 'GII'},
-         {id:2144, name:'Enif Stakes',date: 'Classic Year Early Sep', type: 'OP'},
-         {id:2145, name:'Niigata Kinen',date: 'Classic Year Early Sep', type: 'GIII'},
-         {id:2146, name:'Keisei Hai Autumn Handicap',date: 'Classic Year Early Sep', type: 'GIII'},
-         {id:2147, name:'Radio Nippon Sho',date: 'Classic Year Early Sep', type: 'OP'},
-         {id:2148, name:'Rose Stakes',date: 'Classic Year Early Sep', type: 'GII'},
-         {id:2149, name:'Shion Stakes',date: 'Classic Year Early Sep', type: 'GIII'},
-         {id:2150, name:'Tancho Stakes',date: 'Classic Year Early Sep', type: 'OP'},
-         {id:2151, name:'All Comers',date: 'Classic Year Late Sep', type: 'GII'},
-         {id:2152, name:'Kobe Shimbun Hai',date: 'Classic Year Late Sep', type: 'GII'},
-         {id:2153, name:'Nagatsuki Stakes',date: 'Classic Year Late Sep', type: 'OP'},
-         {id:2154, name:'Port Island Stakes',date: 'Classic Year Late Sep', type: 'OP'},
-         {id:2155, name:'Sirius Stakes',date: 'Classic Year Late Sep', type: 'GIII'},
-         {id:2156, name:'Brazil Cup',date: 'Classic Year Late Oct', type: 'OP'},
-         {id:2157, name:'Cassiopeia Stakes',date: 'Classic Year Late Oct', type: 'OP'},
-         {id:2158, name:'Green Channel Cup',date: 'Classic Year Early Oct', type: 'OP'},
-         {id:2159, name:'Lumiere Autumn Dash',date: 'Classic Year Late Oct', type: 'OP'},
-         {id:2160, name:'Muromachi Stakes',date: 'Classic Year Late Oct', type: 'OP'},
-         {id:2161, name:'October Stakes',date: 'Classic Year Early Oct', type: 'OP'},
-         {id:2162, name:'Opal Stakes',date: 'Classic Year Early Oct', type: 'OP'},
-         {id:2163, name:'Mainichi Okan',date: 'Classic Year Early Oct', type: 'GII'},
-         {id:2164, name:'Kyoto Daishoten',date: 'Classic Year Early Oct', type: 'GII'},
-         {id:2165, name:'Shinetsu Stakes',date: 'Classic Year Early Oct', type: 'OP'},
-         {id:2166, name:'Swan Stakes',date: 'Classic Year Late Oct', type: 'GII'},
-         {id:2167, name:'Uzumasa Stakes',date: 'Classic Year Early Oct', type: 'OP'},
-         {id:2168, name:'Fuji Stakes',date: 'Classic Year Late Oct', type: 'GII'},
-         {id:2169, name:'Tenno Sho (Autumn)',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2170, name:'Shuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2171, name:'Kikuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2172, name:'Argentina Kyowa Hai',date: 'Classic Year Early Nov', type: 'GII'},
-         {id:2173, name:'Andromeda Stakes',date: 'Classic Year Late Nov', type: 'OP'},
-         {id:2174, name:'Autumn Leaf Stakes',date: 'Classic Year Late Nov', type: 'OP'},
-         {id:2175, name:'Capital Stakes',date: 'Classic Year Late Nov', type: 'OP'},
-         {id:2176, name:'Elizabeth Queen Cup',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2177, name:'Fukushima Minyu Cup',date: 'Classic Year Late Nov', type: 'OP'},
-         {id:2178, name:'Japan Breeders\' Cup Classic',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2179, name:'Japan Breeders\' Cup Sprint',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2180, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2181, name:'Keihan Hai',date: 'Classic Year Late Nov', type: 'GIII'},
-         {id:2182, name:'Mile Championship',date: 'Classic Year Late Nov', type: 'GI'},
-         {id:2183, name:'Japan Cup',date: 'Classic Year Late Nov', type: 'GI'},
-         {id:2184, name:'Oro Cup',date: 'Classic Year Early Nov', type: 'OP'},
-         {id:2185, name:'Shimotsuki Stakes',date: 'Classic Year Late Nov', type: 'OP'},
-         {id:2186, name:'Stayers Stakes',date: 'Classic Year Early Dec', type: 'GII'},
-         {id:2187, name:'Capella Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
-         {id:2188, name:'Turquoise Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
-         {id:2189, name:'Champions Cup',date: 'Classic Year Early Dec', type: 'GI'},
-         {id:2190, name:'Hanshin Cup',date: 'Classic Year Late Dec', type: 'GII'},
-         {id:2191, name:'Nakayama Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
-         {id:2192, name:'Tokyo Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
+         {id:2062, name:'Shinzan Kinen',date: 'Classic Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2063, name:'Crocus Stakes',date: 'Classic Year Late Jan', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Tokyo'},
+         {id:2064, name:'Wakagoma Stakes',date: 'Classic Year Late Jan', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2065, name:'Elfin Stakes',date: 'Classic Year Early Feb', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2066, name:'Kisaragi Sho',date: 'Classic Year Early Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2067, name:'Kyodo News Hai',date: 'Classic Year Early Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2068, name:'Queen Cup',date: 'Classic Year Early Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2069, name:'Hyacinth Stakes',date: 'Classic Year Late Feb', type: 'OP', terrain: 'Dirt', distance: 'Mile', venue: 'Tokyo'},
+         {id:2070, name:'Marguerite Stakes',date: 'Classic Year Late Feb', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Hanshin'},
+         {id:2071, name:'Sumire Stakes',date: 'Classic Year Late Feb', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2072, name:'Anemone Stakes',date: 'Classic Year Early Mar', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2073, name:'Fillies\' Revue',date: 'Classic Year Early Mar', type: 'GII', terrain: 'Turf', distance: 'Sprint', venue: 'Hanshin'},
+         {id:2074, name:'Shoryu Stakes',date: 'Classic Year Early Mar', type: 'OP', terrain: 'Dirt', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2075, name:'Tulip Sho',date: 'Classic Year Early Mar', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2076, name:'Yayoi Sho',date: 'Classic Year Early Mar', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2077, name:'Falcon Stakes',date: 'Classic Year Late Mar', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2078, name:'Flower Cup',date: 'Classic Year Late Mar', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2079, name:'Spring Stakes',date: 'Classic Year Late Mar', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2080, name:'Mainichi Hai',date: 'Classic Year Late Mar', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2081, name:'Wakaba Stakes',date: 'Classic Year Late Mar', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2082, name:'Arlington Cup',date: 'Classic Year Early Apr', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2083, name:'Fukuryu Stakes',date: 'Classic Year Early Apr', type: 'OP', terrain: 'Dirt', distance: 'Mile', venue: 'Nakayama'},
+         {id:2084, name:'New Zealand Trophy',date: 'Classic Year Early Apr', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2085, name:'Oka Sho',date: 'Classic Year Early Apr', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2086, name:'Satsuki Sho',date: 'Classic Year Early Apr', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2087, name:'Wasurenagusa Sho',date: 'Classic Year Early Apr', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2088, name:'Aoba Sho',date: 'Classic Year Late Apr', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2089, name:'Flora Stakes',date: 'Classic Year Late Apr', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2090, name:'Sweetpea Stakes',date: 'Classic Year Late Apr', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2091, name:'Tachibana Stakes',date: 'Classic Year Late Apr', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2092, name:'Tango Stakes',date: 'Classic Year Late Apr', type: 'OP', terrain: 'Dirt', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2093, name:'Kyoto Shimbun Hai',date: 'Classic Year Early May', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2094, name:'NHK Mile Cup',date: 'Classic Year Early May', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2095, name:'Principal Stakes',date: 'Classic Year Early May', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2096, name:'Seiryu Stakes',date: 'Classic Year Early May', type: 'OP', terrain: 'Dirt', distance: 'Mile', venue: 'Tokyo'},
+         {id:2097, name:'Aoi Stakes',date: 'Classic Year Late May', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2098, name:'Hosu Stakes',date: 'Classic Year Late May', type: 'OP', terrain: 'Dirt', distance: 'Mile', venue: 'Kyoto'},
+         {id:2099, name:'Japanese Oaks',date: 'Classic Year Late May', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2100, name:'Shirayuri Stakes',date: 'Classic Year Late May', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2101, name:'Tokyo Yushun (Japanese Derby)',date: 'Classic Year Late May', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2102, name:'Epsom Cup',date: 'Classic Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2103, name:'Mermaid Stakes',date: 'Classic Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2104, name:'Naruo Kinen',date: 'Classic Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2105, name:'Sleipnir Stakes',date: 'Classic Year Early Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2106, name:'Tempozan Stakes',date: 'Classic Year Early Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2107, name:'Yasuda Kinen',date: 'Classic Year Early Jun', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2108, name:'Akhalteke Stakes',date: 'Classic Year Late Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2109, name:'Hakodate Sprint Stakes',date: 'Classic Year Late Jun', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Hakodate'},
+         {id:2110, name:'Onuma Stakes',date: 'Classic Year Late Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hakodate'},
+         {id:2111, name:'Paradise Stakes',date: 'Classic Year Late Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2112, name:'Sannomiya Stakes',date: 'Classic Year Late Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2113, name:'Takarazuka Kinen',date: 'Classic Year Late Jun', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2114, name:'Unicorn Stakes',date: 'Classic Year Late Jun', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2115, name:'Yonago Stakes',date: 'Classic Year Late Jun', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Yonago'},
+         {id:2116, name:'CBC Sho',date: 'Classic Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2117, name:'Hakodate Kinen',date: 'Classic Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Hakodate'},
+         {id:2118, name:'Japan Dirt Derby',date: 'Classic Year Early Jul', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Ohi'},
+         {id:2119, name:'Marine Stakes',date: 'Classic Year Early Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2120, name:'Meitetsu Hai',date: 'Classic Year Early Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2121, name:'Procyon Stakes',date: 'Classic Year Early Jul', type: 'GIII', terrain: 'Dirt', distance: 'Mile', venue: 'Tokyo'},
+         {id:2122, name:'Radio Nikkei Sho',date: 'Classic Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Fukushima'},
+         {id:2123, name:'Tanabata Sho',date: 'Classic Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2124, name:'Tomoe Sho',date: 'Classic Year Early Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2125, name:'Chukyo Kinen',date: 'Classic Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2126, name:'Fukushima TV Open',date: 'Classic Year Late Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Fukushima'},
+         {id:2127, name:'Ibis Summer Dash',date: 'Classic Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Niigata'},
+         {id:2128, name:'Queen Stakes',date: 'Classic Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2129, name:'Aso Stakes',date: 'Classic Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2130, name:'Elm Stakes',date: 'Classic Year Early Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2131, name:'Kanetsu Stakes',date: 'Classic Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2132, name:'Kokura Kinen',date: 'Classic Year Early Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2133, name:'Sapporo Nikkei Open',date: 'Classic Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2134, name:'Sekiya Kinen',date: 'Classic Year Early Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2135, name:'UHB Sho',date: 'Classic Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2136, name:'BSN Sho',date: 'Classic Year Late Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2137, name:'Keeneland Cup',date: 'Classic Year Late Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2138, name:'Kitakyushu Kinen',date: 'Classic Year Late Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2139, name:'Kokura Nikkei Open',date: 'Classic Year Late Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2140, name:'NST Sho',date: 'Classic Year Late Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2141, name:'Toki Stakes',date: 'Classic Year Late Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2142, name:'Sapporo Kinen',date: 'Classic Year Late Aug', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Sapporo'},
+         {id:2143, name:'Centaur Stakes',date: 'Classic Year Early Sep', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2144, name:'Enif Stakes',date: 'Classic Year Early Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2145, name:'Niigata Kinen',date: 'Classic Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2146, name:'Keisei Hai Autumn Handicap',date: 'Classic Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2147, name:'Radio Nippon Sho',date: 'Classic Year Early Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2148, name:'Rose Stakes',date: 'Classic Year Early Sep', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2149, name:'Shion Stakes',date: 'Classic Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2150, name:'Tancho Stakes',date: 'Classic Year Early Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2151, name:'All Comers',date: 'Classic Year Late Sep', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2152, name:'Kobe Shimbun Hai',date: 'Classic Year Late Sep', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2153, name:'Nagatsuki Stakes',date: 'Classic Year Late Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2154, name:'Port Island Stakes',date: 'Classic Year Late Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2155, name:'Sirius Stakes',date: 'Classic Year Late Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2156, name:'Brazil Cup',date: 'Classic Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2157, name:'Cassiopeia Stakes',date: 'Classic Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2158, name:'Green Channel Cup',date: 'Classic Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2159, name:'Lumiere Autumn Dash',date: 'Classic Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Tokyo'},
+         {id:2160, name:'Muromachi Stakes',date: 'Classic Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2161, name:'October Stakes',date: 'Classic Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2162, name:'Opal Stakes',date: 'Classic Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2163, name:'Mainichi Okan',date: 'Classic Year Early Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2164, name:'Kyoto Daishoten',date: 'Classic Year Early Oct', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2165, name:'Shinetsu Stakes',date: 'Classic Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2166, name:'Swan Stakes',date: 'Classic Year Late Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2167, name:'Uzumasa Stakes',date: 'Classic Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2168, name:'Fuji Stakes',date: 'Classic Year Late Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2169, name:'Tenno Sho (Autumn)',date: 'Classic Year Late Oct', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2170, name:'Shuka Sho',date: 'Classic Year Late Oct', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2171, name:'Kikuka Sho',date: 'Classic Year Late Oct', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2172, name:'Argentina Kyowa Hai',date: 'Classic Year Early Nov', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2173, name:'Andromeda Stakes',date: 'Classic Year Late Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2174, name:'Autumn Leaf Stakes',date: 'Classic Year Late Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2175, name:'Capital Stakes',date: 'Classic Year Late Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2176, name:'Elizabeth Queen Cup',date: 'Classic Year Early Nov', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2177, name:'Fukushima Minyu Cup',date: 'Classic Year Late Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Fukushima'},
+         {id:2178, name:'Japan Breeders\' Cup Classic',date: 'Classic Year Early Nov', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Ohi'},
+         {id:2179, name:'Japan Breeders\' Cup Sprint',date: 'Classic Year Early Nov', type: 'GI', terrain: 'Dirt', distance: 'Sprint', venue: 'Ohi'},
+         {id:2180, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Classic Year Early Nov', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Ohi'},
+         {id:2181, name:'Keihan Hai',date: 'Classic Year Late Nov', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2182, name:'Mile Championship',date: 'Classic Year Late Nov', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2183, name:'Japan Cup',date: 'Classic Year Late Nov', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2184, name:'Oro Cup',date: 'Classic Year Early Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2185, name:'Shimotsuki Stakes',date: 'Classic Year Late Nov', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2186, name:'Stayers Stakes',date: 'Classic Year Early Dec', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2187, name:'Capella Stakes',date: 'Classic Year Early Dec', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2188, name:'Turquoise Stakes',date: 'Classic Year Early Dec', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2189, name:'Champions Cup',date: 'Classic Year Early Dec', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Chukyo'},
+         {id:2190, name:'Hanshin Cup',date: 'Classic Year Late Dec', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2191, name:'Nakayama Daishoten',date: 'Classic Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2192, name:'Tokyo Daishoten',date: 'Classic Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
       ],
       umamusumeRaceList_3:[
-         {id:2213, name:'Kyoto Kimpai',date: 'Senior Year Early Jan', type: 'GIII'},
-         {id:2215, name:'Nakayama Kimpai',date: 'Senior Year Early Jan', type: 'GIII'},
-         {id:2210, name:'Aichi Hai',date: 'Senior Year Early Jan', type: 'GIII'},
-         {id:2217, name:'Nikkei Shinshun Hai',date: 'Senior Year Early Jan', type: 'GII'},
-         {id:2225, name:'Tokai Stakes',date: 'Senior Year Late Jan', type: 'GII'},
-         {id:2220, name:'American JCC',date: 'Senior Year Late Jan', type: 'GII'},
-         {id:2223, name:'Silk Road Stakes',date: 'Senior Year Late Jan', type: 'GIII'},
-         {id:2221, name:'Negishi Stakes',date: 'Senior Year Late Jan', type: 'GIII'},
-         {id:2227, name:'Kyoto Kinen',date: 'Senior Year Early Feb', type: 'GII'},
-         {id:2229, name:'Tokyo Shimbun Hai',date: 'Senior Year Early Feb', type: 'GIII'},
-         {id:2238, name:'Nakayama Kinen',date: 'Senior Year Late Feb', type: 'GII'},
-         {id:2237, name:'Kyoto Umamusume Stakes',date: 'Senior Year Late Feb', type: 'GIII'},
-         {id:2231, name:'Diamond Stakes',date: 'Senior Year Late Feb', type: 'GIII'},
-         {id:2235, name:'Kokura Daishoten',date: 'Senior Year Late Feb', type: 'GIII'},
-         {id:2234, name:'Hankyu Hai',date: 'Senior Year Late Feb', type: 'GIII'},
-         {id:2233, name:'February Stakes',date: 'Senior Year Late Feb', type: 'GI'},
-         {id:2240, name:'Kinko Sho',date: 'Senior Year Early Mar', type: 'GII'},
-         {id:2244, name:'Ocean Stakes',date: 'Senior Year Early Mar', type: 'GIII'},
-         {id:2242, name:'Nakayama Umamusume Stakes',date: 'Senior Year Early Mar', type: 'GIII'},
-         {id:2248, name:'Hanshin Daishoten',date: 'Senior Year Late Mar', type: 'GII'},
-         {id:2250, name:'Nikkei Sho',date: 'Senior Year Late Mar', type: 'GII'},
-         {id:2249, name:'March Stakes',date: 'Senior Year Late Mar', type: 'GIII'},
-         {id:2253, name:'Takamatsunomiya Kinen',date: 'Senior Year Late Mar', type: 'GI'},
-         {id:2251, name:'Osaka Hai',date: 'Senior Year Late Mar', type: 'GI'},
-         {id:2258, name:'Hanshin Umamusume Stakes',date: 'Senior Year Early Apr', type: 'GII'},
-         {id:2260, name:'Lord Derby Challenge Trophy',date: 'Senior Year Early Apr', type: 'GIII'},
-         {id:2254, name:'Antares Stakes',date: 'Senior Year Early Apr', type: 'GIII'},
-         {id:2263, name:'Milers Cup',date: 'Senior Year Late Apr', type: 'GII'},
-         {id:2262, name:'Fukushima Umamusume Stakes',date: 'Senior Year Late Apr', type: 'GIII'},
-         {id:2265, name:'Tenno Sho (Spring)',date: 'Senior Year Late Apr', type: 'GI'},
-         {id:2268, name:'Keio Hai Spring Cup',date: 'Senior Year Early May', type: 'GII'},
-         {id:2272, name:'Niigata Daishoten',date: 'Senior Year Early May', type: 'GIII'},
-         {id:2275, name:'Victoria Mile',date: 'Senior Year Early May', type: 'GI'},
-         {id:2281, name:'Meguro Kinen',date: 'Senior Year Late May', type: 'GII'},
-         {id:2277, name:'Heian Stakes',date: 'Senior Year Late May', type: 'GIII'},
-         {id:2283, name:'Mermaid Stakes',date: 'Senior Year Early Jun', type: 'GIII'},
-         {id:2287, name:'Yasuda Kinen',date: 'Senior Year Early Jun', type: 'GI'},
-         {id:2284, name:'Naruo Kinen',date: 'Senior Year Early Jun', type: 'GIII'},
-         {id:2282, name:'Epsom Cup',date: 'Senior Year Early Jun', type: 'GIII'},
-         {id:2293, name:'Takarazuka Kinen',date: 'Senior Year Late Jun', type: 'GI'},
-         {id:2289, name:'Hakodate Sprint Stakes',date: 'Senior Year Late Jun', type: 'GIII'},
-         {id:2294, name:'Teio Sho',date: 'Senior Year Late Jun', type: 'GI'},
-         {id:2296, name:'CBC Sho',date: 'Senior Year Early Jul', type: 'GIII'},
-         {id:2300, name:'Procyon Stakes',date: 'Senior Year Early Jul', type: 'GIII'},
-         {id:2301, name:'Tanabata Sho',date: 'Senior Year Early Jul', type: 'GIII'},
-         {id:2297, name:'Hakodate Kinen',date: 'Senior Year Early Jul', type: 'GIII'},
-         {id:2303, name:'Chukyo Kinen',date: 'Senior Year Late Jul', type: 'GIII'},
-         {id:2305, name:'Ibis Summer Dash',date: 'Senior Year Late Jul', type: 'GIII'},
-         {id:2306, name:'Queen Stakes',date: 'Senior Year Late Jul', type: 'GIII'},
-         {id:2308, name:'Elm Stakes',date: 'Senior Year Early Aug', type: 'GIII'},
-         {id:2315, name:'Sapporo Kinen',date: 'Senior Year Late Aug', type: 'GII'},
-         {id:2317, name:'Keeneland Cup',date: 'Senior Year Late Aug', type: 'GIII'},
-         {id:2318, name:'Kitakyushu Kinen',date: 'Senior Year Late Aug', type: 'GIII'},
-         {id:2321, name:'Centaur Stakes',date: 'Senior Year Early Sep', type: 'GII'},
-         {id:2324, name:'Niigata Kinen',date: 'Senior Year Early Sep', type: 'GIII'},
-         {id:2323, name:'Keisei Hai Autumn Handicap',date: 'Senior Year Early Sep', type: 'GIII'},
-         {id:2330, name:'All Comers',date: 'Senior Year Late Sep', type: 'GII'},
-         {id:2331, name:'Kobe Shimbun Hai',date: 'Senior Year Late Sep', type: 'GII'},
-         {id:2334, name:'Sirius Stakes',date: 'Senior Year Late Sep', type: 'GIII'},
-         {id:2340, name:'Mainichi Okan',date: 'Senior Year Early Oct', type: 'GII'},
-         {id:2341, name:'Kyoto Daishoten',date: 'Senior Year Early Oct', type: 'GII'},
-         {id:2345, name:'Swan Stakes',date: 'Senior Year Late Oct', type: 'GII'},
-         {id:2346, name:'Fuji Stakes',date: 'Senior Year Late Oct', type: 'GII'},
-         {id:2349, name:'Tenno Sho (Autumn)',date: 'Senior Year Late Oct', type: 'GI'},
-         {id:2353, name:'Argentina Kyowa Hai',date: 'Senior Year Early Nov', type: 'GII'},
-         {id:2358, name:'Elizabeth Queen Cup',date: 'Senior Year Early Nov', type: 'GI'},
-         {id:2359, name:'Japan Breeders\' Cup Classic',date: 'Senior Year Early Nov', type: 'GI'},
-         {id:2360, name:'Japan Breeders\' Cup Sprint',date: 'Senior Year Early Nov', type: 'GI'},
-         {id:2361, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Senior Year Early Nov', type: 'GI'},
-         {id:2362, name:'Keihan Hai',date: 'Senior Year Late Nov', type: 'GIII'},
-         {id:2365, name:'Mile Championship',date: 'Senior Year Late Nov', type: 'GI'},
-         {id:2366, name:'Japan Cup',date: 'Senior Year Late Nov', type: 'GI'},
-         {id:2368, name:'Stayers Stakes',date: 'Senior Year Early Dec', type: 'GII'},
-         {id:2371, name:'Capella Stakes',date: 'Senior Year Early Dec', type: 'GIII'},
-         {id:2372, name:'Turquoise Stakes',date: 'Senior Year Early Dec', type: 'GIII'},
-         {id:2373, name:'Champions Cup',date: 'Senior Year Early Dec', type: 'GI'},
-         {id:2374, name:'Hanshin Cup',date: 'Senior Year Late Dec', type: 'GII'},
-         {id:2378, name:'Nakayama Daishoten',date: 'Senior Year Late Dec', type: 'GI'},
-         {id:2380, name:'Tokyo Daishoten',date: 'Senior Year Late Dec', type: 'GI'}],
+         {id:2213, name:'Kyoto Kimpai',date: 'Senior Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2215, name:'Nakayama Kimpai',date: 'Senior Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2210, name:'Aichi Hai',date: 'Senior Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2217, name:'Nikkei Shinshun Hai',date: 'Senior Year Early Jan', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2225, name:'Tokai Stakes',date: 'Senior Year Late Jan', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2220, name:'American JCC',date: 'Senior Year Late Jan', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2223, name:'Silk Road Stakes',date: 'Senior Year Late Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2221, name:'Negishi Stakes',date: 'Senior Year Late Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2227, name:'Kyoto Kinen',date: 'Senior Year Early Feb', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2229, name:'Tokyo Shimbun Hai',date: 'Senior Year Early Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2238, name:'Nakayama Kinen',date: 'Senior Year Late Feb', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2237, name:'Kyoto Umamusume Stakes',date: 'Senior Year Late Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2231, name:'Diamond Stakes',date: 'Senior Year Late Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2235, name:'Kokura Daishoten',date: 'Senior Year Late Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2234, name:'Hankyu Hai',date: 'Senior Year Late Feb', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2233, name:'February Stakes',date: 'Senior Year Late Feb', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Tokyo'},
+         {id:2240, name:'Kinko Sho',date: 'Senior Year Early Mar', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Chukyo'},
+         {id:2244, name:'Ocean Stakes',date: 'Senior Year Early Mar', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Nakayama'},
+         {id:2242, name:'Nakayama Umamusume Stakes',date: 'Senior Year Early Mar', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2248, name:'Hanshin Daishoten',date: 'Senior Year Late Mar', type: 'GII', terrain: 'Turf', distance: 'Long', venue: 'Hanshin'},
+         {id:2250, name:'Nikkei Sho',date: 'Senior Year Late Mar', type: 'GII', terrain: 'Turf', distance: 'Long', venue: 'Nakayama'},
+         {id:2249, name:'March Stakes',date: 'Senior Year Late Mar', type: 'GIII', terrain: 'Dirt', distance: 'Mile', venue: 'Nakayama'},
+         {id:2253, name:'Takamatsunomiya Kinen',date: 'Senior Year Late Mar', type: 'GI', terrain: 'Turf', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2251, name:'Osaka Hai',date: 'Senior Year Late Mar', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2258, name:'Hanshin Umamusume Stakes',date: 'Senior Year Early Apr', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2260, name:'Lord Derby Challenge Trophy',date: 'Senior Year Early Apr', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2254, name:'Antares Stakes',date: 'Senior Year Early Apr', type: 'GIII', terrain: 'Dirt', distance: 'Mile', venue: 'Hanshin'},
+         {id:2263, name:'Milers Cup',date: 'Senior Year Late Apr', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2262, name:'Fukushima Umamusume Stakes',date: 'Senior Year Late Apr', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Fukushima'},
+         {id:2265, name:'Tenno Sho (Spring)',date: 'Senior Year Late Apr', type: 'GI', terrain: 'Turf', distance: 'Long', venue: 'Kyoto'},
+         {id:2268, name:'Keio Hai Spring Cup',date: 'Senior Year Early May', type: 'GII', terrain: 'Turf', distance: 'Sprint', venue: 'Tokyo'},
+         {id:2272, name:'Niigata Daishoten',date: 'Senior Year Early May', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Niigata'},
+         {id:2275, name:'Victoria Mile',date: 'Senior Year Early May', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2281, name:'Meguro Kinen',date: 'Senior Year Late May', type: 'GII', terrain: 'Turf', distance: 'Long', venue: 'Tokyo'},
+         {id:2277, name:'Heian Stakes',date: 'Senior Year Late May', type: 'GIII', terrain: 'Dirt', distance: 'Medium', venue: 'Kyoto'},
+         {id:2283, name:'Mermaid Stakes',date: 'Senior Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2287, name:'Yasuda Kinen',date: 'Senior Year Early Jun', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2284, name:'Naruo Kinen',date: 'Senior Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2282, name:'Epsom Cup',date: 'Senior Year Early Jun', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2293, name:'Takarazuka Kinen',date: 'Senior Year Late Jun', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2289, name:'Hakodate Sprint Stakes',date: 'Senior Year Late Jun', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Hakodate'},
+         {id:2294, name:'Teio Sho',date: 'Senior Year Late Jun', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Ooi'},
+         {id:2296, name:'CBC Sho',date: 'Senior Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2300, name:'Procyon Stakes',date: 'Senior Year Early Jul', type: 'GIII', terrain: 'Dirt', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2301, name:'Tanabata Sho',date: 'Senior Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Fukushima'},
+         {id:2297, name:'Hakodate Kinen',date: 'Senior Year Early Jul', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Hakodate'},
+         {id:2303, name:'Chukyo Kinen',date: 'Senior Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2305, name:'Ibis Summer Dash',date: 'Senior Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Niigata'},
+         {id:2306, name:'Queen Stakes',date: 'Senior Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2308, name:'Elm Stakes',date: 'Senior Year Early Aug', type: 'GIII', terrain: 'Dirt', distance: 'Mile', venue: 'Sapporo'},
+         {id:2315, name:'Sapporo Kinen',date: 'Senior Year Late Aug', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Sapporo'},
+         {id:2317, name:'Keeneland Cup',date: 'Senior Year Late Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2318, name:'Kitakyushu Kinen',date: 'Senior Year Late Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kokura'},
+         {id:2321, name:'Centaur Stakes',date: 'Senior Year Early Sep', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2324, name:'Niigata Kinen',date: 'Senior Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2323, name:'Keisei Hai Autumn Handicap',date: 'Senior Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2330, name:'All Comers',date: 'Senior Year Late Sep', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2331, name:'Kobe Shimbun Hai',date: 'Senior Year Late Sep', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2334, name:'Sirius Stakes',date: 'Senior Year Late Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2340, name:'Mainichi Okan',date: 'Senior Year Early Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2341, name:'Kyoto Daishoten',date: 'Senior Year Early Oct', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2345, name:'Swan Stakes',date: 'Senior Year Late Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2346, name:'Fuji Stakes',date: 'Senior Year Late Oct', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2349, name:'Tenno Sho (Autumn)',date: 'Senior Year Late Oct', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2353, name:'Argentina Kyowa Hai',date: 'Senior Year Early Nov', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2358, name:'Elizabeth Queen Cup',date: 'Senior Year Early Nov', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2359, name:'Japan Breeders\' Cup Classic',date: 'Senior Year Early Nov', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Ohi'},
+         {id:2360, name:'Japan Breeders\' Cup Sprint',date: 'Senior Year Early Nov', type: 'GI', terrain: 'Dirt', distance: 'Sprint', venue: 'Ohi'},
+         {id:2361, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Senior Year Early Nov', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Ohi'},
+         {id:2362, name:'Keihan Hai',date: 'Senior Year Late Nov', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2365, name:'Mile Championship',date: 'Senior Year Late Nov', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2366, name:'Japan Cup',date: 'Senior Year Late Nov', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2368, name:'Stayers Stakes',date: 'Senior Year Early Dec', type: 'GII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2371, name:'Capella Stakes',date: 'Senior Year Early Dec', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2372, name:'Turquoise Stakes',date: 'Senior Year Early Dec', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2373, name:'Champions Cup',date: 'Senior Year Early Dec', type: 'GI', terrain: 'Dirt', distance: 'Medium', venue: 'Chukyo'},
+         {id:2374, name:'Hanshin Cup',date: 'Senior Year Late Dec', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2378, name:'Nakayama Daishoten',date: 'Senior Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2380, name:'Tokyo Daishoten',date: 'Senior Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'}],
       cultivatePresets:[],
       cultivateDefaultPresets:[
       {
