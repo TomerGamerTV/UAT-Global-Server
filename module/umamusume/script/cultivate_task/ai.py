@@ -2,6 +2,9 @@ from module.umamusume.context import *
 from module.umamusume.types import TurnOperation
 from module.umamusume.script.cultivate_task.support_card import get_support_card_score
 import numpy as np
+import cv2
+from module.umamusume.asset.template import UI_CULTIVATE_URA_RACE_1, UI_CULTIVATE_URA_RACE_2, UI_CULTIVATE_URA_RACE_3
+from bot.recog.image_matcher import image_match
 
 log = logger.get_logger(__name__)
 
@@ -41,32 +44,32 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     else:
         normalized_training_level_result = [1, 1, 1, 1, 1]
 
-    # 第一年至第二年合宿前
+    # Year 1 to before Year 2 training camp
     if ctx.cultivate_detail.turn_info.date <= 36:
         attr_weight = 0.2
         support_card_weight = 0.6
         training_level_weight = 0.2
-    # 第二年合宿期间
+    # During Year 2 training camp
     elif 36 < ctx.cultivate_detail.turn_info.date <= 40:
         attr_weight = 0.8
         support_card_weight = 0.2
         training_level_weight = 0
-    # 第二年合宿后至第三年前
+    # After Year 2 training camp to before Year 3
     elif 40 < ctx.cultivate_detail.turn_info.date <= 48:
         attr_weight = 0.6
         support_card_weight = 0.2
         training_level_weight = 0.2
-    # 第三年合宿前
+    # Before Year 3 training camp
     elif 48 < ctx.cultivate_detail.turn_info.date <= 60:
         attr_weight = 0.6
         support_card_weight = 0.1
         training_level_weight = 0.3
-    # 第三年合宿期间
+    # During Year 3 training camp
     elif 60 < ctx.cultivate_detail.turn_info.date <= 64:
         attr_weight = 1
         support_card_weight = 0
         training_level_weight = 0
-    # 第三年至结束
+    # Year 3 to end
     elif 64 < ctx.cultivate_detail.turn_info.date <= 99:
         attr_weight = 0.8
         support_card_weight = 0
@@ -76,13 +79,13 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         support_card_weight = 0
         training_level_weight = 0
 
-    # 训练得分
+    # Training score
     training_score = []
     for i in range(5):
         training_score.append(normalized_attribute_result[i] * attr_weight + normalized_support_card_result[i] *
                               support_card_weight + normalized_training_level_result[i] * training_level_weight + 
                               support_card_event_result[i])
-    # 将权重为-1的训练得分置为0    
+    # Set training score to 0 for weights of -1    
     extra_weight = [0, 0, 0, 0, 0]
     date = ctx.cultivate_detail.turn_info.date
     if len(ctx.cultivate_detail.extra_weight) == 3:
@@ -93,16 +96,101 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         elif 48 < date:
             extra_weight = ctx.cultivate_detail.extra_weight[2]
     if -1 in extra_weight:
-        log.debug("将权重为-1的训练得分设置为0")
+        log.debug("Setting training score to 0 for weights of -1")
         for i in range(5):
             if extra_weight[i] <= -1:
                 training_score[i] = 0
-    log.debug("训练综合得分：" + str(training_score))
+    log.debug("Overall training score: " + str(training_score))
 
-    # 出道战成功才能参加比赛
+    # Can only participate in races after debut race success
     if ctx.cultivate_detail.debut_race_win:
-        extra_race_this_turn = [i for i in ctx.cultivate_detail.extra_race_list if str(i)[:2]
-                                == str(ctx.cultivate_detail.turn_info.date)]
+        from module.umamusume.asset.race_data import get_races_for_period
+        
+        # Check for URA championship races first (automatic detection)
+        ura_race_id = None
+        log.info(f"🔍 Checking scenario type: {ctx.task.detail.scenario}")
+        if ctx.task.detail.scenario == ScenarioType.SCENARIO_TYPE_URA:
+            # URA championship phases based on date
+            date = ctx.cultivate_detail.turn_info.date
+            log.info(f"🔍 URA scenario detected, current date: {date}")
+            if 73 <= date <= 75:  # URA Qualifier
+                ura_race_id = 2381
+            elif 76 <= date <= 78:  # URA Semi-final
+                ura_race_id = 2382
+            elif 79 <= date <= 99:  # URA Final
+                ura_race_id = 2385  # or 2386, 2387 for different final types
+            
+            log.info(f"🔍 Calculated URA race ID: {ura_race_id}")
+            
+            # Check if URA race button is actually available on screen
+            if ura_race_id:
+                if ctx.current_screen is None:
+                    log.warning("🔍 No current screen available - skipping URA race button check")
+                    ura_race_id = None
+                else:
+                    img_gray = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+                    ura_race_available = False
+                    
+                    if 73 <= date <= 75:  # Qualifier
+                        ura_race_available = image_match(img_gray, UI_CULTIVATE_URA_RACE_1).find_match
+                        log.info(f"🔍 URA Qualifier race button available: {ura_race_available}")
+                    elif 76 <= date <= 78:  # Semi-final
+                        ura_race_available = image_match(img_gray, UI_CULTIVATE_URA_RACE_2).find_match
+                        log.info(f"🔍 URA Semi-final race button available: {ura_race_available}")
+                    elif 79 <= date <= 99:  # Final
+                        ura_race_available = image_match(img_gray, UI_CULTIVATE_URA_RACE_3).find_match
+                        log.info(f"🔍 URA Final race button available: {ura_race_available}")
+                    
+                    # If race button is not available, don't race
+                    if not ura_race_available:
+                        log.info(f"🏆 URA race button not available yet - continuing with normal training/rest")
+                        ura_race_id = None  # Don't race if button not available
+        
+        if ura_race_id:
+            log.info(f"🏆 Detected URA championship race: {ura_race_id} at date {date}")
+            # Check if we should rest/recreate instead of racing
+            medic = False
+            if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 65:
+                medic = True
+
+            trip = False
+            if not ctx.cultivate_detail.turn_info.medic_room_available and (ctx.cultivate_detail.turn_info.date <= 36 and ctx.cultivate_detail.turn_info.motivation_level.value <= 3 and ctx.cultivate_detail.turn_info.remain_stamina < 90 and not support_card_max >= 3
+                                                                        or 40 < ctx.cultivate_detail.turn_info.date <= 60 and ctx.cultivate_detail.turn_info.motivation_level.value <= 4 and ctx.cultivate_detail.turn_info.remain_stamina < 90
+                                                                        or 64 < ctx.cultivate_detail.turn_info.date <= 99 and ctx.cultivate_detail.turn_info.motivation_level.value <= 4 and ctx.cultivate_detail.turn_info.remain_stamina < 90):
+                trip = True
+
+            rest = False
+            if ctx.cultivate_detail.turn_info.remain_stamina <= 48:
+                rest = True
+            elif (
+                    ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and ctx.cultivate_detail.turn_info.remain_stamina < 65:
+                rest = True
+
+            # If we need rest/recreation, prioritize that over racing
+            if rest:
+                log.info(f"🏥 Low stamina ({ctx.cultivate_detail.turn_info.remain_stamina}) - prioritizing rest over URA race")
+                turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+                return turn_operation
+            elif trip:
+                log.info(f"🏖️ Low stamina/motivation - prioritizing trip over URA race")
+                turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+                return turn_operation
+            elif medic:
+                log.info(f"🏥 Low stamina - prioritizing medic over URA race")
+                turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
+                return turn_operation
+            else:
+                # Only race if we have enough stamina
+                log.info(f"🏆 Proceeding with URA race - stamina: {ctx.cultivate_detail.turn_info.remain_stamina}")
+                turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
+                turn_operation.race_id = ura_race_id
+                return turn_operation
+        
+        # Get races available for current time period
+        available_races = get_races_for_period(ctx.cultivate_detail.turn_info.date)
+        # Find intersection with user-configured extra races
+        extra_race_this_turn = [race_id for race_id in ctx.cultivate_detail.extra_race_list 
+                               if race_id in available_races]
         if len(extra_race_this_turn) != 0:
             turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
             turn_operation.race_id = extra_race_this_turn[0]
@@ -153,7 +241,7 @@ def get_training_level_score(ctx: UmamusumeContext):
     result = []
     for i in range(len(expect_attribute)):
         result.append(expect_attribute[i] / sum(expect_attribute) * total_score)
-    log.debug("每个训练设施的得分: " + str(result))
+    log.debug("Score for each training facility: " + str(result))
     return result
 
 
@@ -165,11 +253,11 @@ def get_training_support_card_score(ctx: UmamusumeContext) -> list[float]:
         for j in range(len(turn_info.training_info_list[i].support_card_info_list)):
             score += get_support_card_score(ctx, turn_info.training_info_list[i].support_card_info_list[j])
         result.append(score)
-    log.debug("每个训练的支援卡得分: " + str(result))
+    log.debug("Support card score for each training: " + str(result))
     return result
 
 def get_support_card_event_score(ctx: UmamusumeContext) -> list[float]:
-    # 只对URA有效
+    # Only valid for URA
     if ctx.task.detail.scenario != ScenarioType.SCENARIO_TYPE_URA:
         return [0, 0, 0, 0, 0]
     turn_info = ctx.cultivate_detail.turn_info
@@ -184,7 +272,7 @@ def get_support_card_event_score(ctx: UmamusumeContext) -> list[float]:
             result.append(1*ctx.task.detail.scenario_config.ura_config.getSkillEventWeight(ctx.cultivate_detail.turn_info.date))
         else:
             result.append(0)
-    log.debug("每个训练的事件得分: " + str(result))
+    log.debug("Event score for each training: " + str(result))
     return result
 
 
@@ -199,7 +287,7 @@ def get_training_basic_attribute_score(ctx: UmamusumeContext, turn_info: TurnInf
             extra_weight = ctx.cultivate_detail.extra_weight[1]
         elif 48 < date:
             extra_weight = ctx.cultivate_detail.extra_weight[2]
-    log.debug("本回合额外权重：" + str(extra_weight))
+    log.debug("Extra weight for this turn: " + str(extra_weight))
     turn_expect_attribute = [0, 0, 0, 0, 0]
     ura_extra_attr = 50
     if date > 72:
@@ -217,7 +305,7 @@ def get_training_basic_attribute_score(ctx: UmamusumeContext, turn_info: TurnInf
     result = []
     expect_attribute_all_complete = all(x >= y for x, y in zip(turn_uma_attr, cultivate_expect_attribute))
     if expect_attribute_all_complete:
-        log.debug("育成目标属性已达成")
+        log.debug("Training target attributes achieved")
         for i in range(len(turn_info.training_info_list)):
             incr = [turn_info.training_info_list[i].speed_incr, turn_info.training_info_list[i].stamina_incr,
                     turn_info.training_info_list[i].power_incr, turn_info.training_info_list[i].will_incr,
@@ -253,15 +341,15 @@ def get_training_basic_attribute_score(ctx: UmamusumeContext, turn_info: TurnInf
                                 rating_incr += 0.25 * (cultivate_expect_attribute[j] - turn_expect_attribute[j])
             # rating_incr += turn_info.training_info_list[i].skill_point_incr * 1.45
             result.append(rating_incr * (1 + extra_weight[i]))
-        log.debug("每个训练的原始属性增长得分：" + str(result))
-        log.debug("本回合预期属性：" + str(turn_expect_attribute))
+        log.debug("Raw attribute growth score for each training: " + str(result))
+        log.debug("Expected attributes for this turn: " + str(turn_expect_attribute))
         target_percent = [0, 0, 0, 0, 0]
         for i in range(len(turn_uma_attr)):
             target_percent[i] = turn_uma_attr[i] / turn_expect_attribute[i]
         avg = sum(target_percent) / len(target_percent)
         for i in range(len(result)):
             result[i] = result[i] * (1 - (target_percent[i] - avg))
-    log.debug("每个训练的属性增长得分：" + str(result))
+    log.debug("Attribute growth score for each training: " + str(result))
     return result
 
 
@@ -276,7 +364,7 @@ def get_basic_status_score(status: int) -> float:
             result += status_score[i] * 100
         else:
             if i - 1 > 11:
-                log.debug("识别错误")
+                log.debug("Recognition error")
                 return 0
             result += status * status_score[i - 1]
             break

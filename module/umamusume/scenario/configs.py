@@ -4,15 +4,15 @@ class UraConfig:
 
     def __init__(self, config: dict):
         if "skillEventWeight" not in config or "resetSkillEventWeightList" not in config:
-            raise ValueError("错误的配置: 必须配置 'skillEventWeight' 和 'resetSkillEventWeightList'")
+            raise ValueError("Wrong configuration: must configure 'skillEventWeight' and 'resetSkillEventWeightList'")
         self.skill_event_weight = config["skillEventWeight"]
         self.reset_skill_event_weight_list = config["resetSkillEventWeightList"]
     
     def removeSkillFromList(self, skill: str):
         if skill in self.reset_skill_event_weight_list:
             self.reset_skill_event_weight_list.remove(skill)
-            # 如果技能列表空了, 重置权重
-            # 如果一开始列表就是空的, 这个分支就不会触发, 也不会重置权重
+            # If skill list is empty, reset weights
+            # If the list is empty from the beginning, this branch won't trigger, and weights won't be reset
             if len(self.reset_skill_event_weight_list) == 0:
                 self.skill_event_weight = [0, 0, 0]
     
@@ -31,18 +31,18 @@ class AoharuConfig:
 
     def __init__(self, config: dict):
         if "preliminaryRoundSelections" not in config or "aoharuTeamNameSelection" not in config:
-            raise ValueError("错误的配置: 必须配置 'preliminaryRoundSelections' 和 'aoharuTeamNameSelection'")
+            raise ValueError("Wrong configuration: must configure 'preliminaryRoundSelections' and 'aoharuTeamNameSelection'")
         self.preliminary_round_selections = config["preliminaryRoundSelections"]
         self.aoharu_team_name_selection = config["aoharuTeamNameSelection"]
 
+    """ Get opponent index for specified round, index starts from 0, preliminary round 1 is 0 """
     def get_opponent(self, round_index: int) -> int:
-        """ 获取指定轮次的对手索引, 索引从0开始, 预赛第一轮为0 """
         if round_index < 0 or round_index >= len(self.preliminary_round_selections):
-            raise IndexError("轮次索引超出范围")
+            raise IndexError("Round index out of range")
         return self.preliminary_round_selections[round_index]
     
 class ScenarioConfig:
-    """ 所有场景的配置 """
+    """ Configuration for all scenarios """
     ura_config: UraConfig = None
     aoharu_config: AoharuConfig = None
     

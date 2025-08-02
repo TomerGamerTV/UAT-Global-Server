@@ -15,7 +15,7 @@ class SupportCardInfo:
     card_type: SupportCardType
     favor: SupportCardFavorLevel
     has_event: bool
-    # 青春杯部分
+    # Youth Cup section
     can_incr_aoharu_train: bool
 
     def __init__(self,
@@ -50,17 +50,17 @@ class TrainingInfo:
         self.support_card_info_list = []
 
     def log_training_info(self, scenario_type: ScenarioType):
-        log.info("训练结果：速度：%s, 耐力：%s, 力量：%s, 毅力：%s, 智力：%s, 技能点：%s", self.speed_incr,
+        log.info("Training Result: Speed: %s, Stamina: %s, Power: %s, Guts: %s, Intelligence: %s, Skill Points: %s", self.speed_incr,
                  self.stamina_incr, self.power_incr, self.will_incr,
                  self.intelligence_incr, self.skill_point_incr)
-        text = "此训练附带支援卡列表：["
+        text = "Support cards for this training: ["
         if scenario_type == ScenarioType.SCENARIO_TYPE_AOHARUHAI:       
             for c in self.support_card_info_list:
-                text += "[支援卡名称：" + str(c.name) + ", 支援卡类型：" + str(c.card_type.name) + ", 支援卡羁绊阶段：" + str(c.favor.name) + ", 可提升青春杯友情: " + str(c.can_incr_aoharu_train) + "] "
+                text += "[Support Card Name: " + str(c.name) + ", Support Card Type: " + str(c.card_type.name) + ", Support Card Bond Level: " + str(c.favor.name) + ", Can Increase Aoharu Friendship: " + str(c.can_incr_aoharu_train) + "] "
         else:
             for c in self.support_card_info_list:
                 if c.favor != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
-                    text += "[支援卡名称：" + str(c.name) + ", 支援卡类型：" + str(c.card_type.name) + ", 支援卡羁绊阶段：" + str(c.favor.name) + "] "
+                    text += "[Support Card Name: " + str(c.name) + ", Support Card Type: " + str(c.card_type.name) + ", Support Card Bond Level: " + str(c.favor.name) + "] "
         text += "]"
         log.info(text)
 
@@ -95,10 +95,10 @@ class TurnOperation:
         self.race_id = 0
 
     def log_turn_operation(self):
-        log.info("本回合执行操作：%s", self.turn_operation_type.name)
-        log.info("本回合备选操作：%s", self.turn_operation_type_replace.name)
+        log.info("Current turn operation: %s", self.turn_operation_type.name)
+        log.info("Current turn alternative operation: %s", self.turn_operation_type_replace.name)
         if self.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
-            log.info("训练类型：%s", self.training_type.name)
+            log.info("Training type: %s", self.training_type.name)
 
 
 class TurnInfo:
@@ -117,7 +117,7 @@ class TurnInfo:
     turn_info_logged: bool
     turn_learn_skill_done: bool
 
-    # 青春杯
+    # Youth Cup
     aoharu_race_index: int
 
     def __init__(self):
@@ -136,20 +136,20 @@ class TurnInfo:
         self.aoharu_race_index = 0
 
     def log_turn_info(self, scenario_type : ScenarioType):
-        log.info("当前回合时间 " + str(self.date))
-        log.info("干劲状态 " + str(self.motivation_level.name))
-        log.info("体力剩余 " + str(self.remain_stamina))
-        log.info("当前属性值 速度：%s, 耐力：%s, 力量：%s, 毅力：%s, 智力：%s, 技能点：%s", self.uma_attribute.speed,
+        log.info("Current turn time " + str(self.date))
+        log.info("Motivation level " + str(self.motivation_level.name))
+        log.info("Remaining stamina " + str(self.remain_stamina))
+        log.info("Current attribute values Speed: %s, Stamina: %s, Power: %s, Guts: %s, Intelligence: %s, Skill Points: %s", self.uma_attribute.speed,
                  self.uma_attribute.stamina, self.uma_attribute.power, self.uma_attribute.will, self.uma_attribute.intelligence, self.uma_attribute.skill_point)
-        log.info("速度训练结果：")
+        log.info("Speed training results:")
         self.training_info_list[0].log_training_info(scenario_type)
-        log.info("耐力训练结果：")
+        log.info("Stamina training results:")
         self.training_info_list[1].log_training_info(scenario_type)
-        log.info("力量训练结果：")
+        log.info("Power training results:")
         self.training_info_list[2].log_training_info(scenario_type)
-        log.info("毅力训练结果：")
+        log.info("Guts training results:")
         self.training_info_list[3].log_training_info(scenario_type)
-        log.info("智力训练结果：")
+        log.info("Intelligence training results:")
         self.training_info_list[4].log_training_info(scenario_type)
 
 

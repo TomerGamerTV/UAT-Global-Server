@@ -9,6 +9,12 @@ from bot.base.user_data import base_path
 from bot.base.localization import localization
 import colorlog
 
+# Fix Windows console encoding for Unicode support
+if sys.platform == "win32":
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 log_colors_config = {
     'DEBUG': 'cyan',
     'INFO': 'green',
@@ -67,7 +73,7 @@ def get_logger(name) -> Logger:
         logger.addHandler(console_handler)
 
         fmt = logging.Formatter('%(asctime)s  %(levelname)-8s [%(funcName)34s] %(filename)-20s: %(message)s') 
-        file_handler = logging.FileHandler(log_path)
+        file_handler = logging.FileHandler(log_path, encoding='utf-8')
         file_handler.setFormatter(fmt)
         file_handler.setLevel(logging.DEBUG)
         logger.addHandler(file_handler)

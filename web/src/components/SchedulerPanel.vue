@@ -3,19 +3,19 @@
     <div class="part">
       <auto-status-panel></auto-status-panel>
     </div>
-    <!--  执行中任务  -->
+    <!--  Running Tasks  -->
     <div class="part">
       <running-task-panel v-bind:running-task="runningTask"></running-task-panel>
     </div>
-    <!--  等待队列  -->
+    <!--  Waiting Queue  -->
     <div class="part">
       <waiting-task-list v-bind:waiting-task-list="waitingTaskList"></waiting-task-list>
     </div>
-    <!--  定时队列  -->
+    <!--  Scheduled Queue  -->
     <!-- <div class="part">
       <cron-job-list v-bind:cron-job-list="cronJobList"></cron-job-list>
     </div> -->
-    <!--  历史队列  -->
+    <!--  History Queue  -->
     <div class="part">
       <history-task-list v-bind:history-task-list="historyTaskList"></history-task-list>
     </div>

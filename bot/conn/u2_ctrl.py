@@ -136,9 +136,17 @@ class U2AndroidController(AndroidController):
             threading.Thread(target=cmd.communicate, args=())
         return cmd
 
-    def start_app(self, name):
-        self.u2client.app_start(name)
-        log.debug("starting app <" + name + ">")
+    def start_app(self, package_name, activity_name=None):
+        if activity_name:
+            # Use direct ADB command to bypass uiautomator2 split APK issues
+            component = f"{package_name}/{activity_name}"
+            cmd = f"shell am start -n {component}"
+            self.execute_adb_shell(cmd, True)
+            log.debug("starting app using ADB: " + component)
+        else:
+            # Fallback to uiautomator2 method (may have split APK issues)
+            self.u2client.app_start(package_name)
+            log.debug("starting app <" + package_name + ">")
 
     # get_front_activity 获取前台正在运行的应用
     def get_front_activity(self):

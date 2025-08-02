@@ -1,16 +1,31 @@
-DATE_YEAR = ['初级', '经典级', '高级', '总决赛']
-DATE_MONTH = ['出道前', '1月上半月', '1月下半月', '2月上半月', '2月下半月', '3月上半月', '3月下半月', '4月上半月', '4月下半月',
-              '5月上半月', '5月下半月', '6月上半月', '6月下半月', '7月上半月', '7月下半月',
-              '8月上半月', '8月下半月', '9月上半月', '9月下半月', '10月上半月', '10月下半月', '11月上半月', '11月下半月', '12月上半月',
-              '12月下半月']
+DATE_YEAR = ['Junior', 'Classic', 'Senior', 'Finals']
+DATE_MONTH = ['Pre-Debut', 'Early Jan', 'Late Jan', 'Early Feb', 'Late Feb', 'Early Mar', 'Late Mar', 'Early Apr', 'Late Apr',
+              'Early May', 'Late May', 'Early Jun', 'Late Jun', 'Early Jul', 'Late Jul',
+              'Early Aug', 'Late Aug', 'Early Sep', 'Late Sep', 'Early Oct', 'Late Oct', 'Early Nov', 'Late Nov', 'Early Dec',
+              'Late Dec']
 
 SKILL_LEARN_PRIORITY_LIST = [
     [
-        '圆弧艺术家', '迅疾如风', '一阵狂风', '曲线行家'
+        # Priority 0 - SS Tier skills (Game8 highest impact, most versatile)
+        'Corner Acceleration ◯', 'Corner Adept ◯', 'Slipstream', 'Tail Held High', 
+        'Straightaway Spurt', 'Ramp Up', 'Inside Scoop', 'Passing Pro', 'Homestretch Haste',
+        'Fast-Paced', 'Outer Swell', 'Sprinting Gear', 'Slick Surge', 'Corner Recovery ◯',
+        'Hydrate', 'After-School Stroll', 'Clean Heart', 'Dominator', 'All-Seeing Eyes', 'Mystifying Murmur'
     ],
     [
-        '专注力', '回避失速优俊少女', '临机应变', '位置感', '直线能手', '竭尽全力', '优俊少女爱好者', '登山家', '打基础', '翘尾巴', '临危不乱', '加快步伐',
-        '最后冲刺', '弯道恢复'
+        # Priority 1 - S/A Tier skills (Game8 reliable, commonly useful)
+        'Acceleration', 'Focus', 'Go with the Flow', 'I Can See Right Through You', 
+        'Nimble Navigator', 'Straightaway Recovery', 'Deep Breaths', 'Preferred Position',
+        'Groundwork', 'Up-Tempo', 'Unyielding Spirit', 'Pressure', 'Strategist', 'Triple 7s',
+        'Shake It Out', 'Intimidate', 'Stamina Eater', 'Intense Gaze', 'Speed Star',
+        'Staggering Lead', 'Blinding Flash', 'Restless', 'Trackblazer', 'Meticulous Measures',
+        'Keeping the Lead', 'Leader\'s Pride', 'Wait-and-See', 'A Small Breather'
+    ],
+    [
+        # Priority 2 - B Tier skills (Game8 situational but viable)
+        'Levelheaded', 'Stop Right There!', 'Super Lucky Seven', 'Maverick ◯', 'Sympathy',
+        'Long Shot ◯', 'Inner Post Proficiency ◯', 'Outer Post Proficiency ◯', 'Right-Handed ◯',
+        'Left-Handed ◯', 'Firm Conditions ◯', 'Wet Conditions ◯', 'Standard Distance ◯', 
+        'Non-Standard Distance ◯', 'Competitive Spirit ◯', 'Target in Sight ◯', 'Lone Wolf'
     ]
-
 ]

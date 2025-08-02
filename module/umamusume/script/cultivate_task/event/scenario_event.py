@@ -6,7 +6,7 @@ from bot.recog.image_matcher import image_match
 import bot.base.log as logger
 log = logger.get_logger(__name__)
 
-# 第一年新年事件
+# First year New Year event
 def scenario_event_1(ctx: UmamusumeContext) -> int:
     if ctx.cultivate_detail.turn_info.turn_operation == TurnOperationType.TURN_OPERATION_TYPE_REST or \
             ctx.cultivate_detail.turn_info.turn_operation == TurnOperationType.TURN_OPERATION_TYPE_MEDIC and ctx.cultivate_detail.turn_info.remain_stamina >= 50 or \
@@ -16,7 +16,7 @@ def scenario_event_1(ctx: UmamusumeContext) -> int:
         return 2
 
 
-# 第二年新年事件
+# Second year New Year event
 def scenario_event_2(ctx: UmamusumeContext) -> int:
     if ctx.cultivate_detail.turn_info.turn_operation == TurnOperationType.TURN_OPERATION_TYPE_REST or \
             ctx.cultivate_detail.turn_info.turn_operation == TurnOperationType.TURN_OPERATION_TYPE_MEDIC and ctx.cultivate_detail.turn_info.remain_stamina >= 40 or \
@@ -25,7 +25,7 @@ def scenario_event_2(ctx: UmamusumeContext) -> int:
     else:
         return 1
     
-# 青春杯队伍名称选择事件
+# Youth Cup team name selection event
 def aoharuhai_team_name_event(ctx: UmamusumeContext) -> int:
     img = ctx.ctrl.get_screen(to_gray=True)
     event_selector_list = []
@@ -39,7 +39,7 @@ def aoharuhai_team_name_event(ctx: UmamusumeContext) -> int:
             break
 
     if ctx.task.detail.scenario_config.aoharu_config.aoharu_team_name_selection == 4:
-        log.debug("使用选项<胡萝卜>队")
+        log.debug("Using option <Carrot> team")
         return len(event_selector_list)
 
     event_selector_list.sort(key=lambda x: x.center_point[1])
@@ -47,8 +47,8 @@ def aoharuhai_team_name_event(ctx: UmamusumeContext) -> int:
         event = event_selector_list[i]
         event_img = img[event.matched_area[0][1]-20:event.matched_area[1][1]+20, 0:720]
         if image_match(event_img, REF_AOHARUHAI_TEAM_NAME[ctx.task.detail.scenario_config.aoharu_config.aoharu_team_name_selection]).find_match:
-            log.debug("匹配到设置的青春杯队伍名")
+            log.debug("Matched configured Youth Cup team name")
             return i + 1
 
-    log.debug("未匹配到设置的青春杯队伍名, 使用默认选项<胡萝卜>队")
+    log.debug("No match for configured Youth Cup team name, using default option <Carrot> team")
     return len(event_selector_list)

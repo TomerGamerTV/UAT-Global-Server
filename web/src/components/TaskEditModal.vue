@@ -6,46 +6,46 @@
         :class="{ 'dimmed': showAoharuConfigModal || showSupportCardSelectModal }"
       >
         <h5 class="modal-header">
-          新建任务
+          Create New Task
         </h5>
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <label for="selectTaskType">⭐ 任务选择</label>
+              <label for="selectTaskType">⭐ Task Selection</label>
               <select v-model="selectedUmamusumeTaskType" class="form-control" id="selectTaskType">
                 <option v-for="task in umamusumeTaskTypeList" :value="task">{{task.name}}</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="selectExecuteMode">⭐ 执行模式选择</label>
+              <label for="selectExecuteMode">⭐ Execution Mode</label>
               <select v-model="selectedExecuteMode" class="form-control" id="selectExecuteMode">
-                <option value=1>一次性</option>
+                <option value=1>One-time</option>
               </select>
             </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
-                  <label for="selectScenario">⭐ 剧本选择</label>
+                  <label for="selectScenario">⭐ Scenario Selection</label>
                   <select v-model="selectedScenario" class="form-control" id="selectScenario">
                     <option :value="1">URA</option>
-                    <option :value="2">青春杯</option>
+                    <option :value="2">Aoharu Cup</option>
                   </select>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="selectUmamusume">赛马娘选择</label>
+                  <label for="selectUmamusume">Uma Musume Selection</label>
                   <select disabled class="form-control" id="selectUmamusume">
-                    <option value=1>使用上次选择</option>
+                    <option value=1>Use Last Selection</option>
                   </select>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="selectAutoRecoverTP">TP不足时自动恢复（仅使用药水）</label>
+                  <label for="selectAutoRecoverTP">Auto-recover when TP is low (Carrots only)</label>
                   <select v-model="recoverTP" class="form-control" id="selectAutoRecoverTP">
-                    <option :value=true>是</option>
-                    <option :value=false>否</option>
+                    <option :value=true>Yes</option>
+                    <option :value=false>No</option>
                   </select>
                 </div>
               </div>
@@ -54,7 +54,7 @@
             <div class="row" v-if="selectedScenario === 1">
               <div class="col-4">
                 <div class="form-group">
-                  <span class="btn auto-btn ura-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openUraConfigModal">URA配置</span>
+                  <span class="btn auto-btn ura-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openUraConfigModal">URA Configuration</span>
                 </div>
               </div>
             </div>
@@ -62,7 +62,7 @@
             <div class="row" v-if="selectedScenario === 2">
               <div class="col-4">
                 <div class="form-group">
-                  <span class="btn auto-btn aoharu-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openAoharuConfigModal">青春杯配置</span>
+                  <span class="btn auto-btn aoharu-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openAoharuConfigModal">Aoharu Cup Configuration</span>
                 </div>
               </div>
             </div>
@@ -89,21 +89,21 @@
             <div class="row">
               <div class="col-8">
                 <div class="form-group">
-                  <label for="race-select">⭐ 使用预设</label>
+                  <label for="race-select">⭐ Use Preset</label>
                     <div class="form-inline">
                       <select v-model="presetsUse" style="text-overflow: ellipsis;width: 40em;"  class="form-control" id="use_presets">
                         <option v-for="set in cultivatePresets" :value="set">{{set.name}}</option>
                       </select>
-                      <span class="btn auto-btn ml-2" v-on:click="applyPresetRace">应用</span>
+                      <span class="btn auto-btn ml-2" v-on:click="applyPresetRace">Apply</span>
                     </div>
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="presetNameEditInput">保存为预设</label>
+                  <label for="presetNameEditInput">Save as Preset</label>
                   <div class="form-inline">
-                    <input v-model="presetNameEdit" type="text" class="form-control" id="presetNameEditInput" placeholder="预设名称">
-                    <span class="btn auto-btn ml-2" v-on:click="addPresets">保存</span>
+                    <input v-model="presetNameEdit" type="text" class="form-control" id="presetNameEditInput" placeholder="Preset Name">
+                    <span class="btn auto-btn ml-2" v-on:click="addPresets">Save</span>
                   </div>
                 </div>
               </div>
@@ -112,7 +112,7 @@
             <div class="row">
               <div class="col-5">
                 <div class="form-group">
-                  <label>⭐ 借用支援卡选择</label>
+                  <label>⭐ Friend Support Card Selection</label>
                   <div style="display: flex; align-items: center;">
                     <input
                       type="text"
@@ -121,73 +121,73 @@
                       readonly
                       id="selectedSupportCard"
                     >
-                    <span class="btn auto-btn ml-2" style="white-space:nowrap;" v-on:click="openSupportCardSelectModal">更改</span>
+                    <span class="btn auto-btn ml-2" style="white-space:nowrap;" v-on:click="openSupportCardSelectModal">Change</span>
                   </div>
                 </div>
               </div>
               <div class="col-2">
                 <div class="form-group">
-                  <label for="selectSupportCardLevel">支援卡等级(≥)</label>
+                  <label for="selectSupportCardLevel">Support Card Level (≥)</label>
                   <input v-model="supportCardLevel" type="number" class="form-control" id="selectSupportCardLevel" placeholder="">
                 </div>
               </div>
               <div class="col-3">
                 <div class="form-group">
-                  <label for="inputClockUseLimit">使用闹钟数量限制</label>
+                  <label for="inputClockUseLimit">Clock Usage Limit</label>
                   <input v-model="clockUseLimit" type="number" class="form-control" id="inputClockUseLimit" placeholder="">
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <div>⭐ 目标属性 （如果不知道具体填多少, 可以自己手动打一盘把最终数值填入）</div>
+              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)</div>
             </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
-                    <label for="speed-value-input">速度</label>
+                    <label for="speed-value-input">Speed</label>
                     <input type="number" v-model="expectSpeedValue" class="form-control" id="speed-value-input">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="stamina-value-input">耐力</label>
+                  <label for="stamina-value-input">Stamina</label>
                   <input type="number" v-model="expectStaminaValue" class="form-control" id="stamina-value-input">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="power-value-input">力量</label>
+                  <label for="power-value-input">Power</label>
                   <input type="number" v-model="expectPowerValue" class="form-control" id="power-value-input">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="will-value-input">毅力</label>
+                  <label for="will-value-input">Guts</label>
                   <input type="number" v-model="expectWillValue" class="form-control" id="will-value-input">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="intelligence-value-input">智力</label>
+                  <label for="intelligence-value-input">Wisdom</label>
                   <input type="number" v-model="expectIntelligenceValue" class="form-control" id="intelligence-value-input">
                 </div>
               </div>
             </div>
             <div>
               <div class="form-group">
-              <span v-if="!showAdvanceOption" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchAdvanceOption">展开高级选项</span>
-              <span v-if="showAdvanceOption" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchAdvanceOption">收起高级选项</span>
+              <span v-if="!showAdvanceOption" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchAdvanceOption">Show Advanced Options</span>
+              <span v-if="showAdvanceOption" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchAdvanceOption">Hide Advanced Options</span>
               </div>
             </div>
             <div v-if ="showAdvanceOption">
               <div class="form-group">
-                <div>⭐ 额外权重</div>
+                <div>⭐ Extra Weight</div>
               </div>
-              <p>调整ai对训练的倾向, 不影响最终目标属性, 一般用于提前完成某一种训练的目标属性, 可设置权重范围 [-1.0 ~ 1.0], 0即为不使用额外权重;</p>
-              <p>❗ 将权重设置成-1, 则会跳过该训练</p>
-              <p>❗ 同一年内, 权重不能全部为-1</p>
-              <p>支援卡或种马强度低时, 建议增加在一个属性权重的同时减少其他属性同样数值的权重</p>
-              <div style="margin-bottom: 10px;">第一年</div>
+              <p>Adjusts AI training preferences without affecting final target attributes. Generally used to prioritize certain training types. Weight range [-1.0 ~ 1.0], 0 means no extra weight applied.</p>
+              <p>❗ Setting weight to -1 will skip that training</p>
+              <p>❗ Within the same year, all weights cannot be -1</p>
+              <p>When support cards or breeding stallion are weak, recommend increasing one attribute weight while decreasing others by the same amount</p>
+              <div style="margin-bottom: 10px;">Year 1</div>
               <div class="row">
                 <div v-for="v,i in extraWeight1" class="col">
                   <div class="form-group">
@@ -199,7 +199,7 @@
                   </div>
                 </div>
               </div>
-              <div style="margin-bottom: 10px;">第二年</div>
+              <div style="margin-bottom: 10px;">Year 2</div>
               <div class="row">
                 <div v-for="v,i in extraWeight2" class="col">
                   <div class="form-group">
@@ -211,7 +211,7 @@
                   </div>
                 </div>
               </div>
-              <div style="margin-bottom: 10px;">第三年</div>
+              <div style="margin-bottom: 10px;">Year 3</div>
               <div class="row">
                 <div v-for="v,i in extraWeight3" class="col">
                   <div class="form-group">
@@ -226,39 +226,39 @@
             </div>
 
             <div class="form-group">
-              <div>⭐ 跑法选择</div>
+              <div>⭐ Racing Style Selection</div>
             </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
-                  <label for="selectTactic1">第一年</label>
+                  <label for="selectTactic1">Year 1</label>
                   <select v-model="selectedRaceTactic1" class="form-control" id="selectTactic1">
-                    <option :value=1>后追（追）</option>
-                    <option :value=2>居中（差）</option>
-                    <option :value=3>前列（先）</option>
-                    <option :value=4>领头（逃）</option>
+                    <option :value=1>Stalker</option>
+                    <option :value=2>Midfield</option>
+                    <option :value=3>Front-runner</option>
+                    <option :value=4>Pacesetter</option>
                   </select>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="selectTactic2">第二年</label>
+                  <label for="selectTactic2">Year 2</label>
                   <select v-model="selectedRaceTactic2" class="form-control" id="selectTactic2">
-                    <option :value=1>后追（追）</option>
-                    <option :value=2>居中（差）</option>
-                    <option :value=3>前列（先）</option>
-                    <option :value=4>领头（逃）</option>
+                    <option :value=1>Stalker</option>
+                    <option :value=2>Midfield</option>
+                    <option :value=3>Front-runner</option>
+                    <option :value=4>Pacesetter</option>
                   </select>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="selectTactic3">第三年</label>
+                  <label for="selectTactic3">Year 3</label>
                   <select v-model="selectedRaceTactic3" class="form-control" id="selectTactic3">
-                    <option :value=1>后追（追）</option>
-                    <option :value=2>居中（差）</option>
-                    <option :value=3>前列（先）</option>
-                    <option :value=4>领头（逃）</option>
+                    <option :value=1>Stalker</option>
+                    <option :value=2>Midfield</option>
+                    <option :value=3>Front-runner</option>
+                    <option :value=4>Pacesetter</option>
                   </select>
                 </div>
               </div>
@@ -267,18 +267,18 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group">
-                    <label for="race-select">⭐ 额外赛程选择</label>
+                    <label for="race-select">⭐ Additional Race Schedule</label>
                     <textarea type="text" disabled v-model="extraRace" class="form-control" id="race-select"></textarea>
                   </div>
                 </div>
               </div>
               <div class="form-group">
-              <span v-if="!showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">展开赛程选项</span>
-              <span v-if="showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">收起赛程选项</span>
+              <span v-if="!showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">Show Race Options</span>
+              <span v-if="showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">Hide Race Options</span>
               </div>
               <div class="row" v-if="showRaceList"> 
                 <div class="col">
-                  <div>第一年</div>
+                  <div>Year 1</div>
                   <br/>
                   <div class="form-check">
                     <div v-for="race in umamusumeRaceList_1">
@@ -290,7 +290,7 @@
                   </div>
                 </div>
                 <div class="col">
-                  <div>第二年</div>
+                  <div>Year 2</div>
                   <br/>
                   <div class="form-check">
                     <div v-for="race in umamusumeRaceList_2">
@@ -302,7 +302,7 @@
                   </div>
                 </div>
                 <div class="col">
-                  <div>第三年</div>
+                  <div>Year 3</div>
                   <br/>
                   <div class="form-check">
                     <div v-for="race in umamusumeRaceList_3">
@@ -319,29 +319,29 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group">
-                    <label for="skill-learn">⭐ 技能学习</label>
+                    <label for="skill-learn">⭐ Skill Learning</label>
                   </div>
                 </div>
               </div>
             </div>
             <div v-for="(item,index) in skillLearnPriorityList" :key="item.priority">
               <div class="form-group row">
-                <label class="col-sm-3" for="'skill-learn-' + item.id">❗ 学习优先级 {{ item.priority+1 }}</label>
+                <label class="col-sm-3" for="'skill-learn-' + item.id">❗ Learning Priority {{ item.priority+1 }}</label>
                 <div class="col-sm-6">
-                  <textarea type="text"  v-model="item.skills" class="form-control" id="skill-learn-priority" placeholder="技能1名称,技能2名称,....(使用英文逗号)"></textarea>
+                  <textarea type="text"  v-model="item.skills" class="form-control" id="skill-learn-priority" placeholder="Corner Acceleration ◯, Slipstream, Hydrate, Speed Star, ... (use commas)"></textarea>
                 </div>
                 <div class="col-sm-3">
-                  <span class="red-button auto-btn ml-2" v-on:click="deleteBox(item,index)">删除当前优先级</span>
+                  <span class="red-button auto-btn ml-2" v-on:click="deleteBox(item,index)">Delete Current Priority</span>
                 </div>
               </div>
             </div>
-            <span class="btn auto-btn ml-2" v-on:click="addBox(item)">新增优先级</span>
+            <span class="btn auto-btn ml-2" v-on:click="addBox(item)">Add Priority</span>
             <div class="form-group mb-0">
               <div class="row">
                 <div class="col">
                   <div class="form-group">
                     <br>
-                    <label for="skill-learn-default">✅ (其余未列出技能均在此优先级)</label>
+                    <label for="skill-learn-default">✅ (All other unlisted skills fall under this priority)</label>
                   </div>
                 </div>
               </div>
@@ -351,8 +351,8 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group">
-                    <label for="skill-learn-blacklist">⛔ 黑名单(任何情况下都不学习这些技能)</label>
-                    <textarea type="text"  v-model="skillLearnBlacklist" class="form-control" id="skill-learn-blacklist" placeholder="钢铁意志,迅疾如风,...(真不会有人点这些吧)"></textarea>
+                    <label for="skill-learn-blacklist">⛔ Blacklist (Never learn these skills under any circumstances)</label>
+                    <textarea type="text"  v-model="skillLearnBlacklist" class="form-control" id="skill-learn-blacklist" placeholder="Inner Post Proficiency ◯, Outer Post Proficiency ◯, Wet Conditions ◯, ... (skills to avoid)"></textarea>
                   </div>
                 </div>
               </div>
@@ -363,25 +363,25 @@
               <div class="row">
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="learnSkillOnlyUserProvidedSelector">育成中仅允许学习上面的技能</label>
+                    <label for="learnSkillOnlyUserProvidedSelector">Only learn skills listed above during training</label>
                     <select v-model="learnSkillOnlyUserProvided" class="form-control" id="learnSkillOnlyUserProvidedSelector">
-                      <option :value=true>是</option>
-                      <option :value=false>否</option>
+                      <option :value=true>Yes</option>
+                      <option :value=false>No</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="learnSkillBeforeRaceSelector">在参赛前学习技能</label>
+                    <label for="learnSkillBeforeRaceSelector">Learn skills before races</label>
                     <select disabled v-model="learnSkillBeforeRace" class="form-control" id="learnSkillBeforeRace">
-                      <option :value=true>是</option>
-                      <option :value=false>否</option>
+                      <option :value=true>Yes</option>
+                      <option :value=false>No</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="inputSkillLearnThresholdLimit">育成中pt超过此值后学习技能</label>
+                    <label for="inputSkillLearnThresholdLimit">Learn skills when skill points exceed this value</label>
                     <input v-model="learnSkillThreshold" type="number" class="form-control" id="inputSkillLearnThresholdLimit" placeholder="">
                   </div>
                 </div>
@@ -390,10 +390,10 @@
           </form>
           <!-- <div class="part">
             <br>
-            <h6>定时设置</h6>
+                            <h6>Scheduled Settings</h6>
             <hr />
             <div class="row">
-              <label for="cronInput" class="col-2 col-form-label">cron表达式</label>
+              <label for="cronInput" class="col-2 col-form-label">Cron Expression</label>
               <div class="col-10">
                 <input v-model="cron"  class="form-control" id="cronInput">
               </div>
@@ -401,25 +401,25 @@
           </div> -->
         </div>
         <div class="modal-footer">
-          <span class="btn cancel-btn" v-on:click="cancelTask">取消</span>
-          <span class="btn auto-btn" v-on:click="addTask">确定</span>
+          <span class="btn cancel-btn" v-on:click="cancelTask">Cancel</span>
+          <span class="btn auto-btn" v-on:click="addTask">Confirm</span>
         </div>
       </div>
-      <!-- 青春杯配置弹窗 -->
+              <!-- Aoharu Cup Configuration Modal -->
       <AoharuConfigModal
         v-model:show="showAoharuConfigModal"
         :preliminaryRoundSelections="preliminaryRoundSelections"
         :aoharuTeamNameSelection="aoharuTeamNameSelection"
         @confirm="handleAoharuConfigConfirm"
       ></AoharuConfigModal>
-      <!-- URA配置弹窗 -->
+      <!-- URA Configuration Modal -->
       <UraConfigModal
         v-model:show="showUraConfigModal"
         :skillEventWeight="skillEventWeight"
         :resetSkillEventWeightList="resetSkillEventWeightList"
         @confirm="handleUraConfigConfirm"
       ></UraConfigModal>
-      <!-- 支援卡选择弹窗 -->
+      <!-- Support Card Selection Modal -->
       <SupportCardSelectModal
         v-model:show="showSupportCardSelectModal"
         @cancel="closeSupportCardSelectModal"
@@ -431,7 +431,7 @@
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body">
-            ✔ 预设保存成功
+            ✔ Preset saved successfully
           </div>
         </div>
       </div>
@@ -439,7 +439,7 @@
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body" style="color: #856404;">
-            ⚠️ <b>同一年权重不能全部为-1</b>
+            ⚠️ <b>All weights in the same year cannot be -1</b>
           </div>
         </div>
       </div>
@@ -474,7 +474,7 @@ export default {
       umamusumeTaskTypeList:[
         {
           id: 1,
-          name: "育成",
+          name: "Training",
         }
       ],
       umamusumeList:[
@@ -505,197 +505,180 @@ export default {
         {id:25, name:'优秀素质'},
         {id:26, name:'帝王光环'},
       ],
-      umamusumeRaceList_1:[
-        {id:1401, name:'函馆初级锦标赛',date: '7月后', type: 'GIII'},
-        {id:1601, name:'新潟初级锦标赛',date: '8月后', type: 'GIII'},
-        {id:1701, name:'札幌初级锦标赛',date: '9月前', type: 'GIII'},
-        {id:1702, name:'小仓初级锦标赛',date: '9月前', type: 'GIII'},
-        {id:1902, name:'沙漠皇家杯',date: '10月前', type: 'GIII'},
-        {id:2002, name:'阿耳忒弥斯锦标赛',date: '10月后', type: 'GIII'},
-        {id:2102, name:'京王杯初级锦标赛',date: '11月前', type: 'GII'},
-        {id:2103, name:'每日杯初级锦标赛',date: '11月前', type: 'GII'},
-        {id:2104, name:'幻想锦标赛',date: '11月前', type: 'GIII'},
-        {id:2202, name:'东京体育馆初级锦标赛',date: '11月后', type: 'GIII'},
-        {id:2203, name:'京都初级锦标赛',date: '11月后', type: 'GIII'},
-        {id:2302, name:'阪神初级少女杯赛', date: '12月前', type: 'GI'},
-        {id:2303, name:'朝日杯未来锦标赛', date: '12月前', type: 'GI'},
-        {id:2401, name:'希望锦标赛', date: '12月后', type: 'GI'},
-      ],
+              umamusumeRaceList_1:[
+         {id:2004, name:'Hakodate Junior Stakes',date: 'Junior Year Late Jul', type: 'GIII'},
+         {id:2009, name:'Niigata Junior Stakes',date: 'Junior Year Late Aug', type: 'GIII'},
+         {id:2011, name:'Kokura Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII'},
+         {id:2013, name:'Sapporo Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII'},
+         {id:2022, name:'Saudi Arabia Royal Cup',date: 'Junior Year Early Oct', type: 'GIII'},
+         {id:2024, name:'Artemis Stakes',date: 'Junior Year Late Oct', type: 'GIII'},
+         {id:2028, name:'Daily Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII'},
+         {id:2032, name:'Keio Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII'},
+         {id:2029, name:'Fantasy Stakes',date: 'Junior Year Early Nov', type: 'GIII'},
+         {id:2045, name:'Tokyo Sports Hai Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII'},
+         {id:2041, name:'Kyoto Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII'},
+         {id:2048, name:'Hanshin Juvenile Fillies', date: 'Junior Year Early Dec', type: 'GI'},
+         {id:2046, name:'Asahi Hai Futurity Stakes', date: 'Junior Year Early Dec', type: 'GI'},
+         {id:2052, name:'Hopeful Stakes', date: 'Junior Year Late Dec', type: 'GI'},
+        ],
       umamusumeRaceList_2:[
-        {id:2501, name:'新山纪念', date: '1月前', type: 'GIII'},
-        {id:2502, name:'精灵锦标赛', date: '1月前', type: 'GIII'},
-        {id:2503, name:'京成杯', date: '1月前', type: 'GIII'},
-        {id:2701, name:'如月奖', date: '2月前', type: 'GIII'},
-        {id:2702, name:'女王杯', date: '2月前', type: 'GIII'},
-        {id:2703, name:'共同通信杯', date: '2月前', type: 'GIII'},
-        {id:2903, name:'弥生奖', date: '3月前', type: 'GII'},
-        {id:2904, name:'少女竞技赛', date: '3月前', type: 'GII'},
-        {id:2905, name:'郁金香奖', date: '3月前', type: 'GII'},
-        {id:3001, name:'百花杯', date: '3月后', type: 'GIII'},
-        {id:3003, name:'春季锦标赛', date: '3月后', type: 'GII'},
-        {id:3004, name:'游隼锦标赛', date: '3月后', type: 'GIII'},
-        {id:3005, name:'每日杯', date: '3月后', type: 'GIII'},
-        {id:3103, name:'樱花奖', date: '4月前', type: 'GI'},
-        {id:3104, name:'皐月奖', date: '4月前', type: 'GI'},
-        {id:3105, name:'无翼鸟杯', date: '4月前', type: 'GII'},
-        {id:3106, name:'阿灵顿杯', date: '4月前', type: 'GIII'},
-        {id:3204, name:'芙洛拉锦标赛', date: '4月后', type: 'GII'},
-        {id:3205, name:'青叶奖', date: '4月后', type: 'GII'},
-        {id:3303, name:'广播协会英里杯', date: '5月前', type: 'GI'},
-        {id:3304, name:'京都新闻杯', date: '5月前', type: 'GII'},
-        {id:3403, name:'奥克斯', date: '5月后', type: 'GI'},
-        {id:3404, name:'全国德比 东京优骏', date: '5月后', type: 'GI'},
-        {id:3405, name:'葵锦标赛', date: '5月后', type: 'GIII'},
-        {id:3504, name:'东京英里赛', date: '6月前', type: 'GI'},
-        {id:3506, name:'叶森杯', date: '6月前', type: 'GIII'},
-        {id:3505, name:'鸣尾纪念', date: '6月前', type: 'GIII'},
-        {id:3501, name:'人鱼锦标赛', date: '6月前', type: 'GIII'},
-        {id:3608, name:'函馆短途锦标赛', date: '6月后', type: 'GIII'},
-        {id:3601, name:'独角兽锦标赛', date: '6月后', type: 'GIII'},
-        {id:3607, name:'宝冢纪念', date: '6月后', type: 'GI'},
-        {id:3701, name:'南河三锦标赛', date: '7月前', type: 'GIII'},
-        {id:3708, name:'函馆纪念', date: '7月前', type: 'GIII'},
-        {id:3706, name:'中部广播奖', date: '7月前', type: 'GIII'},
-        {id:3707, name:'七夕奖', date: '7月前', type: 'GIII'},
-        {id:3709, name:'日经广播奖', date: '7月前', type: 'GIII'},
-        {id:3705, name:'全国泥地德比', date: '7月前', type: 'GI'},
-        {id:3801, name:'皇后锦标赛', date: '7月后', type: 'GIII'},
-        {id:3803, name:'中京纪念', date: '7月后', type: 'GIII'},
-        {id:3804, name:'朱鹭夏季冲刺赛', date: '7月后', type: 'GIII'},
-        {id:3901, name:'榆木锦标赛', date: '8月前', type: 'GIII'},
-        {id:3906, name:'小仓纪念', date: '8月前', type: 'GIII'},
-        {id:3907, name:'关屋纪念', date: '8月前', type: 'GIII'},
-        {id:3908, name:'猎豹锦标赛', date: '8月前', type: 'GIII'},
-        {id:4005, name:'札幌纪念', date: '8月后', type: 'GII'},
-        {id:4006, name:'北九州纪念', date: '8月后', type: 'GIII'},
-        {id:4007, name:'科尼杯', date: '8月后', type: 'GIII'},
-        {id:4101, name:'人马锦标赛', date: '9月前', type: 'GII'},
-        {id:4102, name:'玫瑰锦标赛', date: '9月前', type: 'GII'},
-        {id:4103, name:'新潟記念', date: '9月前', type: 'GIII'},
-        {id:4104, name:'京成杯秋季让磅赛', date: '9月前', type: 'GIII'},
-        {id:4105, name:'紫苑锦标赛', date: '9月前', type: 'GIII'},
-        {id:4201, name:'短途者锦标赛', date: '9月后', type: 'GI'},
-        {id:4202, name:'神户新闻杯', date: '9月后', type: 'GII'},
-        {id:4203, name:'全国邀请赛', date: '9月后', type: 'GII'},
-        {id:4204, name:'圣光纪念', date: '9月后', type: 'GII'},
-        {id:4205, name:'天狼星锦标赛', date: '9月后', type: 'GIII'},
-        {id:4301, name:'每日王冠', date: '10月前', type: 'GII'},
-        {id:4302, name:'京都大奖赛', date: '10月前', type: 'GII'},
-        {id:4303, name:'府中优俊少女锦标赛', date: '10月前', type: 'GIII'},
-        {id:4401, name:'天鹅锦标赛', date: '10月后', type: 'GII'},
-        {id:4402, name:'富士锦标赛', date: '10月后', type: 'GII'},
-        {id:4407, name:'天王奖(秋)', date: '10月后', type: 'GI'},
-        {id:4408, name:'秋华奖', date: '10月后', type: 'GI'},
-        {id:4409, name:'菊花奖', date: '10月后', type: 'GI'},
-        {id:4501, name:'白银杯', date: '11月前', type: 'GII'},
-        {id:4502, name:'都城锦标赛', date: '11月前', type: 'GIII'},
-        {id:4503, name:'武藏野锦标赛', date: '11月前', type: 'GIII'},
-        {id:4504, name:'松浪纪念', date: '11月前', type: 'GIII'},
-        {id:4506, name:'伊丽莎白女王杯', date: '11月前', type: 'GI'},
-        {id:4507, name:'全国育成杯 女士经典赛', date: '11月前', type: 'GI'},
-        {id:4508, name:'全国育成杯 短途赛', date: '11月前', type: 'GI'},
-        {id:4509, name:'全国育成杯 经典赛', date: '11月前', type: 'GI'},
-        {id:4601, name:'京阪杯', date: '11月后', type: 'GIII'},
-        {id:4607, name:'英里冠军赛', date: '11月后', type: 'GI'},
-        {id:4608, name:'全国杯', date: '11月后', type: 'GI'},
-        {id:4701, name:'长途锦标赛', date: '12月前', type: 'GII'},
-        {id:4702, name:'挑战杯', date: '12月前', type: 'GIII'},
-        {id:4703, name:'中日新闻杯', date: '12月前', type: 'GIII'},
-		    {id:4704, name:'五车二锦标赛', date: '12月前', type: 'GIII'},
-        {id:4705, name:'绿松石锦标赛', date: '12月前', type: 'GIII'},
-        {id:4711, name:'全国冠军杯', date: '12月前', type: 'GI'},
-		    {id:4801, name:'阪神杯', date: '12月后', type: 'GII'},
-        {id:4804, name:'中山大奖赛', date: '12月后', type: 'GI'},
-        {id:4805, name:'东京大奖赛', date: '12月后', type: 'GI'},
+         {id:2058, name:'Fairy Stakes',date: 'Classic Year Early Jan', type: 'GIII'},
+         {id:2060, name:'Keisei Hai',date: 'Classic Year Early Jan', type: 'GIII'},
+         {id:2062, name:'Shinzan Kinen',date: 'Classic Year Early Jan', type: 'GIII'},
+         {id:2066, name:'Kisaragi Sho',date: 'Classic Year Early Feb', type: 'GIII'},
+         {id:2067, name:'Kyodo News Hai',date: 'Classic Year Early Feb', type: 'GIII'},
+         {id:2068, name:'Queen Cup',date: 'Classic Year Early Feb', type: 'GIII'},
+         {id:2073, name:'Fillies\' Revue',date: 'Classic Year Early Mar', type: 'GII'},
+         {id:2075, name:'Tulip Sho',date: 'Classic Year Early Mar', type: 'GII'},
+         {id:2076, name:'Yayoi Sho',date: 'Classic Year Early Mar', type: 'GII'},
+         {id:2078, name:'Flower Cup',date: 'Classic Year Late Mar', type: 'GIII'},
+         {id:2079, name:'Spring Stakes',date: 'Classic Year Late Mar', type: 'GII'},
+         {id:2077, name:'Falcon Stakes',date: 'Classic Year Late Mar', type: 'GIII'},
+         {id:2081, name:'Mainichi Hai',date: 'Classic Year Late Mar', type: 'GIII'},
+         {id:2085, name:'Oka Sho',date: 'Classic Year Early Apr', type: 'GI'},
+         {id:2086, name:'Satsuki Sho',date: 'Classic Year Early Apr', type: 'GI'},
+         {id:2084, name:'New Zealand Trophy',date: 'Classic Year Early Apr', type: 'GII'},
+         {id:2082, name:'Arlington Cup',date: 'Classic Year Early Apr', type: 'GIII'},
+         {id:2089, name:'Flora Stakes',date: 'Classic Year Late Apr', type: 'GII'},
+         {id:2088, name:'Aoba Sho',date: 'Classic Year Late Apr', type: 'GII'},
+         {id:2094, name:'NHK Mile Cup',date: 'Classic Year Early May', type: 'GI'},
+         {id:2093, name:'Kyoto Shimbun Hai',date: 'Classic Year Early May', type: 'GII'},
+         {id:2099, name:'Japanese Oaks',date: 'Classic Year Late May', type: 'GI'},
+         {id:2101, name:'Tokyo Yushun (Japanese Derby)',date: 'Classic Year Late May', type: 'GI'},
+         {id:2097, name:'Aoi Stakes',date: 'Classic Year Late May', type: 'GIII'},
+         {id:2107, name:'Yasuda Kinen',date: 'Classic Year Early Jun', type: 'GI'},
+         {id:2104, name:'Naruo Kinen',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2103, name:'Mermaid Stakes',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2102, name:'Epsom Cup',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2109, name:'Hakodate Sprint Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
+         {id:2114, name:'Unicorn Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
+         {id:2113, name:'Takarazuka Kinen',date: 'Classic Year Late Jun', type: 'GI'},
+         {id:2116, name:'CBC Sho',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2117, name:'Hakodate Kinen',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2118, name:'Japan Dirt Derby',date: 'Classic Year Early Jul', type: 'GI'},
+         {id:2121, name:'Procyon Stakes',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2122, name:'Radio Nikkei Sho',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2123, name:'Tanabata Sho',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2125, name:'Chukyo Kinen',date: 'Classic Year Late Jul', type: 'GIII'},
+         {id:2127, name:'Ibis Summer Dash',date: 'Classic Year Late Jul', type: 'GIII'},
+         {id:2128, name:'Queen Stakes',date: 'Classic Year Late Jul', type: 'GIII'},
+         {id:2130, name:'Elm Stakes',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2132, name:'Kokura Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2135, name:'Sekiya Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2142, name:'Sapporo Kinen',date: 'Classic Year Late Aug', type: 'GII'},
+         {id:2138, name:'Keeneland Cup',date: 'Classic Year Late Aug', type: 'GIII'},
+         {id:2139, name:'Kitakyushu Kinen',date: 'Classic Year Late Aug', type: 'GIII'},
+         {id:2144, name:'Centaur Stakes',date: 'Classic Year Early Sep', type: 'GII'},
+         {id:2150, name:'Rose Stakes',date: 'Classic Year Early Sep', type: 'GII'},
+         {id:2147, name:'Niigata Kinen',date: 'Classic Year Early Sep', type: 'GIII'},
+         {id:2146, name:'Keisei Hai Autumn Handicap',date: 'Classic Year Early Sep', type: 'GIII'},
+         {id:2151, name:'Shion Stakes',date: 'Classic Year Early Sep', type: 'GIII'},
+         {id:2153, name:'All Comers',date: 'Classic Year Late Sep', type: 'GII'},
+         {id:2154, name:'Kobe Shimbun Hai',date: 'Classic Year Late Sep', type: 'GII'},
+         {id:2157, name:'Sirius Stakes',date: 'Classic Year Late Sep', type: 'GIII'},
+         {id:2163, name:'Mainichi Okan',date: 'Classic Year Early Oct', type: 'GII'},
+         {id:2164, name:'Kyoto Daishoten',date: 'Classic Year Early Oct', type: 'GII'},
+         {id:2168, name:'Swan Stakes',date: 'Classic Year Late Oct', type: 'GII'},
+         {id:2169, name:'Fuji Stakes',date: 'Classic Year Late Oct', type: 'GII'},
+         {id:2172, name:'Tenno Sho (Autumn)',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2173, name:'Shuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2174, name:'Kikuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2176, name:'Argentina Kyowa Hai',date: 'Classic Year Early Nov', type: 'GII'},
+         {id:2181, name:'Elizabeth Queen Cup',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2182, name:'Japan Breeders\' Cup Classic',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2183, name:'Japan Breeders\' Cup Sprint',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2184, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2185, name:'Keihan Hai',date: 'Classic Year Late Nov', type: 'GIII'},
+         {id:2188, name:'Mile Championship',date: 'Classic Year Late Nov', type: 'GI'},
+         {id:2189, name:'Japan Cup',date: 'Classic Year Late Nov', type: 'GI'},
+         {id:2191, name:'Stayers Stakes',date: 'Classic Year Early Dec', type: 'GII'},
+         {id:2194, name:'Capella Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
+         {id:2195, name:'Turquoise Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
+         {id:2196, name:'Champions Cup',date: 'Classic Year Early Dec', type: 'GI'},
+         {id:2197, name:'Hanshin Cup',date: 'Classic Year Late Dec', type: 'GII'},
+         {id:2201, name:'Nakayama Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
+         {id:2203, name:'Tokyo Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
       ],
       umamusumeRaceList_3:[
-        {id:4901, name:'日经新春杯', date: '1月前', type: 'GII'},
-        {id:4902, name:'京都金杯', date: '1月前', type: 'GIII'},
-        {id:4903, name:'中山金杯', date: '1月前', type: 'GIII'},
-        {id:4904, name:'爱知杯', date: '1月前', type: 'GIII'},
-        {id:5001, name:'东海锦标赛', date: '1月后', type: 'GII'},
-        {id:5002, name:'合众国交流杯', date: '1月后', type: 'GII'},
-        {id:5003, name:'丝绸之路锦标赛', date: '1月后', type: 'GIII'},
-        {id:5004, name:'根岸锦标赛', date: '1月后', type: 'GIII'},
-        {id:5101, name:'京都纪念', date: '2月前', type: 'GII'},
-        {id:5102, name:'东京新闻杯', date: '2月前', type: 'GIII'},
-        {id:5201, name:'中山纪念', date: '2月后', type: 'GII'},
-        {id:5202, name:'京都优骏少女锦标赛', date: '2月后', type: 'GIII'},
-        {id:5203, name:'钻石锦标赛', date: '2月后', type: 'GIII'},
-        {id:5204, name:'小仓大奖赛', date: '2月后', type: 'GIII'},
-		    {id:5205, name:'阪急杯', date: '2月后', type: 'GIII'},
-        {id:5208, name:'二月锦标赛', date: '2月后', type: 'GI'},
-        {id:5301, name:'金鯱賞', date: '3月前', type: 'GII'},
-        {id:5302, name:'海洋锦标赛', date: '3月前', type: 'GIII'},
-        {id:5303, name:'中山优俊少女锦标赛', date: '3月前', type: 'GIII'},
-		    {id:5401, name:'阪神大奖赛', date: '3月后', type: 'GII'},
-		    {id:5402, name:'日经奖', date: '3月后', type: 'GII'},
-        {id:5403, name:'三月锦标赛', date: '3月后', type: 'GIII'},
-        {id:5406, name:'中京短途赛', date: '3月后', type: 'GI'},
-        {id:5407, name:'大阪杯', date: '3月后', type: 'GI'},
-        {id:5501, name:'阪神优俊少女锦标赛', date: '4月前', type: 'GII'},
-		    {id:5502, name:'德比伯爵挑战赛', date: '4月前', type: 'GIII'},
-        {id:5503, name:'心宿二锦标赛', date: '4月前', type: 'GIII'},
-        {id:5601, name:'英里杯', date: '4月后', type: 'GII'},
-		    {id:5602, name:'松浪优俊少女锦标赛', date: '4月后', type: 'GIII'},
-        {id:5605, name:'天王奖(春)', date: '4月后', type: 'GI'},
-        {id:5701, name:'京王杯春季杯', date: '5月前', type: 'GII'},
-        {id:5702, name:'新潟大奖赛', date: '5月前', type: 'GIII'},
-        {id:5709, name:'维多利亚英里杯', date: '5月前', type: 'GI'},
-        {id:5801, name:'目黑記念', date: '5月后', type: 'GII'},
-        {id:5802, name:'平安锦标赛', date: '5月后', type: 'GIII'},
-		    {id:5901, name:'人鱼锦标赛', date: '6月前', type: 'GIII'},
-        {id:5904, name:'东京英里赛', date: '6月前', type: 'GI'},
-        {id:5905, name:'鸣尾纪念', date: '6月前', type: 'GIII'},
-		    {id:5906, name:'叶森杯', date: '6月前', type: 'GIII'},
-        {id:6006, name:'宝冢纪念', date: '6月后', type: 'GI'},
-        {id:6007, name:'函館短途锦标赛', date: '6月后', type: 'GIII'},
-        {id:6008, name:'帝王奖', date: '6月后', type: 'GI'},
-        {id:6101, name:'南河三锦标赛', date: '7月前', type: 'GIII'},
-        {id:6105, name:'中部广播奖', date: '7月前', type: 'GIII'},
-        {id:6106, name:'七夕奖', date: '7月前', type: 'GIII'},
-        {id:6107, name:'函馆纪念', date: '7月前', type: 'GIII'},
-        {id:6201, name:'皇后锦标赛', date: '7月后', type: 'GIII'},
-        {id:6203, name:'中京纪念', date: '7月后', type: 'GIII'},
-        {id:6204, name:'朱鹭夏季冲刺赛', date: '7月后', type: 'GIII'},
-        {id:6301, name:'榆木锦标赛', date: '8月前', type: 'GIII'},
-        {id:6306, name:'小仓纪念', date: '8月前', type: 'GIII'},
-        {id:6307, name:'关屋纪念', date: '8月前', type: 'GIII'},
-        {id:6405, name:'札幌纪念', date: '8月后', type: 'GII'},
-        {id:6406, name:'北九州纪念', date: '8月后', type: 'GIII'},
-        {id:6407, name:'科尼杯', date: '8月后', type: 'GIII'},
-        {id:6501, name:'人马锦标赛', date: '9月前', type: 'GII'},
-        {id:6502, name:'新潟記念', date: '9月前', type: 'GIII'},
-        {id:6503, name:'京成杯秋季让磅赛', date: '9月前', type: 'GIII'},
-        {id:6603, name:'天狼星锦标赛', date: '9月后', type: 'GIII'},
-        {id:6602, name:'全国邀请赛', date: '9月后', type: 'GII'},
-        {id:6601, name:'短途者锦标赛', date: '9月后', type: 'GI'},
-        {id:6701, name:'每日王冠', date: '10月前', type: 'GII'},
-        {id:6702, name:'京都大奖赛', date: '10月前', type: 'GII'},
-		    {id:6703, name:'府中优俊少女锦标赛', date: '10月前', type: 'GII'},
-        {id:6801, name:'天鹅锦标赛', date: '10月后', type: 'GII'},
-        {id:6802, name:'富士锦标赛', date: '10月后', type: 'GII'},
-        {id:6807, name:'天王奖(秋)', date: '10月后', type: 'GI'},
-        {id:6901, name:'白银杯', date: '11月前', type: 'GII'},
-        {id:6902, name:'都城锦标赛', date: '11月前', type: 'GIII'},
-        {id:6903, name:'武藏野锦标赛', date: '11月前', type: 'GIII'},
-        {id:6904, name:'松浪纪念', date: '11月前', type: 'GIII'},
-        {id:6906, name:'伊丽莎白女王杯', date: '11月前', type: 'GI'},
-        {id:6907, name:'全国育成杯 女士经典赛', date: '11月前', type: 'GI'},
-        {id:6908, name:'全国育成杯 短途赛', date: '11月前', type: 'GI'},
-        {id:6909, name:'全国育成杯 经典赛', date: '11月前', type: 'GI'},
-        {id:7001, name:'京阪杯', date: '11月后', type: 'GIII'},
-        {id:7007, name:'英里冠军赛', date: '11月后', type: 'GI'},
-        {id:7008, name:'全国杯', date: '11月后', type: 'GI'},
-        {id:7101, name:'长途锦标赛', date: '12月前', type: 'GII'},
-		    {id:7102, name:'挑战杯', date: '12月前', type: 'GIII'},
-        {id:7103, name:'中日新闻杯', date: '12月前', type: 'GIII'},
-        {id:7104, name:'五车二锦标赛', date: '12月前', type: 'GIII'},
-        {id:7105, name:'绿松石锦标赛', date: '12月前', type: 'GIII'},
-        {id:7111, name:'全国冠军杯', date: '12月前', type: 'GI'},
-        {id:7201, name:'阪神杯', date: '12月后', type: 'GII'},
-        {id:7204, name:'中山大奖赛', date: '12月后', type: 'GI'},
-        {id:7205, name:'东京大奖赛', date: '12月后', type: 'GI'}],
+         {id:2213, name:'Kyoto Kimpai',date: 'Senior Year Early Jan', type: 'GIII'},
+         {id:2215, name:'Nakayama Kimpai',date: 'Senior Year Early Jan', type: 'GIII'},
+         {id:2210, name:'Aichi Hai',date: 'Senior Year Early Jan', type: 'GIII'},
+         {id:2217, name:'Nikkei Shinshun Hai',date: 'Senior Year Early Jan', type: 'GII'},
+         {id:2225, name:'Tokai Stakes',date: 'Senior Year Late Jan', type: 'GII'},
+         {id:2220, name:'American JCC',date: 'Senior Year Late Jan', type: 'GII'},
+         {id:2223, name:'Silk Road Stakes',date: 'Senior Year Late Jan', type: 'GIII'},
+         {id:2221, name:'Negishi Stakes',date: 'Senior Year Late Jan', type: 'GIII'},
+         {id:2227, name:'Kyoto Kinen',date: 'Senior Year Early Feb', type: 'GII'},
+         {id:2229, name:'Tokyo Shimbun Hai',date: 'Senior Year Early Feb', type: 'GIII'},
+         {id:2238, name:'Nakayama Kinen',date: 'Senior Year Late Feb', type: 'GII'},
+         {id:2237, name:'Kyoto Umamusume Stakes',date: 'Senior Year Late Feb', type: 'GIII'},
+         {id:2231, name:'Diamond Stakes',date: 'Senior Year Late Feb', type: 'GIII'},
+         {id:2235, name:'Kokura Daishoten',date: 'Senior Year Late Feb', type: 'GIII'},
+         {id:2234, name:'Hankyu Hai',date: 'Senior Year Late Feb', type: 'GIII'},
+         {id:2233, name:'February Stakes',date: 'Senior Year Late Feb', type: 'GI'},
+         {id:2240, name:'Kinko Sho',date: 'Senior Year Early Mar', type: 'GII'},
+         {id:2244, name:'Ocean Stakes',date: 'Senior Year Early Mar', type: 'GIII'},
+         {id:2242, name:'Nakayama Umamusume Stakes',date: 'Senior Year Early Mar', type: 'GIII'},
+         {id:2248, name:'Hanshin Daishoten',date: 'Senior Year Late Mar', type: 'GII'},
+         {id:2250, name:'Nikkei Sho',date: 'Senior Year Late Mar', type: 'GII'},
+         {id:2249, name:'March Stakes',date: 'Senior Year Late Mar', type: 'GIII'},
+         {id:2253, name:'Takamatsunomiya Kinen',date: 'Senior Year Late Mar', type: 'GI'},
+         {id:2251, name:'Osaka Hai',date: 'Senior Year Late Mar', type: 'GI'},
+         {id:2258, name:'Hanshin Umamusume Stakes',date: 'Senior Year Early Apr', type: 'GII'},
+         {id:2260, name:'Lord Derby Challenge Trophy',date: 'Senior Year Early Apr', type: 'GIII'},
+         {id:2254, name:'Antares Stakes',date: 'Senior Year Early Apr', type: 'GIII'},
+         {id:2263, name:'Milers Cup',date: 'Senior Year Late Apr', type: 'GII'},
+         {id:2262, name:'Fukushima Umamusume Stakes',date: 'Senior Year Late Apr', type: 'GIII'},
+         {id:2265, name:'Tenno Sho (Spring)',date: 'Senior Year Late Apr', type: 'GI'},
+         {id:2268, name:'Keio Hai Spring Cup',date: 'Senior Year Early May', type: 'GII'},
+         {id:2272, name:'Niigata Daishoten',date: 'Senior Year Early May', type: 'GIII'},
+         {id:2275, name:'Victoria Mile',date: 'Senior Year Early May', type: 'GI'},
+         {id:2281, name:'Meguro Kinen',date: 'Senior Year Late May', type: 'GII'},
+         {id:2277, name:'Heian Stakes',date: 'Senior Year Late May', type: 'GIII'},
+         {id:2283, name:'Mermaid Stakes',date: 'Senior Year Early Jun', type: 'GIII'},
+         {id:2287, name:'Yasuda Kinen',date: 'Senior Year Early Jun', type: 'GI'},
+         {id:2284, name:'Naruo Kinen',date: 'Senior Year Early Jun', type: 'GIII'},
+         {id:2282, name:'Epsom Cup',date: 'Senior Year Early Jun', type: 'GIII'},
+         {id:2293, name:'Takarazuka Kinen',date: 'Senior Year Late Jun', type: 'GI'},
+         {id:2289, name:'Hakodate Sprint Stakes',date: 'Senior Year Late Jun', type: 'GIII'},
+         {id:2294, name:'Teio Sho',date: 'Senior Year Late Jun', type: 'GI'},
+         {id:2296, name:'CBC Sho',date: 'Senior Year Early Jul', type: 'GIII'},
+         {id:2300, name:'Procyon Stakes',date: 'Senior Year Early Jul', type: 'GIII'},
+         {id:2301, name:'Tanabata Sho',date: 'Senior Year Early Jul', type: 'GIII'},
+         {id:2297, name:'Hakodate Kinen',date: 'Senior Year Early Jul', type: 'GIII'},
+         {id:2303, name:'Chukyo Kinen',date: 'Senior Year Late Jul', type: 'GIII'},
+         {id:2305, name:'Ibis Summer Dash',date: 'Senior Year Late Jul', type: 'GIII'},
+         {id:2306, name:'Queen Stakes',date: 'Senior Year Late Jul', type: 'GIII'},
+         {id:2308, name:'Elm Stakes',date: 'Senior Year Early Aug', type: 'GIII'},
+         {id:2315, name:'Sapporo Kinen',date: 'Senior Year Late Aug', type: 'GII'},
+         {id:2317, name:'Keeneland Cup',date: 'Senior Year Late Aug', type: 'GIII'},
+         {id:2318, name:'Kitakyushu Kinen',date: 'Senior Year Late Aug', type: 'GIII'},
+         {id:2321, name:'Centaur Stakes',date: 'Senior Year Early Sep', type: 'GII'},
+         {id:2324, name:'Niigata Kinen',date: 'Senior Year Early Sep', type: 'GIII'},
+         {id:2323, name:'Keisei Hai Autumn Handicap',date: 'Senior Year Early Sep', type: 'GIII'},
+         {id:2330, name:'All Comers',date: 'Senior Year Late Sep', type: 'GII'},
+         {id:2331, name:'Kobe Shimbun Hai',date: 'Senior Year Late Sep', type: 'GII'},
+         {id:2334, name:'Sirius Stakes',date: 'Senior Year Late Sep', type: 'GIII'},
+         {id:2340, name:'Mainichi Okan',date: 'Senior Year Early Oct', type: 'GII'},
+         {id:2341, name:'Kyoto Daishoten',date: 'Senior Year Early Oct', type: 'GII'},
+         {id:2345, name:'Swan Stakes',date: 'Senior Year Late Oct', type: 'GII'},
+         {id:2346, name:'Fuji Stakes',date: 'Senior Year Late Oct', type: 'GII'},
+         {id:2349, name:'Tenno Sho (Autumn)',date: 'Senior Year Late Oct', type: 'GI'},
+         {id:2353, name:'Argentina Kyowa Hai',date: 'Senior Year Early Nov', type: 'GII'},
+         {id:2358, name:'Elizabeth Queen Cup',date: 'Senior Year Early Nov', type: 'GI'},
+         {id:2359, name:'Japan Breeders\' Cup Classic',date: 'Senior Year Early Nov', type: 'GI'},
+         {id:2360, name:'Japan Breeders\' Cup Sprint',date: 'Senior Year Early Nov', type: 'GI'},
+         {id:2361, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Senior Year Early Nov', type: 'GI'},
+         {id:2362, name:'Keihan Hai',date: 'Senior Year Late Nov', type: 'GIII'},
+         {id:2365, name:'Mile Championship',date: 'Senior Year Late Nov', type: 'GI'},
+         {id:2366, name:'Japan Cup',date: 'Senior Year Late Nov', type: 'GI'},
+         {id:2368, name:'Stayers Stakes',date: 'Senior Year Early Dec', type: 'GII'},
+         {id:2371, name:'Capella Stakes',date: 'Senior Year Early Dec', type: 'GIII'},
+         {id:2372, name:'Turquoise Stakes',date: 'Senior Year Early Dec', type: 'GIII'},
+         {id:2373, name:'Champions Cup',date: 'Senior Year Early Dec', type: 'GI'},
+         {id:2374, name:'Hanshin Cup',date: 'Senior Year Late Dec', type: 'GII'},
+         {id:2378, name:'Nakayama Daishoten',date: 'Senior Year Late Dec', type: 'GI'},
+         {id:2380, name:'Tokyo Daishoten',date: 'Senior Year Late Dec', type: 'GI'}],
       cultivatePresets:[],
       cultivateDefaultPresets:[
       {

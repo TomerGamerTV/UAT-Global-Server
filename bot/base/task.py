@@ -61,13 +61,13 @@ class Task(metaclass=ABCMeta):
 
     @abstractmethod
     def end_task(self, status, reason) -> None:
-        log.info("任务结束：" + self.task_status.name + "->" + status.name)
+        log.info("Task ended: " + self.task_status.name + "->" + status.name)
         self.task_status = status
         self.end_task_reason = reason
 
     @abstractmethod
     def start_task(self) -> None:
-        log.info("任务开始", extra={"task_id": self.task_id})
+        log.info("Task started", extra={"task_id": self.task_id})
 
     def running(self) -> bool:
         return self.task_status == TaskStatus.TASK_STATUS_RUNNING

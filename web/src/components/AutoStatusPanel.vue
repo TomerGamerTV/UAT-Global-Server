@@ -4,9 +4,9 @@
       <div class="card-body">
         <div class="d-flex bd-highlight">
           <h5 class="card-title">UAT</h5>
-          <span v-on:click="autoStart"  class="ml-auto btn auto-btn">启动</span>
-          <span v-on:click="autoStop" class="btn auto-btn" >停止</span>
-          <span class="btn auto-btn" data-target="#create-task-list-modal" data-toggle="modal">创建任务</span>
+          <span v-on:click="autoStart"  class="ml-auto btn auto-btn">Start</span>
+          <span v-on:click="autoStop" class="btn auto-btn" >Stop</span>
+          <span class="btn auto-btn" data-target="#create-task-list-modal" data-toggle="modal">Create Task</span>
         </div>
       </div>
     </div>

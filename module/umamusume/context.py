@@ -68,14 +68,14 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
     ctx = UmamusumeContext(task, ctrl)
     if task.task_type == UmamusumeTaskType.UMAMUSUME_TASK_TYPE_CULTIVATE:
         detail = CultivateContextDetail()
-        # 根据剧本类型初始化对应的继承类
+        # Initialize corresponding inherited class based on scenario type
         match task.detail.scenario:
             case ScenarioType.SCENARIO_TYPE_URA:
                 detail.scenario = ura_scenario.URAScenario()
             case ScenarioType.SCENARIO_TYPE_AOHARUHAI:
                 detail.scenario = aoharuhai_scenario.AoharuHaiScenario()
-            case _: # 占位, 实际上不可能到达这里
-                log.error("未知的场景")
+            case _: # Placeholder, actually impossible to reach here
+                log.error("Unknown scenario")
                 detail.scenario = None
         detail.expect_attribute = task.detail.expect_attribute
         detail.follow_support_card_name = task.detail.follow_support_card_name

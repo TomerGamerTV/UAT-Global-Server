@@ -2,17 +2,17 @@
   <div id="ura-config-modal" class="modal fade" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content" @click.stop>
-        <h5 class="modal-header">URA配置</h5>
+        <h5 class="modal-header">URA Configuration</h5>
         <div class="modal-body">
           <!-- 技能启发选择额外权重 -->
           <div class="form-group">
-            <h5><b>(测试)</b> 支援卡启发(感叹号)选择额外权重</h5>
-            <p>支援卡出现启发(感叹号)时为训练选择提供的额外权重。单个训练中的多个感叹号只计算一次权重</p>
-            <p>可设置范围[0, 1]。 0表示支援卡启发不对训练选择有任何影响, 1表示一定会选择有启发的训练。</p>
+            <h5><b>(Test)</b> Support Card Inspiration (!) Additional Weight</h5>
+            <p>Additional weight provided for training selection when support cards show inspiration (!). Multiple exclamation marks in a single training only count once.</p>
+            <p>Settable range [0, 1]. 0 means support card inspiration has no impact on training selection, 1 means always choose training with inspiration.</p>
             <div class="row">
               <div class="col-4">
                 <div class="form-group">
-                  <label for="ura-year1-skill-event-weight">第一年</label>
+                  <label for="ura-year1-skill-event-weight">Year 1</label>
                   <input 
                     type="number" 
                     v-model="internalSkillEventWeight[0]" 
@@ -27,7 +27,7 @@
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="ura-year2-skill-event-weight">第二年</label>
+                  <label for="ura-year2-skill-event-weight">Year 2</label>
                   <input 
                     type="number" 
                     v-model="internalSkillEventWeight[1]" 
@@ -42,7 +42,7 @@
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="ura-year3-skill-event-weight">第三年</label>
+                  <label for="ura-year3-skill-event-weight">Year 3</label>
                   <input 
                     type="number" 
                     v-model="internalSkillEventWeight[2]" 
@@ -60,19 +60,19 @@
           
           <!-- 重置技能启发权重配置 -->
           <div class="form-group">
-            <label for="ura-reset-skill-event-weight-list">学习完以下技能后重置技能启发权重至0</label>
+            <label for="ura-reset-skill-event-weight-list">Reset skill inspiration weight to 0 after learning these skills</label>
             <textarea 
               type="text" 
               v-model="internalResetSkillEventWeightList" 
               class="form-control" 
               id="ura-reset-skill-event-weight-list" 
-              placeholder="技能1名称,技能2名称,....(使用英文逗号)"
+              placeholder="Corner Acceleration ◯, Slipstream, Speed Star, ... (use commas)"
               rows="3"
             ></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <span class="btn auto-btn confirm-btn-large" v-on:click="confirm">确认</span>
+          <span class="btn auto-btn confirm-btn-large" v-on:click="confirm">Confirm</span>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     onWeightInput(index) {
-      // 限制输入范围 [0, 1]
+      // Limit input range [0, 1]
       let value = parseFloat(this.internalSkillEventWeight[index]);
       if (value > 1) {
         this.internalSkillEventWeight[index] = 1;
@@ -150,13 +150,13 @@ export default {
       this.$emit('update:show', false);
       this.$emit('cancel');
       
-      // 确保父modal的滚动功能在关闭时得到恢复
+      // Ensure parent modal scroll function is restored when closed
       this.$nextTick(() => {
         this.restoreParentModalScrolling();
       });
     },
     restoreParentModalScrolling() {
-      // 恢复父modal的滚动功能
+      // Restore parent modal scroll function
       setTimeout(() => {
         if ($('.modal-open').length > 0) {
           $('body').addClass('modal-open');
@@ -165,7 +165,7 @@ export default {
             const modalBody = parentModal.find('.modal-body');
             if (modalBody.length > 0) {
               modalBody.css('overflow-y', 'auto');
-              // 强制触发重新渲染
+              // Force trigger re-render
               modalBody[0].offsetHeight;
             }
           }
@@ -177,7 +177,7 @@ export default {
     // Initialize Bootstrap modal behavior
     $('#ura-config-modal').on('hidden.bs.modal', () => {
       this.$emit('update:show', false);
-      // 确保父modal保持滚动功能
+      // Ensure parent modal maintains scroll function
       this.$nextTick(() => {
         this.restoreParentModalScrolling();
       });

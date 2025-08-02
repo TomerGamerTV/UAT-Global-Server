@@ -2,10 +2,10 @@
   <div>
     <div v-if="task.task_type === 1">
       <div>
-        <span>剧本: {{ scenarioName }}</span>
+        <span>Scenario: {{ scenarioName }}</span>
       </div>
       <div>
-        <span>目标数值: {{task.detail?.expect_attribute}}</span>
+        <span>Target Stats: {{task.detail?.expect_attribute}}</span>
       </div>
     </div>
   </div>
@@ -20,10 +20,10 @@ export default {
       if (this.task.detail?.scenario === 1) {
         return 'URA';
       } else if (this.task.detail?.scenario === 2) {
-        return '青春杯';
+        return 'Aoharu Cup';
       }
       // Add more scenarios here as needed
-      return '未知剧本';
+      return 'Unknown Scenario';
     }
   }
 }

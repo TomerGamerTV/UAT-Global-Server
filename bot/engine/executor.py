@@ -108,14 +108,14 @@ class Executor:
             task.start_task()
             task.task_start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
-            # 启动应用
-            log.debug("启动："+manifest.app_package_name)
-            ctx.ctrl.start_app(manifest.app_package_name)
+            # Launch application
+            log.debug("Starting: "+manifest.app_package_name)
+            ctx.ctrl.start_app(manifest.app_package_name, manifest.app_activity_name)
             while self.active:
                 if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
                     ctx.current_screen = ctx.ctrl.get_screen()
                     if ctx.current_screen is None:
-                        log.debug("未检测到图像")
+                        log.debug("No image detected")
                         time.sleep(1)
                         continue
                     ctx.prev_ui = ctx.current_ui

@@ -99,6 +99,7 @@ requests==2.27.1
 retry==0.9.2
 scikit-image==0.19.2
 scipy==1.10.0
+selenium==4.15.2
 Shapely==1.8.2
 shellcheck-py==0.8.0.4
 six==1.16.0

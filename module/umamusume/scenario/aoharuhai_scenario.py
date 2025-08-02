@@ -29,7 +29,7 @@ class AoharuHaiScenario(BaseScenario):
         return img[70:120, 30:90]
     
     def parse_training_result(self, img: any) -> list[int]:
-        # 使用数字ocr达到更高准确率
+        # Use digital OCR to achieve higher accuracy
         sub_img_speed_incr = img[800:830, 30:140]
         sub_img_speed_incr = cv2.copyMakeBorder(sub_img_speed_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
         speed_incr_text = ocr_digits(sub_img_speed_incr)
@@ -107,10 +107,10 @@ class AoharuHaiScenario(BaseScenario):
         for i in range(5):
             support_card_icon = img[base_y:base_y + inc, base_x: base_x + 145]
             
-            # 有青春杯训练, 且青春杯友情未满
+            # Has Youth Cup training, and Youth Cup friendship not full
             can_incr_aoharu_train = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
             
-            # 判断好感度
+            # Check favor level
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
             favor_process_check_list = [support_card_icon[106, 56], support_card_icon[106, 60]]
             support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN
@@ -127,7 +127,7 @@ class AoharuHaiScenario(BaseScenario):
                 if support_card_favor_process != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                     break
 
-            # 判断支援卡类型
+            # Check support card type
             support_card_type = SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_RGB2GRAY)
             if image_match(support_card_icon, REF_SUPPORT_CARD_TYPE_SPEED).find_match:
@@ -152,11 +152,11 @@ class AoharuHaiScenario(BaseScenario):
 
         return support_card_list_info_result
     
-# 检测支援卡右上角是否有箭头图标, 同时排除感叹号防止false positive
-# 输入的图片必须是彩色的
+# Detect if there's an arrow icon in the upper right corner of support card, while excluding exclamation marks to prevent false positives
+# Input image must be colored
 def detect_aoharu_train_arrow(support_card_icon):
     support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
-    # 定义右上角检测区域
+    # Define upper right corner detection area
     arrow_region_x_start = 110
     arrow_region_x_end = 145  
     arrow_region_y_start = 0
@@ -165,15 +165,15 @@ def detect_aoharu_train_arrow(support_card_icon):
     arrow_region = support_card_icon[arrow_region_y_start:arrow_region_y_end, 
                                      arrow_region_x_start:arrow_region_x_end]
     
-    # 定义箭头可能的颜色范围 (检查橙色)
+    # Define possible color range for arrows (check orange)
     orange_lower = [240, 100, 50]
     orange_upper = [255, 180, 100]
     
-    # 定义红色像素范围（用于检测感叹号）
+    # Define red pixel range (for detecting exclamation marks)
     red_lower = [180, 30,50]
     red_upper = [255, 100, 150]
     
-    # 计算橙色像素和红色像素的数量
+    # Calculate number of orange pixels and red pixels
     orange_pixels = 0
     red_pixels = 0
     total_pixels = arrow_region.shape[0] * arrow_region.shape[1]
@@ -182,12 +182,12 @@ def detect_aoharu_train_arrow(support_card_icon):
         for x in range(arrow_region.shape[1]):
             pixel = arrow_region[y, x]
             
-            # 检测橙色像素
+            # Detect orange pixels
             if (orange_lower[0] <= pixel[0] <= orange_upper[0] and
                 orange_lower[1] <= pixel[1] <= orange_upper[1] and
                 orange_lower[2] <= pixel[2] <= orange_upper[2]):
                 orange_pixels += 1
-            # 检测红色像素
+            # Detect red pixels
             elif (red_lower[0] <= pixel[0] <= red_upper[0] and
                   red_lower[1] <= pixel[1] <= red_upper[1] and
                   red_lower[2] <= pixel[2] <= red_upper[2]):
@@ -198,19 +198,19 @@ def detect_aoharu_train_arrow(support_card_icon):
     
     has_arrow = False
     
-    # 首先排除感叹号：如果红色像素比例过高，判断为感叹号
+    # First exclude exclamation marks: if red pixel ratio is too high, judge as exclamation mark
     if red_ratio > 0.2:
         has_arrow = False
-    # 如果橙色像素比例超过阈值
+    # If orange pixel ratio exceeds threshold
     elif (orange_ratio > 0.05):
         has_arrow = True
  
     return has_arrow
 
 
-# 检测左下角青春杯训练值是否未满
-# 如果已满或者不存在UI(比如已经触发了魂爆, 则返回false)
-# 否则返回true
+# Detect if the Youth Cup training value in the lower left corner is not full
+# If it is full or the UI does not exist (e.g., soul explosion has been triggered, return false)
+# Otherwise, return true
 def aoharu_train_not_full(support_card_icon) -> bool:
     support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
     avatar_region_x_start = 5
@@ -225,7 +225,7 @@ def aoharu_train_not_full(support_card_icon) -> bool:
     if total_pixels == 0:
         return False
     
-    # 检测灰色
+    # Detect gray
     grey_lower = [100, 100, 100]
     grey_upper = [150, 150, 150]
     grey_pixels = 0

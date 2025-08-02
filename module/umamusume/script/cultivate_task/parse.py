@@ -13,63 +13,152 @@ from module.umamusume.context import UmamusumeContext
 from module.umamusume.types import SupportCardInfo
 from module.umamusume.asset import *
 from module.umamusume.define import *
-from module.umamusume.script.cultivate_task.const import DATE_YEAR, DATE_MONTH
 import bot.base.log as logger
+from module.umamusume.script.cultivate_task.const import DATE_YEAR, DATE_MONTH
 
 log = logger.get_logger(__name__)
 
 
 def parse_date(img, ctx: UmamusumeContext) -> int:
-    # 青春杯和URA的UI位置有所不同
-    sub_img_date = ctx.cultivate_detail.scenario.get_date_img(img)
-    sub_img_date = cv2.copyMakeBorder(sub_img_date, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
-    date_text = ocr_line(sub_img_date)
-    year_text = ""
-    for text in DATE_YEAR:
-        if date_text.__contains__(text):
-            year_text = text
+    # Youth Cup and URA UI positions are different
+    if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
+        sub_img_date = ctx.cultivate_detail.scenario.get_date_img(img)
+        sub_img_date = cv2.copyMakeBorder(sub_img_date, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        date_text = ocr_line(sub_img_date)
+        
+        # Debug: Log the extracted date text
+        log.info(f"🔍 Extracted date text: '{date_text}'")
+        
+        year_text = ""
+        for text in DATE_YEAR:
+            if date_text.__contains__(text):
+                year_text = text
 
-    if year_text == "":
-        year_text = find_similar_text(date_text, DATE_YEAR)
+        if year_text == "":
+            year_text = find_similar_text(date_text, DATE_YEAR)
+            log.info(f"🔍 Similar text found: '{year_text}'")
 
-    if year_text == DATE_YEAR[3]:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        if image_match(img, URA_DATE_1).find_match:
-            return 97
-        elif image_match(img, URA_DATE_2).find_match:
-            return 98
+        if year_text == DATE_YEAR[3]:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            if image_match(img, URA_DATE_1).find_match:
+                return 97
+            elif image_match(img, URA_DATE_2).find_match:
+                return 98
+            else:
+                return 99
+
+        if year_text == "":
+            log.warning(f"❌ No year text found in date: '{date_text}'")
+            return -1
+
+        month_text = ""
+        for text in DATE_MONTH:
+            if date_text.__contains__(text):
+                month_text = text
+        if month_text == "":
+            month_text = find_similar_text(date_text, DATE_MONTH)
+
+        if month_text != DATE_MONTH[0]:
+            date_id = DATE_YEAR.index(year_text) * 24 + DATE_MONTH.index(month_text)
         else:
-            return 99
-
-    if year_text == "":
-        return -1
-
-    month_text = ""
-    for text in DATE_MONTH:
-        if date_text.__contains__(text):
-            month_text = text
-    if month_text == "":
-        month_text = find_similar_text(date_text, DATE_MONTH)
-
-    if month_text != DATE_MONTH[0]:
-        date_id = DATE_YEAR.index(year_text) * 24 + DATE_MONTH.index(month_text)
+            sub_img_turn_to_race = ctx.cultivate_detail.scenario.get_turn_to_race_img(img)
+            sub_img_turn_to_race = cv2.copyMakeBorder(sub_img_turn_to_race, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None,
+                                                      (255, 255, 255))
+            turn_to_race_text = ocr_line(sub_img_turn_to_race)
+            if turn_to_race_text == "比赛日":
+                log.debug("Debut race day")
+                return 12
+            turn_to_race_text = re.sub("\\D", "", turn_to_race_text)
+            if turn_to_race_text == '':
+                log.warning("Debut race date recognition exception")
+                return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
+            date_id = 12 - int(turn_to_race_text)
+            if date_id < 1:
+                log.warning("Debut race date recognition exception")
+                return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
+        return date_id
     else:
-        sub_img_turn_to_race = ctx.cultivate_detail.scenario.get_turn_to_race_img(img)
-        sub_img_turn_to_race = cv2.copyMakeBorder(sub_img_turn_to_race, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None,
-                                                  (255, 255, 255))
-        turn_to_race_text = ocr_line(sub_img_turn_to_race)
-        if turn_to_race_text == "比赛日":
-            log.debug("出道比赛日")
-            return 12
-        turn_to_race_text = re.sub("\\D", "", turn_to_race_text)
-        if turn_to_race_text == '':
-            log.warning("出道战前日期识别异常")
-            return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
-        date_id = 12 - int(turn_to_race_text)
-        if date_id < 1:
-            log.warning("出道战前日期识别异常")
-            return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
-    return date_id
+        # URA scenario date parsing
+        sub_img_date = ctx.cultivate_detail.scenario.get_date_img(img)
+        sub_img_date = cv2.copyMakeBorder(sub_img_date, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        date_text = ocr_line(sub_img_date)
+        
+        # Debug: Log the extracted date text for URA
+        log.info(f"🔍 URA Extracted date text: '{date_text}'")
+        
+        # Special handling for "Finale Season" in URA championship
+        if "Finale Season" in date_text or "Finale" in date_text:
+            log.info("🏆 URA Finale Season detected - checking championship phase")
+            
+            # Check specific coordinates for URA championship phase text
+            championship_phase_img = img[74:100, 250:575]  # x: 250, y: 74, width: 325, height: 26
+            championship_phase_img = cv2.copyMakeBorder(championship_phase_img, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+            championship_phase_text = ocr_line(championship_phase_img)
+            log.info(f"🔍 URA Championship phase text: '{championship_phase_text}'")
+            
+            # Determine URA championship phase based on OCR text
+            if "URA Finale Qualifier" in championship_phase_text or "Qualifier" in championship_phase_text:
+                log.info("🏆 URA Finals Qualifier detected")
+                return 73  # Qualifier date
+            elif "URA Finale Semifinal" in championship_phase_text or "Semifinal" in championship_phase_text:
+                log.info("🏆 URA Finals Semifinal detected")
+                return 76  # Semi-final date
+            elif "URA Finale Finals" in championship_phase_text or "Finals" in championship_phase_text:
+                log.info("🏆 URA Finals Final detected")
+                return 79  # Final date
+            else:
+                log.warning(f"❌ Unknown URA championship phase: '{championship_phase_text}'")
+                # Fallback to qualifier if unknown
+                return 73
+        
+        year_text = ""
+        for text in DATE_YEAR:
+            if date_text.__contains__(text):
+                year_text = text
+
+        if year_text == "":
+            year_text = find_similar_text(date_text, DATE_YEAR)
+            log.info(f"🔍 URA Similar text found: '{year_text}'")
+
+        if year_text == DATE_YEAR[3]:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            if image_match(img, URA_DATE_1).find_match:
+                return 97
+            elif image_match(img, URA_DATE_2).find_match:
+                return 98
+            else:
+                return 99
+
+        if year_text == "":
+            log.warning(f"❌ URA No year text found in date: '{date_text}'")
+            return -1
+
+        month_text = ""
+        for text in DATE_MONTH:
+            if date_text.__contains__(text):
+                month_text = text
+        if month_text == "":
+            month_text = find_similar_text(date_text, DATE_MONTH)
+
+        if month_text != DATE_MONTH[0]:
+            date_id = DATE_YEAR.index(year_text) * 24 + DATE_MONTH.index(month_text)
+        else:
+            sub_img_turn_to_race = ctx.cultivate_detail.scenario.get_turn_to_race_img(img)
+            sub_img_turn_to_race = cv2.copyMakeBorder(sub_img_turn_to_race, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None,
+                                                      (255, 255, 255))
+            turn_to_race_text = ocr_line(sub_img_turn_to_race)
+            if turn_to_race_text == "比赛日":
+                log.debug("URA Debut race day")
+                return 12
+            turn_to_race_text = re.sub("\\D", "", turn_to_race_text)
+            if turn_to_race_text == '':
+                log.warning("URA Debut race date recognition exception")
+                return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
+            date_id = 12 - int(turn_to_race_text)
+            if date_id < 1:
+                log.warning("URA Debut race date recognition exception")
+                return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
+        return date_id
 
 
 def parse_cultivate_main_menu(ctx: UmamusumeContext, img):
@@ -145,7 +234,7 @@ def trans_attribute_value(text: str, ctx: UmamusumeContext,
         prev_turn_idx = len(ctx.cultivate_detail.turn_info_history)
         if prev_turn_idx != 0:
             history = ctx.cultivate_detail.turn_info_history[prev_turn_idx - 1]
-            log.warning("图像识别错误，使用上回合数值")
+            log.warning("Image recognition error, using previous turn value")
             if train_type.value == 1:
                 return history.uma_attribute.speed
             elif train_type.value == 2:
@@ -176,7 +265,7 @@ def parse_umamusume_remain_stamina_value(ctx: UmamusumeContext, img):
 
 def parse_train_main_menu_operations_availability(ctx: UmamusumeContext, img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # 可用性
+    # Availability
     btn_rest_check_point = img[980, 60]
     btn_train_check_point = img[990, 250]
     btn_skill_check_point = img[980, 550]
@@ -184,8 +273,8 @@ def parse_train_main_menu_operations_availability(ctx: UmamusumeContext, img):
     btn_trip_check_point = img[1115, 305]
     btn_race_check_point = img[1130, 490]
 
-    # 夏合宿期间
-    if 36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64:
+    # During summer camp
+    if ctx.cultivate_detail.turn_info and ctx.cultivate_detail.turn_info.date and (36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64):
         btn_medic_room_check_point = img[1130, 200]
         btn_rest_check_point = img[990, 190]
         btn_race_check_point = img[1125, 395]
@@ -277,34 +366,263 @@ def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
     event_name_img = img[237:283, 111:480]
     event_name = ocr_line(event_name_img)
     event_selector_list = []
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Method 1: Original Chinese server template matching
+    img_temp = img_gray.copy()
     while True:
-        match_result = image_match(img, REF_SELECTOR)
+        match_result = image_match(img_temp, REF_SELECTOR)
         if match_result.find_match:
             event_selector_list.append(match_result.center_point)
-            img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
-            match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
+            img_temp[match_result.matched_area[0][1]:match_result.matched_area[1][1],
+                     match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
         else:
             break
+    
+    # Method 2: Try individual dialogue templates (dialogue1, dialogue2, dialogue3)
+    if len(event_selector_list) == 0:
+        log.warning(f"REF_SELECTOR template failed for event '{event_name}', trying individual dialogue templates")
+        
+        # Try each dialogue template
+        from module.umamusume.asset.template import Template, UMAMUSUME_REF_TEMPLATE_PATH
+        dialogue_templates = []
+        
+        try:
+            dialogue_templates = [
+                Template("dialogue1", UMAMUSUME_REF_TEMPLATE_PATH),
+                Template("dialogue2", UMAMUSUME_REF_TEMPLATE_PATH),
+                Template("dialogue3", UMAMUSUME_REF_TEMPLATE_PATH)
+            ]
+        except:
+            log.warning("Could not load dialogue templates")
+        
+        # Try matching each dialogue template
+        for template in dialogue_templates:
+            try:
+                img_temp = img_gray.copy()
+                while True:
+                    match_result = image_match(img_temp, template)
+                    if match_result.find_match:
+                        event_selector_list.append(match_result.center_point)
+                        img_temp[match_result.matched_area[0][1]:match_result.matched_area[1][1],
+                                 match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
+                    else:
+                        break
+            except:
+                continue
+        
+        if len(event_selector_list) > 0:
+            log.info(f"Found {len(event_selector_list)} dialogue options using individual templates")
+        else:
+            log.warning("Individual dialogue templates also failed, using fallback position")
+            # Last resort fallback
+            event_selector_list = [(360, 800)]
+    
     event_selector_list.sort(key=lambda x: x[1])
     return event_name, event_selector_list
+
+
+def convert_race_name_to_ingame_format(race_id: int) -> str:
+    """Convert CSV race data to in-game display format using only available data"""
+    try:
+        import csv
+        # Read race data from CSV
+        with open('resource/umamusume/data/race.csv', 'r', encoding="utf-8") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) >= 9 and int(row[1]) == race_id:
+                    # CSV format: time_period,race_id,period_name,race_name,grade,venue,surface,distance,direction,condition,going
+                    venue = row[5] if len(row) > 5 and row[5] else ""  # Hanshin
+                    surface = row[6] if len(row) > 6 and row[6] else ""  # Turf
+                    distance = row[7] if len(row) > 7 and row[7] else ""  # 2200
+                    direction = row[8] if len(row) > 8 and row[8] else ""  # Right
+                    going = row[10] if len(row) > 10 and row[10] else ""  # Medium
+                    
+                    # Build format using only available data
+                    parts = []
+                    
+                    # Add venue + surface + distance if available
+                    if venue and surface and distance:
+                        # Add "m" after distance numbers (4 digits only)
+                        if distance.isdigit() and len(distance) == 4:
+                            parts.append(f"{venue} {surface} {distance}m")
+                        else:
+                            parts.append(f"{venue} {surface} {distance}")
+                    elif venue and surface:
+                        parts.append(f"{venue} {surface}")
+                    elif venue:
+                        parts.append(venue)
+                    
+                    # Add going in parentheses if available
+                    if going:
+                        if going.lower() == "medium":
+                            parts.append("(Med)")
+                        elif going.lower() == "good":
+                            parts.append("(Good)")
+                        elif going.lower() == "yielding":
+                            parts.append("(Yielding)")
+                        elif going.lower() == "soft":
+                            parts.append("(Soft)")
+                        elif going.lower() == "heavy":
+                            parts.append("(Heavy)")
+                        else:
+                            parts.append(f"({going})")
+                    
+                    # Add direction if available
+                    if direction:
+                        parts.append(direction)
+                    
+                    # Join all available parts
+                    in_game_format = " ".join(parts)
+                    
+                    return in_game_format
+    except Exception as e:
+        log.debug(f"Failed to convert race name for ID {race_id}: {e}")
+    
+    # Fallback to original name if conversion fails
+    return RACE_LIST[race_id][1] if race_id < len(RACE_LIST) else ""
 
 
 def find_race(ctx: UmamusumeContext, img, race_id: int = 0) -> bool:
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     target_race_template = RACE_LIST[race_id][2]
+    img_height, img_width = img.shape
+    
+    # Debug: Log race template info
+    if target_race_template is not None:
+        log.info(f"🔍 Looking for race ID {race_id}: {RACE_LIST[race_id][1]}")
+        log.info(f"🔍 Template exists: {target_race_template is not None}")
+    else:
+        log.warning(f"❌ No template found for race ID {race_id}")
+        return False
+    
     while True:
         match_result = image_match(img, REF_RACE_LIST_DETECT_LABEL)
         if match_result.find_match:
             pos = match_result.matched_area
             pos_center = match_result.center_point
             if 685 < pos_center[1] < 1110:
-                race_name_img = img[pos[0][1] - 60:pos[1][1] + 25, pos[0][0] - 250: pos[1][0] + 400]
-                if target_race_template is not None:
-                    if image_match(race_name_img, target_race_template).find_match:
-                        ctx.ctrl.click(match_result.center_point[0], match_result.center_point[1],
-                                       "选择比赛：" + str(RACE_LIST[race_id][1]))
-                        return True
+                # Calculate safe bounds for race name extraction
+                y1 = max(0, pos[0][1] - 60)
+                y2 = min(img_height, pos[1][1] + 25)
+                x1 = max(0, pos[0][0] - 250)
+                x2 = min(img_width, pos[1][0] + 400)
+                
+                # Extract race name region with bounds checking
+                race_name_img = img[y1:y2, x1:x2]
+                
+                # Check if extracted region is large enough for template matching
+                if target_race_template is not None and race_name_img.shape[0] > 0 and race_name_img.shape[1] > 0:
+                    template_img = target_race_template.template_image
+                    if (template_img is not None and 
+                        race_name_img.shape[0] >= template_img.shape[0] and 
+                        race_name_img.shape[1] >= template_img.shape[1]):
+                        
+                        # Try original template matching first
+                        template_match = image_match(race_name_img, target_race_template)
+                        if template_match.find_match:
+                            log.info(f"✅ Found race {race_id} at position {match_result.center_point}")
+                            ctx.ctrl.click(match_result.center_point[0], match_result.center_point[1],
+                                           "Select race: " + str(RACE_LIST[race_id][1]))
+                            return True
+                        else:
+                            log.debug(f"❌ Original template match failed for race {race_id}")
+                            
+                            # Try with preprocessed template (wiki image optimization)
+                            try:
+                                preprocessed_template = preprocess_wiki_image_for_ingame_matching(template_img.copy())
+                                # Create a temporary template with preprocessed image
+                                from bot.base.resource import Template
+                                temp_template = Template(f"preprocessed_{race_id}", UMAMUSUME_RACE_TEMPLATE_PATH)
+                                temp_template.template_image = preprocessed_template
+                                
+                                # Try without threshold parameter first
+                                preprocessed_match = image_match(race_name_img, temp_template)
+                                if preprocessed_match.find_match:
+                                    log.info(f"✅ Found race {race_id} with preprocessed template at position {match_result.center_point}")
+                                    ctx.ctrl.click(match_result.center_point[0], match_result.center_point[1],
+                                                   "Select race (preprocessed): " + str(RACE_LIST[race_id][1]))
+                                    return True
+                                else:
+                                    log.debug(f"❌ Preprocessed template match also failed for race {race_id}")
+                            except Exception as e:
+                                log.debug(f"Preprocessed template matching failed: {e}")
+                            
+                            # Try OCR fallback for race name matching
+                            try:
+                                race_name_text = ocr_line(race_name_img)
+                                target_race_name = RACE_LIST[race_id][1]
+                                
+                                # Convert CSV race name to in-game format for matching
+                                in_game_race_name = convert_race_name_to_ingame_format(race_id)
+                                
+                                log.info(f"🔍 OCR fallback - Extracted: '{race_name_text}'")
+                                log.info(f"🔍 Target CSV: '{target_race_name}'")
+                                log.info(f"🔍 Target In-Game: '{in_game_race_name}'")
+                                
+                                # Try matching against both CSV name and in-game format
+                                csv_match = target_race_name.lower() in race_name_text.lower() or race_name_text.lower() in target_race_name.lower()
+                                ingame_match = in_game_race_name.lower() in race_name_text.lower() or race_name_text.lower() in in_game_race_name.lower()
+                                
+                                # Also try matching key parts of the detected text
+                                detected_parts = race_name_text.lower().replace(" ", "")
+                                target_parts = target_race_name.lower().replace(" ", "")
+                                ingame_parts = in_game_race_name.lower().replace(" ", "")
+                                
+                                # Check if key parts match based on the specific race
+                                key_parts_match = False
+                                
+                                # Get race details from CSV for dynamic matching
+                                try:
+                                    import csv
+                                    with open('resource/umamusume/data/race.csv', 'r', encoding="utf-8") as file:
+                                        reader = csv.reader(file)
+                                        for row in reader:
+                                            if len(row) >= 9 and int(row[1]) == race_id:
+                                                venue = row[5] if len(row) > 5 and row[5] else ""  # Hanshin
+                                                surface = row[6] if len(row) > 6 and row[6] else ""  # Turf
+                                                distance = row[7] if len(row) > 7 and row[7] else ""  # 2200
+                                                direction = row[8] if len(row) > 8 and row[8] else ""  # Right
+                                                
+                                                # Create key parts to look for
+                                                key_parts = []
+                                                if venue:
+                                                    key_parts.append(venue.lower())
+                                                if surface:
+                                                    key_parts.append(surface.lower())
+                                                if distance:
+                                                    # Add "m" after distance numbers (4 digits only)
+                                                    if distance.isdigit() and len(distance) == 4:
+                                                        key_parts.append(f"{distance}m")
+                                                    else:
+                                                        key_parts.append(distance.lower())
+                                                if direction:
+                                                    key_parts.append(direction.lower())
+                                                
+                                                # Check if all key parts are found in detected text
+                                                if len(key_parts) >= 2:  # Need at least 2 parts to match
+                                                    found_parts = sum(1 for part in key_parts if part in detected_parts)
+                                                    if found_parts >= len(key_parts) * 0.7:  # 70% match threshold
+                                                        key_parts_match = True
+                                                        log.info(f"🔍 Key parts match: {found_parts}/{len(key_parts)} parts found")
+                                                break
+                                except Exception as e:
+                                    log.debug(f"Key parts matching failed: {e}")
+                                
+                                if csv_match or ingame_match or key_parts_match:
+                                    log.info(f"✅ OCR match found for race {race_id}")
+                                    ctx.ctrl.click(match_result.center_point[0], match_result.center_point[1],
+                                                   "Select race (OCR): " + str(RACE_LIST[race_id][1]))
+                                    return True
+                                else:
+                                    log.debug(f"❌ No OCR match - CSV: {csv_match}, In-Game: {ingame_match}, Key Parts: {key_parts_match}")
+                                    log.debug(f"🔍 Detected parts: '{detected_parts}'")
+                                    log.debug(f"🔍 Target parts: '{target_parts}'")
+                                    log.debug(f"🔍 In-game parts: '{ingame_parts}'")
+                            except Exception as e:
+                                log.debug(f"OCR fallback failed: {e}")
+                    else:
+                        log.debug(f"Template too large for extracted region: template {None if template_img is None else template_img.shape}, region {race_name_img.shape}")
             img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
             match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
         else:
@@ -368,19 +686,45 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 skill_name_img = skill_info_img[10: 47, 100: 445]
                 skill_cost_img = skill_info_img[69: 99, 525: 588]
                 text = ocr_line(skill_name_img)
-                cost = re.sub("\\D", "", ocr_line(skill_cost_img))
+                cost_text = ocr_line(skill_cost_img)
+                cost = re.sub("\\D", "", cost_text)
+                
+                # Handle empty cost (Global Server UI compatibility)
+                if not cost or cost == '':
+                    # Try alternative cost extraction regions for Global Server
+                    alt_cost_regions = [
+                        skill_info_img[65: 95, 520: 595],  # Slightly adjusted region
+                        skill_info_img[70: 100, 515: 590], # Different adjustment
+                        skill_info_img[60: 90, 530: 600],  # Wider region
+                    ]
+                    
+                    for i, alt_region in enumerate(alt_cost_regions):
+                        try:
+                            alt_cost_text = ocr_line(alt_region)
+                            alt_cost = re.sub("\\D", "", alt_cost_text)
+                            if alt_cost and alt_cost != '':
+                                cost = alt_cost
+                                log.debug(f"Found skill cost using alternative region {i+1}: '{alt_cost}' for '{text}'")
+                                break
+                        except:
+                            continue
+                    
+                    # Final fallback if all regions fail
+                    if not cost or cost == '':
+                        log.debug(f"Could not parse skill cost for '{text}', cost_text: '{cost_text}', defaulting to 1")
+                        cost = '1'  # Default cost to avoid crashes
 
-                # 检查是不是金色技能
+                # Check if it's a gold skill
                 mask = cv2.inRange(skill_info_cp, numpy.array([40, 180, 240]), numpy.array([100, 210, 255]))
                 is_gold = True if mask[120, 600] == 255 else False
 
                 skill_in_priority_list = False
-                skill_name_raw = "" #保存原始技能名字, 以防ocr产生偏差
+                skill_name_raw = "" # Save original skill name to prevent OCR deviation
                 priority = 99
                 for i in range(len(skill)):
                     found_similar_blacklist = find_similar_text(text, skill_blacklist, 0.7)
                     found_similar_prioritylist = find_similar_text(text, skill[i], 0.7)
-                    if found_similar_blacklist != "": # 排除出现在黑名单中的技能
+                    if found_similar_blacklist != "": # Exclude skills that appear in blacklist
                         priority = -1
                         skill_name_raw = found_similar_blacklist
                         skill_in_priority_list = True
@@ -395,7 +739,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
 
                 available = not image_match(skill_info_img, REF_SKILL_LEARNED).find_match
 
-                if priority != -1: # 排除出现在黑名单中的技能
+                if priority != -1: # Exclude skills that appear in blacklist
                     res.append({"skill_name": text,
                                 "skill_name_raw": skill_name_raw,
                                 "skill_cost": int(cost),
@@ -407,7 +751,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
             img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
                 match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
 
-        # 解析曾经获得过的技能
+        # Parse previously obtained skills
         match_result = image_match(img, REF_SKILL_LEARNED)
         if match_result.find_match:
             all_skill_scanned = False
@@ -417,7 +761,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 skill_info_img = img[pos[0][1] - 65:pos[1][1] + 75, pos[0][0] - 520: pos[1][0] + 150]
                 skill_info_cp = origin_img[pos[0][1] - 65:pos[1][1] + 75, pos[0][0] - 470: pos[1][0] + 150]
 
-                # 检查是不是金色技能
+                # Check if it's a gold skill
                 mask = cv2.inRange(skill_info_cp, numpy.array([40, 180, 240]), numpy.array([100, 210, 255]))
                 is_gold = True if mask[120, 600] == 255 else False
                 skill_name_img = skill_info_img[10: 47, 100: 445]
@@ -436,7 +780,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
             break
 
     res = sorted(res, key=lambda x: x["y_pos"])
-    # 没有精确计算过，但是大约y轴小于540就会导致技能名显示不全。暂时没测试出问题。
+    # No precise calculation, but approximately y-axis less than 540 will cause skill name to display incompletely. No problems tested yet.
     return [{k: v for k, v in r.items() if k != "y_pos"} for r in res if r["y_pos"] >= 540]
 
 
@@ -469,3 +813,38 @@ def parse_factor(ctx: UmamusumeContext):
             break
     ctx.cultivate_detail.parse_factor_done = True
     ctx.task.detail.cultivate_result['factor_list'] = factor_list
+
+
+def preprocess_wiki_image_for_ingame_matching(template_img):
+    """Preprocess wiki images to better match in-game conditions"""
+    try:
+        import cv2
+        import numpy as np
+        
+        # Convert to grayscale if not already
+        if len(template_img.shape) == 3:
+            template_img = cv2.cvtColor(template_img, cv2.COLOR_BGR2GRAY)
+        
+        # Apply preprocessing steps to make wiki images match in-game better
+        
+        # 1. Resize to common in-game resolution
+        height, width = template_img.shape
+        if width > 400:  # If image is too large
+            scale = 400 / width
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            template_img = cv2.resize(template_img, (new_width, new_height))
+        
+        # 2. Apply slight blur to match in-game rendering
+        template_img = cv2.GaussianBlur(template_img, (1, 1), 0)
+        
+        # 3. Adjust contrast to match in-game text rendering
+        template_img = cv2.convertScaleAbs(template_img, alpha=1.1, beta=5)
+        
+        # 4. Apply slight noise reduction
+        template_img = cv2.medianBlur(template_img, 1)
+        
+        return template_img
+    except Exception as e:
+        log.debug(f"Image preprocessing failed: {e}")
+        return template_img

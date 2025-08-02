@@ -3,10 +3,10 @@
     <div class="card">
       <div class="card-body">
         <div class="d-flex bd-highlight">
-          <h5 class="card-title">已结束的任务</h5>
+          <h5 class="card-title">Completed Tasks</h5>
         </div>
       </div>
-      <TaskList v-bind:task-list="historyTaskList" v-bind:no-data-label="'无已结束的任务'"></TaskList>
+      <TaskList v-bind:task-list="historyTaskList" v-bind:no-data-label="'No completed tasks'"></TaskList>
     </div>
   </div>
 </template>

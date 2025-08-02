@@ -19,7 +19,7 @@ class Scheduler:
     active = False
 
     def add_task(self, task):
-        log.info("已添加任务：" + task.task_id)
+        log.info("Task added: " + task.task_id)
         self.task_list.append(task)
 
     def delete_task(self, task_id):
@@ -68,7 +68,7 @@ class Scheduler:
                                         cron = croniter.croniter(task.cron_job_config.cron, now)
                                         task.cron_job_config.next_time = cron.get_next(datetime.datetime)
                     else:
-                        log.warning("未知任务类型：" + str(task.task_execute_mode) + ", task_id: " + str(task.task_id))
+                        log.warning("Unknown task type: " + str(task.task_execute_mode) + ", task_id: " + str(task.task_id))
 
             else:
                 if task_executor.active:
