@@ -276,40 +276,165 @@
               <span v-if="!showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">Show Race Options</span>
               <span v-if="showRaceList" class="btn auto-btn" style="width: 100%; background-color:#6c757d;" v-on:click="switchRaceList">Hide Race Options</span>
               </div>
-              <div class="row" v-if="showRaceList"> 
-                <div class="col">
-                  <div>Year 1</div>
-                  <br/>
-                  <div class="form-check">
-                    <div v-for="race in umamusumeRaceList_1">
-                      <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id"><label :for="race.id" v-if="race.type==='GI'||race.type==='GII'&&!this.hideG2||race.type==='GIII'&&!this.hideG3">
-                        <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>{{race.date}} {{race.name}}</label>
+              <div v-if="showRaceList">
+                <!-- Race Filter Controls -->
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label>🔍 Search Races:</label>
+                    <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
+                  </div>
+                  <div class="col-md-4">
+                    <label>🏆 Filter by Grade:</label>
+                    <div class="btn-group" role="group">
+                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGI, 'btn-outline-primary': !showGI}" @click="showGI = !showGI">
+                        <span style="background-color: #3485E3; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GI</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGII, 'btn-outline-primary': !showGII}" @click="showGII = !showGII">
+                        <span style="background-color: #F75A86; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GII</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showGIII, 'btn-outline-primary': !showGIII}" @click="showGIII = !showGIII">
+                        <span style="background-color: #58C471; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">GIII</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showOP, 'btn-outline-primary': !showOP}" @click="showOP = !showOP">
+                        <span style="background-color: #FFA500; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">OP</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP}" @click="showPREOP = !showPREOP">
+                        <span style="background-color: #9370DB; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">PRE-OP</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label>🌱 Filter by Terrain:</label>
+                    <div class="btn-group" role="group">
+                      <button type="button" class="btn btn-sm" :class="{'btn-success': showTurf, 'btn-outline-success': !showTurf}" @click="showTurf = !showTurf">
+                        <span style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Turf</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-warning': showDirt, 'btn-outline-warning': !showDirt}" @click="showDirt = !showDirt">
+                        <span style="background-color: #ffc107; color: black; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Dirt</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div>Year 2</div>
-                  <br/>
-                  <div class="form-check">
-                    <div v-for="race in umamusumeRaceList_2">
-                      <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id"><label :for="race.id" v-if="race.type==='GI'||race.type==='GII'&&!this.hideG2||race.type==='GIII'&&!this.hideG3">
-                        <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>{{race.date}} {{race.name}}</label>
+                
+                <!-- Distance Filter -->
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label>📏 Filter by Distance:</label>
+                    <div class="btn-group" role="group">
+                      <button type="button" class="btn btn-sm" :class="{'btn-info': showSprint, 'btn-outline-info': !showSprint}" @click="showSprint = !showSprint">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Sprint</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-info': showMile, 'btn-outline-info': !showMile}" @click="showMile = !showMile">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Mile</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-info': showMedium, 'btn-outline-info': !showMedium}" @click="showMedium = !showMedium">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Medium</span>
+                      </button>
+                      <button type="button" class="btn btn-sm" :class="{'btn-info': showLong, 'btn-outline-info': !showLong}" @click="showLong = !showLong">
+                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">Long</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label>🏁 Quick Selection:</label>
+                    <div class="btn-group" role="group">
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All GI</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All GII</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All GIII</button>
+                      <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear All</button>
                     </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div>Year 3</div>
-                  <br/>
-                  <div class="form-check">
-                    <div v-for="race in umamusumeRaceList_3">
-                      <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id"><label :for="race.id" v-if="race.type==='GI'||race.type==='GII'&&!this.hideG2||race.type==='GIII'&&!this.hideG3">
-                        <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
-                        <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>{{race.date}} {{race.name}}</label>
+                
+                
+
+                <!-- Race Lists -->
+                <div class="row"> 
+                  <div class="col-md-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h6 class="mb-0">Year 1 (Junior Year)</h6>
+                      </div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                                 <div class="form-check">
+                           <div v-for="race in filteredRaces_1" :key="race.id">
+                             <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id">
+                             <label :for="race.id" class="form-check-label">
+                               <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'OP'">&nbsp;<span style="background-color: #FFA500;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'PRE-OP'">&nbsp;<span style="background-color: #9370DB;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Turf'">&nbsp;<span style="background-color: #28a745; color: white;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Dirt'">&nbsp;<span style="background-color: #ffc107; color: black;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Sprint'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Mile'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Medium'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Long'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <small class="text-muted">{{race.date}} • {{race.venue}}</small><br>
+                               <strong>{{race.name}}</strong>
+                             </label>
+                           </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h6 class="mb-0">Year 2 (Classic Year)</h6>
+                      </div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                                 <div class="form-check">
+                           <div v-for="race in filteredRaces_2" :key="race.id">
+                             <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id">
+                             <label :for="race.id" class="form-check-label">
+                               <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'OP'">&nbsp;<span style="background-color: #FFA500;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'PRE-OP'">&nbsp;<span style="background-color: #9370DB;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Turf'">&nbsp;<span style="background-color: #28a745; color: white;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Dirt'">&nbsp;<span style="background-color: #ffc107; color: black;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Sprint'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Mile'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Medium'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Long'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <small class="text-muted">{{race.date}} • {{race.venue}}</small><br>
+                               <strong>{{race.name}}</strong>
+                             </label>
+                           </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h6 class="mb-0">Year 3 (Senior Year)</h6>
+                      </div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                                 <div class="form-check">
+                           <div v-for="race in filteredRaces_3" :key="race.id">
+                             <input class="form-check-input position-static" v-model="extraRace" type="checkbox" :id="race.id" :value="race.id">
+                             <label :for="race.id" class="form-check-label">
+                               <span v-if="race.type === 'GIII'">&nbsp;<span style="background-color: #58C471;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GII'">&nbsp;<span style="background-color: #F75A86;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'GI'">&nbsp;<span style="background-color: #3485E3;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'OP'">&nbsp;<span style="background-color: #FFA500;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.type === 'PRE-OP'">&nbsp;<span style="background-color: #9370DB;" class="badge badge-pill badge-secondary">{{race.type}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Turf'">&nbsp;<span style="background-color: #28a745; color: white;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.terrain === 'Dirt'">&nbsp;<span style="background-color: #ffc107; color: black;" class="badge badge-pill badge-secondary">{{race.terrain}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Sprint'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Mile'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Medium'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <span v-if="race.distance === 'Long'">&nbsp;<span style="background-color: #17a2b8; color: white;" class="badge badge-pill badge-secondary">{{race.distance}}</span>&nbsp;</span>
+                               <small class="text-muted">{{race.date}} • {{race.venue}}</small><br>
+                               <strong>{{race.name}}</strong>
+                             </label>
+                           </div>
+                         </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -468,6 +593,19 @@ export default {
       dataReady:false,
       hideG2: false,
       hideG3: false,
+      // Race filtering properties
+      raceSearch: '',
+      showGI: true,
+      showGII: true,
+      showGIII: true,
+      showOP: true,
+      showPREOP: true,
+      showTurf: true,
+      showDirt: true,
+      showSprint: true,
+      showMile: true,
+      showMedium: true,
+      showLong: true,
       fujikisekiShowMode: false,
       fujikisekiShowDifficulty: 1,
       levelDataList:[],
@@ -506,98 +644,198 @@ export default {
         {id:26, name:'帝王光环'},
       ],
               umamusumeRaceList_1:[
-         {id:2004, name:'Hakodate Junior Stakes',date: 'Junior Year Late Jul', type: 'GIII'},
-         {id:2009, name:'Niigata Junior Stakes',date: 'Junior Year Late Aug', type: 'GIII'},
-         {id:2011, name:'Kokura Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII'},
-         {id:2013, name:'Sapporo Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII'},
-         {id:2022, name:'Saudi Arabia Royal Cup',date: 'Junior Year Early Oct', type: 'GIII'},
-         {id:2024, name:'Artemis Stakes',date: 'Junior Year Late Oct', type: 'GIII'},
-         {id:2028, name:'Daily Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII'},
-         {id:2032, name:'Keio Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII'},
-         {id:2029, name:'Fantasy Stakes',date: 'Junior Year Early Nov', type: 'GIII'},
-         {id:2045, name:'Tokyo Sports Hai Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII'},
-         {id:2041, name:'Kyoto Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII'},
-         {id:2048, name:'Hanshin Juvenile Fillies', date: 'Junior Year Early Dec', type: 'GI'},
-         {id:2046, name:'Asahi Hai Futurity Stakes', date: 'Junior Year Early Dec', type: 'GI'},
-         {id:2052, name:'Hopeful Stakes', date: 'Junior Year Late Dec', type: 'GI'},
+         {id:2003, name:'Chukyo Junior Stakes',date: 'Junior Year Late Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2004, name:'Hakodate Junior Stakes',date: 'Junior Year Late Jul', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Hakodate'},
+         {id:2005, name:'Cosmos Sho',date: 'Junior Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2006, name:'Dahlia Sho',date: 'Junior Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Niigata'},
+         {id:2007, name:'Phoenix Sho',date: 'Junior Year Early Aug', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kokura'},
+         {id:2008, name:'Clover Sho',date: 'Junior Year Late Aug', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2009, name:'Niigata Junior Stakes',date: 'Junior Year Late Aug', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Niigata'},
+         {id:2010, name:'Aster Sho',date: 'Junior Year Early Sep', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2011, name:'Kokura Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Kokura'},
+         {id:2012, name:'Nojigiku Stakes',date: 'Junior Year Early Sep', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2013, name:'Sapporo Junior Stakes',date: 'Junior Year Early Sep', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Sapporo'},
+         {id:2014, name:'Suzuran Sho',date: 'Junior Year Early Sep', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Sapporo'},
+         {id:2015, name:'Canna Stakes',date: 'Junior Year Late Sep', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Nakayama'},
+         {id:2016, name:'Fuyo Stakes',date: 'Junior Year Late Sep', type: 'OP', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2017, name:'Kikyo Stakes',date: 'Junior Year Late Sep', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Hanshin'},
+         {id:2018, name:'Saffron Sho',date: 'Junior Year Late Sep', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2019, name:'Momiji Stakes',date: 'Junior Year Early Oct', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2020, name:'Platanus Sho',date: 'Junior Year Early Oct', type: 'PRE-OP', terrain: 'Dirt', distance: 'Mile', venue: 'Tokyo'},
+         {id:2021, name:'Rindo Sho',date: 'Junior Year Early Oct', type: 'PRE-OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2022, name:'Saudi Arabia Royal Cup',date: 'Junior Year Early Oct', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2023, name:'Shigiku Sho',date: 'Junior Year Early Oct', type: 'PRE-OP', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2024, name:'Artemis Stakes',date: 'Junior Year Late Oct', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2025, name:'Hagi Stakes',date: 'Junior Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2026, name:'Ivy Stakes',date: 'Junior Year Late Oct', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2027, name:'Nadeshiko Sho',date: 'Junior Year Late Oct', type: 'PRE-OP', terrain: 'Dirt', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2028, name:'Daily Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2029, name:'Fantasy Stakes',date: 'Junior Year Early Nov', type: 'GIII', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2030, name:'Fukushima Junior Stakes',date: 'Junior Year Early Nov', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Fukushima'},
+         {id:2031, name:'Hyakunichiso Tokubetsu',date: 'Junior Year Early Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Medium', venue: 'Tokyo'},
+         {id:2032, name:'Keio Hai Junior Stakes',date: 'Junior Year Early Nov', type: 'GII', terrain: 'Turf', distance: 'Sprint', venue: 'Tokyo'},
+         {id:2033, name:'Kigiku Sho',date: 'Junior Year Early Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2034, name:'Kimmokusei Tokubetsu',date: 'Junior Year Early Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Fukushima'},
+         {id:2035, name:'Oxalis Sho',date: 'Junior Year Early Nov', type: 'PRE-OP', terrain: 'Dirt', distance: 'Sprint', venue: 'Tokyo'},
+         {id:2036, name:'Akamatsu Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2037, name:'Begonia Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2038, name:'Cattleya Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Dirt', distance: 'Mile', venue: 'Tokyo'},
+         {id:2039, name:'Habotan Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2040, name:'Koyamaki Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
+         {id:2041, name:'Kyoto Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Kyoto'},
+         {id:2042, name:'Mochinoki Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Dirt', distance: 'Mile', venue: 'Kyoto'},
+         {id:2043, name:'Shiragiku Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Kyoto'},
+         {id:2044, name:'Shumeigiku Sho',date: 'Junior Year Late Nov', type: 'PRE-OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
+         {id:2045, name:'Tokyo Sports Hai Junior Stakes',date: 'Junior Year Late Nov', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Tokyo'},
+         {id:2046, name:'Asahi Hai Futurity Stakes', date: 'Junior Year Early Dec', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2047, name:'Erica Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Medium', venue: 'Hanshin'},
+         {id:2048, name:'Hanshin Juvenile Fillies', date: 'Junior Year Early Dec', type: 'GI', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
+         {id:2049, name:'Hiiragi Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2050, name:'Kantsubaki Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Dirt', distance: 'Sprint', venue: 'Chukyo'},
+         {id:2051, name:'Kuromatsu Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Sprint', venue: 'Nakayama'},
+         {id:2052, name:'Hopeful Stakes', date: 'Junior Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2053, name:'Manryo Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Sprint', venue: 'Hanshin'},
+         {id:2054, name:'Sazanka Sho',date: 'Junior Year Early Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Sprint', venue: 'Hanshin'},
+         {id:2055, name:'Christmas Rose Stakes',date: 'Junior Year Late Dec', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Nakayama'},
+         {id:2056, name:'Hopeful Stakes', date: 'Junior Year Late Dec', type: 'GI', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2057, name:'Senryo Sho',date: 'Junior Year Late Dec', type: 'PRE-OP', terrain: 'Turf', distance: 'Mile', venue: 'Hanshin'},
         ],
       umamusumeRaceList_2:[
-         {id:2058, name:'Fairy Stakes',date: 'Classic Year Early Jan', type: 'GIII'},
-         {id:2060, name:'Keisei Hai',date: 'Classic Year Early Jan', type: 'GIII'},
+         {id:2058, name:'Fairy Stakes',date: 'Classic Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2059, name:'Junior Cup',date: 'Classic Year Early Jan', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Nakayama'},
+         {id:2060, name:'Keisei Hai',date: 'Classic Year Early Jan', type: 'GIII', terrain: 'Turf', distance: 'Medium', venue: 'Nakayama'},
+         {id:2061, name:'Kobai Stakes',date: 'Classic Year Early Jan', type: 'OP', terrain: 'Turf', distance: 'Sprint', venue: 'Kyoto'},
          {id:2062, name:'Shinzan Kinen',date: 'Classic Year Early Jan', type: 'GIII'},
+         {id:2063, name:'Crocus Stakes',date: 'Classic Year Late Jan', type: 'OP'},
+         {id:2064, name:'Wakagoma Stakes',date: 'Classic Year Late Jan', type: 'OP'},
+         {id:2065, name:'Elfin Stakes',date: 'Classic Year Early Feb', type: 'OP'},
          {id:2066, name:'Kisaragi Sho',date: 'Classic Year Early Feb', type: 'GIII'},
          {id:2067, name:'Kyodo News Hai',date: 'Classic Year Early Feb', type: 'GIII'},
          {id:2068, name:'Queen Cup',date: 'Classic Year Early Feb', type: 'GIII'},
+         {id:2069, name:'Hyacinth Stakes',date: 'Classic Year Late Feb', type: 'OP'},
+         {id:2070, name:'Marguerite Stakes',date: 'Classic Year Late Feb', type: 'OP'},
+         {id:2071, name:'Sumire Stakes',date: 'Classic Year Late Feb', type: 'OP'},
+         {id:2072, name:'Anemone Stakes',date: 'Classic Year Early Mar', type: 'OP'},
          {id:2073, name:'Fillies\' Revue',date: 'Classic Year Early Mar', type: 'GII'},
+         {id:2074, name:'Shoryu Stakes',date: 'Classic Year Early Mar', type: 'OP'},
          {id:2075, name:'Tulip Sho',date: 'Classic Year Early Mar', type: 'GII'},
          {id:2076, name:'Yayoi Sho',date: 'Classic Year Early Mar', type: 'GII'},
+         {id:2077, name:'Falcon Stakes',date: 'Classic Year Late Mar', type: 'GIII'},
          {id:2078, name:'Flower Cup',date: 'Classic Year Late Mar', type: 'GIII'},
          {id:2079, name:'Spring Stakes',date: 'Classic Year Late Mar', type: 'GII'},
-         {id:2077, name:'Falcon Stakes',date: 'Classic Year Late Mar', type: 'GIII'},
-         {id:2081, name:'Mainichi Hai',date: 'Classic Year Late Mar', type: 'GIII'},
+         {id:2080, name:'Mainichi Hai',date: 'Classic Year Late Mar', type: 'GIII'},
+         {id:2081, name:'Wakaba Stakes',date: 'Classic Year Late Mar', type: 'OP'},
+         {id:2082, name:'Arlington Cup',date: 'Classic Year Early Apr', type: 'GIII'},
+         {id:2083, name:'Fukuryu Stakes',date: 'Classic Year Early Apr', type: 'OP'},
+         {id:2084, name:'New Zealand Trophy',date: 'Classic Year Early Apr', type: 'GII'},
          {id:2085, name:'Oka Sho',date: 'Classic Year Early Apr', type: 'GI'},
          {id:2086, name:'Satsuki Sho',date: 'Classic Year Early Apr', type: 'GI'},
-         {id:2084, name:'New Zealand Trophy',date: 'Classic Year Early Apr', type: 'GII'},
-         {id:2082, name:'Arlington Cup',date: 'Classic Year Early Apr', type: 'GIII'},
-         {id:2089, name:'Flora Stakes',date: 'Classic Year Late Apr', type: 'GII'},
+         {id:2087, name:'Wasurenagusa Sho',date: 'Classic Year Early Apr', type: 'OP'},
          {id:2088, name:'Aoba Sho',date: 'Classic Year Late Apr', type: 'GII'},
-         {id:2094, name:'NHK Mile Cup',date: 'Classic Year Early May', type: 'GI'},
+         {id:2089, name:'Flora Stakes',date: 'Classic Year Late Apr', type: 'GII'},
+         {id:2090, name:'Sweetpea Stakes',date: 'Classic Year Late Apr', type: 'OP'},
+         {id:2091, name:'Tachibana Stakes',date: 'Classic Year Late Apr', type: 'OP'},
+         {id:2092, name:'Tango Stakes',date: 'Classic Year Late Apr', type: 'OP'},
          {id:2093, name:'Kyoto Shimbun Hai',date: 'Classic Year Early May', type: 'GII'},
-         {id:2099, name:'Japanese Oaks',date: 'Classic Year Late May', type: 'GI'},
-         {id:2101, name:'Tokyo Yushun (Japanese Derby)',date: 'Classic Year Late May', type: 'GI'},
+         {id:2094, name:'NHK Mile Cup',date: 'Classic Year Early May', type: 'GI'},
+         {id:2095, name:'Principal Stakes',date: 'Classic Year Early May', type: 'OP'},
+         {id:2096, name:'Seiryu Stakes',date: 'Classic Year Early May', type: 'OP'},
          {id:2097, name:'Aoi Stakes',date: 'Classic Year Late May', type: 'GIII'},
-         {id:2107, name:'Yasuda Kinen',date: 'Classic Year Early Jun', type: 'GI'},
-         {id:2104, name:'Naruo Kinen',date: 'Classic Year Early Jun', type: 'GIII'},
-         {id:2103, name:'Mermaid Stakes',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2098, name:'Hosu Stakes',date: 'Classic Year Late May', type: 'OP'},
+         {id:2099, name:'Japanese Oaks',date: 'Classic Year Late May', type: 'GI'},
+         {id:2100, name:'Shirayuri Stakes',date: 'Classic Year Late May', type: 'OP'},
+         {id:2101, name:'Tokyo Yushun (Japanese Derby)',date: 'Classic Year Late May', type: 'GI'},
          {id:2102, name:'Epsom Cup',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2103, name:'Mermaid Stakes',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2104, name:'Naruo Kinen',date: 'Classic Year Early Jun', type: 'GIII'},
+         {id:2105, name:'Sleipnir Stakes',date: 'Classic Year Early Jun', type: 'OP'},
+         {id:2106, name:'Tempozan Stakes',date: 'Classic Year Early Jun', type: 'OP'},
+         {id:2107, name:'Yasuda Kinen',date: 'Classic Year Early Jun', type: 'GI'},
+         {id:2108, name:'Akhalteke Stakes',date: 'Classic Year Late Jun', type: 'OP'},
          {id:2109, name:'Hakodate Sprint Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
-         {id:2114, name:'Unicorn Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
+         {id:2110, name:'Onuma Stakes',date: 'Classic Year Late Jun', type: 'OP'},
+         {id:2111, name:'Paradise Stakes',date: 'Classic Year Late Jun', type: 'OP'},
+         {id:2112, name:'Sannomiya Stakes',date: 'Classic Year Late Jun', type: 'OP'},
          {id:2113, name:'Takarazuka Kinen',date: 'Classic Year Late Jun', type: 'GI'},
+         {id:2114, name:'Unicorn Stakes',date: 'Classic Year Late Jun', type: 'GIII'},
+         {id:2115, name:'Yonago Stakes',date: 'Classic Year Late Jun', type: 'OP'},
          {id:2116, name:'CBC Sho',date: 'Classic Year Early Jul', type: 'GIII'},
          {id:2117, name:'Hakodate Kinen',date: 'Classic Year Early Jul', type: 'GIII'},
          {id:2118, name:'Japan Dirt Derby',date: 'Classic Year Early Jul', type: 'GI'},
+         {id:2119, name:'Marine Stakes',date: 'Classic Year Early Jul', type: 'OP'},
+         {id:2120, name:'Meitetsu Hai',date: 'Classic Year Early Jul', type: 'OP'},
          {id:2121, name:'Procyon Stakes',date: 'Classic Year Early Jul', type: 'GIII'},
          {id:2122, name:'Radio Nikkei Sho',date: 'Classic Year Early Jul', type: 'GIII'},
          {id:2123, name:'Tanabata Sho',date: 'Classic Year Early Jul', type: 'GIII'},
+         {id:2124, name:'Tomoe Sho',date: 'Classic Year Early Jul', type: 'OP'},
          {id:2125, name:'Chukyo Kinen',date: 'Classic Year Late Jul', type: 'GIII'},
+         {id:2126, name:'Fukushima TV Open',date: 'Classic Year Late Jul', type: 'OP'},
          {id:2127, name:'Ibis Summer Dash',date: 'Classic Year Late Jul', type: 'GIII'},
          {id:2128, name:'Queen Stakes',date: 'Classic Year Late Jul', type: 'GIII'},
+         {id:2129, name:'Aso Stakes',date: 'Classic Year Early Aug', type: 'OP'},
          {id:2130, name:'Elm Stakes',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2131, name:'Kanetsu Stakes',date: 'Classic Year Early Aug', type: 'OP'},
          {id:2132, name:'Kokura Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
-         {id:2135, name:'Sekiya Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2133, name:'Sapporo Nikkei Open',date: 'Classic Year Early Aug', type: 'OP'},
+         {id:2134, name:'Sekiya Kinen',date: 'Classic Year Early Aug', type: 'GIII'},
+         {id:2135, name:'UHB Sho',date: 'Classic Year Early Aug', type: 'OP'},
+         {id:2136, name:'BSN Sho',date: 'Classic Year Late Aug', type: 'OP'},
+         {id:2137, name:'Keeneland Cup',date: 'Classic Year Late Aug', type: 'GIII'},
+         {id:2138, name:'Kitakyushu Kinen',date: 'Classic Year Late Aug', type: 'GIII'},
+         {id:2139, name:'Kokura Nikkei Open',date: 'Classic Year Late Aug', type: 'OP'},
+         {id:2140, name:'NST Sho',date: 'Classic Year Late Aug', type: 'OP'},
+         {id:2141, name:'Toki Stakes',date: 'Classic Year Late Aug', type: 'OP'},
          {id:2142, name:'Sapporo Kinen',date: 'Classic Year Late Aug', type: 'GII'},
-         {id:2138, name:'Keeneland Cup',date: 'Classic Year Late Aug', type: 'GIII'},
-         {id:2139, name:'Kitakyushu Kinen',date: 'Classic Year Late Aug', type: 'GIII'},
-         {id:2144, name:'Centaur Stakes',date: 'Classic Year Early Sep', type: 'GII'},
-         {id:2150, name:'Rose Stakes',date: 'Classic Year Early Sep', type: 'GII'},
-         {id:2147, name:'Niigata Kinen',date: 'Classic Year Early Sep', type: 'GIII'},
+         {id:2143, name:'Centaur Stakes',date: 'Classic Year Early Sep', type: 'GII'},
+         {id:2144, name:'Enif Stakes',date: 'Classic Year Early Sep', type: 'OP'},
+         {id:2145, name:'Niigata Kinen',date: 'Classic Year Early Sep', type: 'GIII'},
          {id:2146, name:'Keisei Hai Autumn Handicap',date: 'Classic Year Early Sep', type: 'GIII'},
-         {id:2151, name:'Shion Stakes',date: 'Classic Year Early Sep', type: 'GIII'},
-         {id:2153, name:'All Comers',date: 'Classic Year Late Sep', type: 'GII'},
-         {id:2154, name:'Kobe Shimbun Hai',date: 'Classic Year Late Sep', type: 'GII'},
-         {id:2157, name:'Sirius Stakes',date: 'Classic Year Late Sep', type: 'GIII'},
+         {id:2147, name:'Radio Nippon Sho',date: 'Classic Year Early Sep', type: 'OP'},
+         {id:2148, name:'Rose Stakes',date: 'Classic Year Early Sep', type: 'GII'},
+         {id:2149, name:'Shion Stakes',date: 'Classic Year Early Sep', type: 'GIII'},
+         {id:2150, name:'Tancho Stakes',date: 'Classic Year Early Sep', type: 'OP'},
+         {id:2151, name:'All Comers',date: 'Classic Year Late Sep', type: 'GII'},
+         {id:2152, name:'Kobe Shimbun Hai',date: 'Classic Year Late Sep', type: 'GII'},
+         {id:2153, name:'Nagatsuki Stakes',date: 'Classic Year Late Sep', type: 'OP'},
+         {id:2154, name:'Port Island Stakes',date: 'Classic Year Late Sep', type: 'OP'},
+         {id:2155, name:'Sirius Stakes',date: 'Classic Year Late Sep', type: 'GIII'},
+         {id:2156, name:'Brazil Cup',date: 'Classic Year Late Oct', type: 'OP'},
+         {id:2157, name:'Cassiopeia Stakes',date: 'Classic Year Late Oct', type: 'OP'},
+         {id:2158, name:'Green Channel Cup',date: 'Classic Year Early Oct', type: 'OP'},
+         {id:2159, name:'Lumiere Autumn Dash',date: 'Classic Year Late Oct', type: 'OP'},
+         {id:2160, name:'Muromachi Stakes',date: 'Classic Year Late Oct', type: 'OP'},
+         {id:2161, name:'October Stakes',date: 'Classic Year Early Oct', type: 'OP'},
+         {id:2162, name:'Opal Stakes',date: 'Classic Year Early Oct', type: 'OP'},
          {id:2163, name:'Mainichi Okan',date: 'Classic Year Early Oct', type: 'GII'},
          {id:2164, name:'Kyoto Daishoten',date: 'Classic Year Early Oct', type: 'GII'},
-         {id:2168, name:'Swan Stakes',date: 'Classic Year Late Oct', type: 'GII'},
-         {id:2169, name:'Fuji Stakes',date: 'Classic Year Late Oct', type: 'GII'},
-         {id:2172, name:'Tenno Sho (Autumn)',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2173, name:'Shuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2174, name:'Kikuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
-         {id:2176, name:'Argentina Kyowa Hai',date: 'Classic Year Early Nov', type: 'GII'},
-         {id:2181, name:'Elizabeth Queen Cup',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2182, name:'Japan Breeders\' Cup Classic',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2183, name:'Japan Breeders\' Cup Sprint',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2184, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Classic Year Early Nov', type: 'GI'},
-         {id:2185, name:'Keihan Hai',date: 'Classic Year Late Nov', type: 'GIII'},
-         {id:2188, name:'Mile Championship',date: 'Classic Year Late Nov', type: 'GI'},
-         {id:2189, name:'Japan Cup',date: 'Classic Year Late Nov', type: 'GI'},
-         {id:2191, name:'Stayers Stakes',date: 'Classic Year Early Dec', type: 'GII'},
-         {id:2194, name:'Capella Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
-         {id:2195, name:'Turquoise Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
-         {id:2196, name:'Champions Cup',date: 'Classic Year Early Dec', type: 'GI'},
-         {id:2197, name:'Hanshin Cup',date: 'Classic Year Late Dec', type: 'GII'},
-         {id:2201, name:'Nakayama Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
-         {id:2203, name:'Tokyo Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
+         {id:2165, name:'Shinetsu Stakes',date: 'Classic Year Early Oct', type: 'OP'},
+         {id:2166, name:'Swan Stakes',date: 'Classic Year Late Oct', type: 'GII'},
+         {id:2167, name:'Uzumasa Stakes',date: 'Classic Year Early Oct', type: 'OP'},
+         {id:2168, name:'Fuji Stakes',date: 'Classic Year Late Oct', type: 'GII'},
+         {id:2169, name:'Tenno Sho (Autumn)',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2170, name:'Shuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2171, name:'Kikuka Sho',date: 'Classic Year Late Oct', type: 'GI'},
+         {id:2172, name:'Argentina Kyowa Hai',date: 'Classic Year Early Nov', type: 'GII'},
+         {id:2173, name:'Andromeda Stakes',date: 'Classic Year Late Nov', type: 'OP'},
+         {id:2174, name:'Autumn Leaf Stakes',date: 'Classic Year Late Nov', type: 'OP'},
+         {id:2175, name:'Capital Stakes',date: 'Classic Year Late Nov', type: 'OP'},
+         {id:2176, name:'Elizabeth Queen Cup',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2177, name:'Fukushima Minyu Cup',date: 'Classic Year Late Nov', type: 'OP'},
+         {id:2178, name:'Japan Breeders\' Cup Classic',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2179, name:'Japan Breeders\' Cup Sprint',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2180, name:'Japan Breeders\' Cup Filly & Mare Turf',date: 'Classic Year Early Nov', type: 'GI'},
+         {id:2181, name:'Keihan Hai',date: 'Classic Year Late Nov', type: 'GIII'},
+         {id:2182, name:'Mile Championship',date: 'Classic Year Late Nov', type: 'GI'},
+         {id:2183, name:'Japan Cup',date: 'Classic Year Late Nov', type: 'GI'},
+         {id:2184, name:'Oro Cup',date: 'Classic Year Early Nov', type: 'OP'},
+         {id:2185, name:'Shimotsuki Stakes',date: 'Classic Year Late Nov', type: 'OP'},
+         {id:2186, name:'Stayers Stakes',date: 'Classic Year Early Dec', type: 'GII'},
+         {id:2187, name:'Capella Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
+         {id:2188, name:'Turquoise Stakes',date: 'Classic Year Early Dec', type: 'GIII'},
+         {id:2189, name:'Champions Cup',date: 'Classic Year Early Dec', type: 'GI'},
+         {id:2190, name:'Hanshin Cup',date: 'Classic Year Late Dec', type: 'GII'},
+         {id:2191, name:'Nakayama Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
+         {id:2192, name:'Tokyo Daishoten',date: 'Classic Year Late Dec', type: 'GI'},
       ],
       umamusumeRaceList_3:[
          {id:2213, name:'Kyoto Kimpai',date: 'Senior Year Early Jan', type: 'GIII'},
@@ -820,6 +1058,74 @@ export default {
       showSupportCardSelectModal: false,      
     }
   },
+  computed: {
+    filteredRaces_1() {
+      return this.umamusumeRaceList_1.filter(race => {
+        const matchesSearch = !this.raceSearch || 
+          race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
+          race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
+        const matchesType = 
+          (race.type === 'GI' && this.showGI) ||
+          (race.type === 'GII' && this.showGII) ||
+          (race.type === 'GIII' && this.showGIII) ||
+          (race.type === 'OP' && this.showOP) ||
+          (race.type === 'PRE-OP' && this.showPREOP);
+        const matchesTerrain = 
+          (race.terrain === 'Turf' && this.showTurf) ||
+          (race.terrain === 'Dirt' && this.showDirt);
+        const matchesDistance = 
+          (race.distance === 'Sprint' && this.showSprint) ||
+          (race.distance === 'Mile' && this.showMile) ||
+          (race.distance === 'Medium' && this.showMedium) ||
+          (race.distance === 'Long' && this.showLong);
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+      });
+    },
+    filteredRaces_2() {
+      return this.umamusumeRaceList_2.filter(race => {
+        const matchesSearch = !this.raceSearch || 
+          race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
+          race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
+        const matchesType = 
+          (race.type === 'GI' && this.showGI) ||
+          (race.type === 'GII' && this.showGII) ||
+          (race.type === 'GIII' && this.showGIII) ||
+          (race.type === 'OP' && this.showOP) ||
+          (race.type === 'PRE-OP' && this.showPREOP);
+        const matchesTerrain = 
+          (race.terrain === 'Turf' && this.showTurf) ||
+          (race.terrain === 'Dirt' && this.showDirt);
+        const matchesDistance = 
+          (race.distance === 'Sprint' && this.showSprint) ||
+          (race.distance === 'Mile' && this.showMile) ||
+          (race.distance === 'Medium' && this.showMedium) ||
+          (race.distance === 'Long' && this.showLong);
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+      });
+    },
+    filteredRaces_3() {
+      return this.umamusumeRaceList_3.filter(race => {
+        const matchesSearch = !this.raceSearch || 
+          race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
+          race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
+        const matchesType = 
+          (race.type === 'GI' && this.showGI) ||
+          (race.type === 'GII' && this.showGII) ||
+          (race.type === 'GIII' && this.showGIII) ||
+          (race.type === 'OP' && this.showOP) ||
+          (race.type === 'PRE-OP' && this.showPREOP);
+        const matchesTerrain = 
+          (race.terrain === 'Turf' && this.showTurf) ||
+          (race.terrain === 'Dirt' && this.showDirt);
+        const matchesDistance = 
+          (race.distance === 'Sprint' && this.showSprint) ||
+          (race.distance === 'Mile' && this.showMile) ||
+          (race.distance === 'Medium' && this.showMedium) ||
+          (race.distance === 'Long' && this.showLong);
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+      });
+    }
+  },
   mounted() {
     this.initSelect()
     this.getPresets()
@@ -855,6 +1161,46 @@ export default {
     },
     switchRaceList: function(){
       this.showRaceList = !this.showRaceList
+    },
+    // Quick selection methods
+    selectAllGI: function() {
+      const allGIRaces = [
+        ...this.umamusumeRaceList_1.filter(race => race.type === 'GI'),
+        ...this.umamusumeRaceList_2.filter(race => race.type === 'GI'),
+        ...this.umamusumeRaceList_3.filter(race => race.type === 'GI')
+      ];
+      allGIRaces.forEach(race => {
+        if (!this.extraRace.includes(race.id)) {
+          this.extraRace.push(race.id);
+        }
+      });
+    },
+    selectAllGII: function() {
+      const allGIIRaces = [
+        ...this.umamusumeRaceList_1.filter(race => race.type === 'GII'),
+        ...this.umamusumeRaceList_2.filter(race => race.type === 'GII'),
+        ...this.umamusumeRaceList_3.filter(race => race.type === 'GII')
+      ];
+      allGIIRaces.forEach(race => {
+        if (!this.extraRace.includes(race.id)) {
+          this.extraRace.push(race.id);
+        }
+      });
+    },
+    selectAllGIII: function() {
+      const allGIIIRaces = [
+        ...this.umamusumeRaceList_1.filter(race => race.type === 'GIII'),
+        ...this.umamusumeRaceList_2.filter(race => race.type === 'GIII'),
+        ...this.umamusumeRaceList_3.filter(race => race.type === 'GIII')
+      ];
+      allGIIIRaces.forEach(race => {
+        if (!this.extraRace.includes(race.id)) {
+          this.extraRace.push(race.id);
+        }
+      });
+    },
+    clearAllRaces: function() {
+      this.extraRace = [];
     },
     switchAdvanceOption: function(){
       this.showAdvanceOption = !this.showAdvanceOption
