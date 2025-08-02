@@ -279,11 +279,18 @@
               <div v-if="showRaceList">
                 <!-- Race Filter Controls -->
                 <div class="row mb-3">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label>🔍 Search Races:</label>
                     <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
+                    <label>👤 Character Filter:</label>
+                    <select v-model="selectedCharacter" class="form-control" @change="onCharacterChange">
+                      <option value="">All Characters</option>
+                      <option v-for="character in characterList" :key="character.name" :value="character.name">{{character.name}}</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
                     <label>🏁 Quick Selection:</label>
                     <div class="btn-group" role="group">
                       <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All GI</button>
@@ -314,8 +321,8 @@
                       <button type="button" class="btn" :class="{'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP}" @click="showPREOP = !showPREOP">
                         <span style="background-color: #9370DB; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">PRE-OP</span>
                       </button>
-                    </div>
                   </div>
+                </div>
                   <div class="col-md-3">
                     <label>🌱 Terrain:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
@@ -473,13 +480,13 @@
                   <div class="skill-content">
                     <div class="skill-name">{{skill}}</div>
                     <div class="skill-priority">SS Tier</div>
-                  </div>
+                </div>
                 </div>
               </div>
             </div>
 
             <!-- Priority 1 Skills (Good) -->
-            <div class="form-group">
+                  <div class="form-group">
               <label class="form-label">🥇 Priority 1 - S/A Tier Skills (Good)</label>
               <div class="skill-grid">
                 <div v-for="skill in skillPriority1" :key="skill" 
@@ -495,7 +502,7 @@
             </div>
 
             <!-- Priority 2 Skills (Situational) -->
-            <div class="form-group">
+                  <div class="form-group">
               <label class="form-label">🥈 Priority 2 - B Tier Skills (Situational)</label>
               <div class="skill-grid">
                 <div v-for="skill in skillPriority2" :key="skill" 
@@ -649,6 +656,11 @@ export default {
       showMile: true,
       showMedium: true,
       showLong: true,
+      // Character filter properties
+      selectedCharacter: '',
+      characterList: [],
+      characterAptitudes: {},
+      characterTrainingPeriods: {},
       fujikisekiShowMode: false,
       fujikisekiShowDifficulty: 1,
       levelDataList:[],
@@ -686,6 +698,186 @@ export default {
         {id:25, name:'Nice Nature'},
         {id:26, name:'King Halo'},
       ],
+      // Character data from aptitude_output.csv and character_objective_ranges.csv
+      characterList: [
+        {name: 'Agnes Tachyon', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Air Groove', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Biwa Hayahide', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Curren Chan', terrain: 'Turf', distance: 'Sprint'},
+        {name: 'Daiwa Scarlet', terrain: 'Turf', distance: 'Mile'},
+        {name: 'El Condor Pasa', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Gold Ship', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Grass Wonder', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Haru Urara', terrain: 'Dirt', distance: 'Sprint'},
+        {name: 'King Halo', terrain: 'Turf', distance: 'Sprint'},
+        {name: 'Maruzensky', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Matikanefukukitaru', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Mayano Top Gun', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Mejiro McQueen', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Mejiro Ryan', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Mihono Bourbon', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Nice Nature', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Oguri Cap', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Rice Shower', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Sakura Bakushin O', terrain: 'Turf', distance: 'Sprint'},
+        {name: 'Silence Suzuka', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Special Week', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Super Creek', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Symboli Rudolf', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Taiki Shuttle', terrain: 'Turf', distance: 'Sprint'},
+        {name: 'TM Opera O', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Tokai Teio', terrain: 'Turf', distance: 'Medium'},
+        {name: 'Vodka', terrain: 'Turf', distance: 'Mile'},
+        {name: 'Winning Ticket', terrain: 'Turf', distance: 'Medium'}
+      ],
+      // Character training periods from character_objective_ranges.csv
+      characterTrainingPeriods: {
+        'Agnes Tachyon': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'King Halo': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Early Oct']
+        },
+        'Curren Chan': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep']
+        },
+        'Daiwa Scarlet': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'El Condor Pasa': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        },
+        'Gold Ship': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Grass Wonder': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Haru Urara': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Early Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Maruzensky': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct']
+        },
+        'Matikanefukukitaru': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Mayano Top Gun': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Super Creek': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Air Groove': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct']
+        },
+        'Biwa Hayahide': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Symboli Rudolf': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        },
+        'Taiki Shuttle': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov']
+        },
+        'TM Opera O': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        },
+        'Tokai Teio': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        },
+        'Vodka': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Late May', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct']
+        },
+        'Winning Ticket': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Mejiro McQueen': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct']
+        },
+        'Mejiro Ryan': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Mihono Bourbon': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        },
+        'Nice Nature': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov']
+        },
+        'Oguri Cap': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Early Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Rice Shower': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Late Nov', 'Senior Year Early Dec']
+        },
+        'Sakura Bakushin O': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Early Feb', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov']
+        },
+        'Silence Suzuka': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Late Feb', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Late May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Early Oct', 'Classic Year Late Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Late Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep']
+        },
+        'Special Week': {
+          'Junior Year': ['Junior Year Early Jul', 'Junior Year Late Jul', 'Junior Year Early Aug', 'Junior Year Late Aug', 'Junior Year Early Sep', 'Junior Year Late Sep', 'Junior Year Early Oct', 'Junior Year Late Oct', 'Junior Year Early Nov', 'Junior Year Late Nov', 'Junior Year Early Dec', 'Junior Year Late Dec'],
+          'Classic Year': ['Classic Year Pre-Debut', 'Classic Year Early Jan', 'Classic Year Late Jan', 'Classic Year Late Feb', 'Classic Year Early Mar', 'Classic Year Late Mar', 'Classic Year Early Apr', 'Classic Year Late Apr', 'Classic Year Early May', 'Classic Year Early Jun', 'Classic Year Late Jun', 'Classic Year Early Jul', 'Classic Year Late Jul', 'Classic Year Early Aug', 'Classic Year Late Aug', 'Classic Year Early Sep', 'Classic Year Late Sep', 'Classic Year Early Oct', 'Classic Year Early Nov', 'Classic Year Late Nov', 'Classic Year Early Dec', 'Classic Year Late Dec'],
+          'Senior Year': ['Senior Year Pre-Debut', 'Senior Year Early Jan', 'Senior Year Late Jan', 'Senior Year Early Feb', 'Senior Year Late Feb', 'Senior Year Early Mar', 'Senior Year Late Mar', 'Senior Year Early Apr', 'Senior Year Early May', 'Senior Year Late May', 'Senior Year Early Jun', 'Senior Year Late Jun', 'Senior Year Early Jul', 'Senior Year Late Jul', 'Senior Year Early Aug', 'Senior Year Late Aug', 'Senior Year Early Sep', 'Senior Year Late Sep', 'Senior Year Early Oct', 'Senior Year Late Oct', 'Senior Year Early Nov', 'Senior Year Early Dec']
+        }
+      },
               umamusumeRaceList_1:[
               {id:2003, name:'Chukyo Junior Stakes',date: 'Junior Year Late Jul', type: 'OP', terrain: 'Turf', distance: 'Mile', venue: 'Chukyo'},
               {id:2004, name:'Hakodate Junior Stakes',date: 'Junior Year Late Jul', type: 'G3', terrain: 'Turf', distance: 'Sprint', venue: 'Hakodate'},
@@ -1208,7 +1400,7 @@ export default {
       aoharuTeamNameSelection: 4,
       showAoharuConfigModal: false,
       showUraConfigModal: false,
-      showSupportCardSelectModal: false,
+      showSupportCardSelectModal: false,      
       
       // Skill data from const.py
       skillPriority0: [
@@ -1255,7 +1447,26 @@ export default {
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+        
+        // Character filter logic
+        let matchesCharacter = true;
+        if (this.selectedCharacter) {
+          const character = this.characterList.find(c => c.name === this.selectedCharacter);
+          if (character) {
+            // Check if race matches character's aptitude (terrain and distance)
+            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            
+            // Check if race date is within character's training periods
+            const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
+            const matchesTrainingPeriod = characterPeriods && 
+              characterPeriods['Junior Year'] && 
+              characterPeriods['Junior Year'].includes(race.date);
+            
+            matchesCharacter = matchesAptitude && matchesTrainingPeriod;
+          }
+        }
+        
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     },
     filteredRaces_2() {
@@ -1277,7 +1488,26 @@ export default {
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+        
+        // Character filter logic
+        let matchesCharacter = true;
+        if (this.selectedCharacter) {
+          const character = this.characterList.find(c => c.name === this.selectedCharacter);
+          if (character) {
+            // Check if race matches character's aptitude (terrain and distance)
+            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            
+            // Check if race date is within character's training periods
+            const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
+            const matchesTrainingPeriod = characterPeriods && 
+              characterPeriods['Classic Year'] && 
+              characterPeriods['Classic Year'].includes(race.date);
+            
+            matchesCharacter = matchesAptitude && matchesTrainingPeriod;
+          }
+        }
+        
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     },
     filteredRaces_3() {
@@ -1299,7 +1529,26 @@ export default {
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        return matchesSearch && matchesType && matchesTerrain && matchesDistance;
+        
+        // Character filter logic
+        let matchesCharacter = true;
+        if (this.selectedCharacter) {
+          const character = this.characterList.find(c => c.name === this.selectedCharacter);
+          if (character) {
+            // Check if race matches character's aptitude (terrain and distance)
+            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            
+            // Check if race date is within character's training periods
+            const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
+            const matchesTrainingPeriod = characterPeriods && 
+              characterPeriods['Senior Year'] && 
+              characterPeriods['Senior Year'].includes(race.date);
+            
+            matchesCharacter = matchesAptitude && matchesTrainingPeriod;
+          }
+        }
+        
+        return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     }
   },
@@ -1377,6 +1626,10 @@ export default {
       });
     },
     clearAllRaces: function() {
+      this.extraRace = [];
+    },
+    onCharacterChange: function() {
+      // Reset race selection when character changes
       this.extraRace = [];
     },
     toggleRace: function(raceId) {

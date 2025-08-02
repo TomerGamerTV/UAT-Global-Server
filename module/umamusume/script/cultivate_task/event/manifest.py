@@ -158,11 +158,6 @@ def calculate_optimal_choice_from_db(event_data: dict) -> int:
     
     return 1
     
-
-
-
-# Removed calculate_optimal_choice function - no longer needed after removing web scraping
-
 # Cache for automatic event choices to avoid repeated web requests
 auto_choice_cache = {}
 
