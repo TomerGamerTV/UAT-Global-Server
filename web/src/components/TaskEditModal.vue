@@ -168,7 +168,7 @@
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="intelligence-value-input">Wisdom</label>
+                  <label for="intelligence-value-input">Wit</label>
                   <input type="number" v-model="expectIntelligenceValue" class="form-control" id="intelligence-value-input">
                 </div>
               </div>
@@ -241,10 +241,10 @@
                 <div class="form-group">
                   <label for="selectTactic1">Year 1</label>
                   <select v-model="selectedRaceTactic1" class="form-control" id="selectTactic1">
-                    <option :value=1>Stalker</option>
-                    <option :value=2>Midfield</option>
-                    <option :value=3>Front-runner</option>
-                    <option :value=4>Pacesetter</option>
+                    <option :value=1>End-Closer</option>
+                    <option :value=2>Late-Surger</option>
+                    <option :value=3>Pace-Chaser</option>
+                    <option :value=4>Front-Runner</option>
                   </select>
                 </div>
               </div>
@@ -252,10 +252,10 @@
                 <div class="form-group">
                   <label for="selectTactic2">Year 2</label>
                   <select v-model="selectedRaceTactic2" class="form-control" id="selectTactic2">
-                    <option :value=1>Stalker</option>
-                    <option :value=2>Midfield</option>
-                    <option :value=3>Front-runner</option>
-                    <option :value=4>Pacesetter</option>
+                    <option :value=1>End-Closer</option>
+                    <option :value=2>Late-Surger</option>
+                    <option :value=3>Pace-Chaser</option>
+                    <option :value=4>Front-Runner</option>
                   </select>
                 </div>
               </div>
@@ -263,10 +263,10 @@
                 <div class="form-group">
                   <label for="selectTactic3">Year 3</label>
                   <select v-model="selectedRaceTactic3" class="form-control" id="selectTactic3">
-                    <option :value=1>Stalker</option>
-                    <option :value=2>Midfield</option>
-                    <option :value=3>Front-runner</option>
-                    <option :value=4>Pacesetter</option>
+                    <option :value=1>End-Closer</option>
+                    <option :value=2>Late-Surger</option>
+                    <option :value=3>Pace-Chaser</option>
+                    <option :value=4>Front-Runner</option>
                   </select>
                 </div>
               </div>
@@ -1038,13 +1038,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Junior Year'] && 
-              characterPeriods['Junior Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
@@ -1079,13 +1087,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Classic Year'] && 
-              characterPeriods['Classic Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
@@ -1120,13 +1136,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Senior Year'] && 
-              characterPeriods['Senior Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }

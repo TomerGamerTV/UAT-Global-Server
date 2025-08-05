@@ -33,35 +33,32 @@ This project is a **Global Server adaptation** of the original China Server vers
 - **🎨 Enhanced Web Interface**: Advanced race filtering, skill choice system, and improved user experience
 - **🤖 Robust Bot System**: Dual detection (image + OCR) for reliable race fail handling
 - **⚡ Performance Optimization**: JSON-based data loading for faster operation
-- **🔧 Technical Upgrades**: Modern build system with automated releases
-- **📱 Smart Device Detection**: Automatic ADB device detection and selection
+- **📱 Smart Device Detection**: Automatic ADB device detection and selection when start the program (emulator must open the game first)
 
 ### 🆕 **New Features**
 - **Advanced Race Filtering**: Filter by race type, distance, terrain, and event character
 - **Skill Choice System**: Intelligent skill selection interface in web application
 - **Event Choice Picker**: Smart event selection for optimal training
 - **70% English Translation**: Major UI and system text translated to English
-- **Automated Releases**: GitHub Actions for seamless executable distribution
 - **Auto Device Selection**: Interactive ADB device detection and selection
 
 ### 🔄 **Current Limitations**
 - **Uma Musume Selection**: Must be done manually in-game (not yet automated)
 - **Support Card Selection**: Manual selection in-game required
-- **Character Filter**: Race character filtering is implemented, but card name translation needed for full functionality
+- **Character Race Filter**: Race character filtering is implemented, the filter has been adjusted to the position and terrain of the field that the character masters, and has also been adjusted to the character's free schedule.
 
 ## 🚀 **Features**
 
 ### **Core Automation**
 - ✅ **Automatic Training**: Complete training scenarios for all Uma Musume
 - ✅ **Customizable Targets**: Training attributes, racing tactics, additional races
-- ✅ **Skill Learning**: Optimized skill acquisition for 3-star factor farming
+- ✅ **Skill Learning**: Optimized skill acquisition for 3-star spark farming
 - ✅ **Inheritance Compatibility**: Improved training strategy support
 
 ### **Advanced Web Interface**
 - 🎛️ **Race Management**: Advanced filtering and selection tools
 - 📊 **Real-time Monitoring**: Live task status and progress tracking
 - ⚙️ **Easy Configuration**: Intuitive settings and preset management
-- 📱 **Responsive Design**: Works on desktop and mobile devices
 - 🎯 **Character Filter**: Filter races based on selected character (manual select on UAT web)
 
 ## 📦 **Installation & Setup**
@@ -124,21 +121,24 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 
 ### **Game Settings**
 1. **Graphics**: Must be set to "Standard", not "Basic"
-2. **Training Setup**: **Manually select** Uma Musume, stallion, and support cards in-game before starting
+2. **Training Setup**: **Manually select** Uma Musume, Legacy, and Support Cards in-game before starting
 3. **Support Cards**: Avoid friend cards (no specific outing strategy)
-4. **Starting Position**: Be at main menu or training interface
+4. **Starting Position**: Be at Career Menu (where the UI Shows Training, Race, Recreation) 
 
-### **Training Strategy**
-- **Attribute Balance**: Match support card types to target attributes
-- **Race Selection**: Configure custom race schedules for specific requirements
-- **Skill Optimization**: Use presets for optimal skill learning
+### **Website Settings RECOMENDED**
+- **Attribute Setting**: Set you desire attributes in the UAT interface, if you have no idea then try manual training first and put the result attribute value in the UAT interface
+- **Race Selection RECOMENDED**: Configure you race schedule, this is very necessary to avoid lack of fans in the next goal, consider using the character filter in the race menu, Don't worry when using the character filter, because the filter has been adjusted to the position and terrain of the field that the character masters, and has also been adjusted to the character's free schedule.
+- **Skill Optimization**: Set your desire skill, consider the priority 0 = the bot will buy the desire skill first
 
 ## 🔧 **Troubleshooting**
 
 ### **Common Issues**
 
+#### **Fan Goals Fail**
+- **Failed to the next goal races because lack of Fans**: Configure the race selection first in the UAT website to avoid lack of Fans
+
 #### **ADB Device Detection**
-- **No devices found**: Ensure emulator is running and ADB is enabled
+- **No devices found**: Ensure emulator is running and ADB is enabled and open the umamusume app
 - **ADB server issues**: The app automatically restarts ADB server if needed
 - **Device not detected**: Check emulator's ADB settings
 
@@ -175,12 +175,13 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 ## 🎯 **Roadmap**
 
 ### **Planned Features**
-- [ ] **Scheduled Tasks**: Automated execution at specific times
+- [ ] **Repeatable Tasks**: Automated execution at specific repeatable times
 - [ ] **AI Training Logic**: Enhanced decision-making algorithms
 - [ ] **Event Configuration**: Advanced event choice options
-- [ ] **Daily Automation**: Auto-complete daily tasks (coins, support points, JJC)
-- [ ] **Uma Musume Auto-Selection**: Automated character and support card selection
+- [ ] **Daily Automation**: Auto-complete daily tasks (daily races, fans farming, event)
+- [ ] **Uma Musume Auto-Selection**: Automated character, legacy, and support card selection
 - [ ] **Card Name Translation**: Complete English translation for support card names
+- [ ] **Accurate Translation**: Complete English accurate translation
 
 ### **Recent Updates**
 - ✅ **Global Server Migration**: Complete compatibility update

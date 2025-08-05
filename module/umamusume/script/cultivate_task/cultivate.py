@@ -140,9 +140,18 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 TurnOperationType.TURN_OPERATION_TYPE_RACE):
             # For race operations, let the AI decide what to do (training, rest, etc.)
             log.info("🏁 Race operation detected - letting AI decide next action")
-            # Reset training info to force re-parsing and let AI decide
-            ctx.cultivate_detail.turn_info.parse_train_info_finish = False
-            # Continue with normal flow - AI will decide based on stamina/motivation
+            # Force AI to make a decision based on current state
+            from module.umamusume.script.cultivate_task.ai import get_operation
+            new_operation = get_operation(ctx)
+            if new_operation and new_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_RACE:
+                # AI decided to do something else (training, rest, etc.)
+                log.info(f"🤖 AI decided to do {new_operation.turn_operation_type.name} instead of race")
+                ctx.cultivate_detail.turn_info.turn_operation = new_operation
+                # Continue with normal flow to execute the AI decision
+            else:
+                # AI still wants to race, proceed with race
+                log.info("🏁 AI confirmed race operation - proceeding with race")
+                return
         else:
             ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
             return
@@ -432,11 +441,8 @@ def script_cultivate_race_list(ctx: UmamusumeContext):
         
         # Special handling for URA races - if we're in race list after URA race click, just click the race button
         if ctx.cultivate_detail.turn_info.turn_operation is None:
-            log.warning("No turn operation - but this might be URA race list")
-            # Try clicking the race button directly at the coordinates you provided
-            log.info("🎯 Attempting to click URA race button at (510, 1082)")
-            ctx.ctrl.click(510, 1082, "URA Race Button")
-            time.sleep(1)
+            log.warning("No turn operation - returning to main menu")
+            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
             return
         else:
             # Log the turn operation type to debug
@@ -574,7 +580,6 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.info("✅ Skills already learned and confirmed - exiting skill learning")
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
         # Reset flags to prevent re-entering
-        ctx.cultivate_detail.learn_skill_done = False
         ctx.cultivate_detail.learn_skill_selected = False
         return
     learn_skill_list: list[list[str]]

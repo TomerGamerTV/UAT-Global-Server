@@ -229,7 +229,7 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -381,7 +381,7 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Medium"
     }
   },
   {
@@ -461,7 +461,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Medium"
     }
   },
   {
@@ -540,7 +540,7 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -620,7 +620,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Long"
     }
   },
   {
@@ -929,7 +929,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1008,11 +1008,11 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
-    "character_name": "Mejiro Mcqueen",
+    "character_name": "Mejiro McQueen",
     "objectives": {
       "junior_year": {
         "dates": [
@@ -1084,8 +1084,8 @@
     },
     "total_objectives": 52,
     "aptitude": {
-      "terrain": "None",
-      "distance": "None"
+      "terrain": "Turf",
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1247,6 +1247,85 @@
     }
   },
   {
+    "character_name": "Narita Taishin",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
     "character_name": "Nice Nature",
     "objectives": {
       "junior_year": {
@@ -1322,7 +1401,7 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1402,7 +1481,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Medium"
     }
   },
   {
@@ -1482,7 +1561,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1633,7 +1712,7 @@
     "total_objectives": 51,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Medium"
     }
   },
   {
@@ -1714,7 +1793,7 @@
     "total_objectives": 56,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1794,7 +1873,7 @@
     "total_objectives": 55,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1873,7 +1952,86 @@
     "total_objectives": 54,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Medium"
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "TM Opera O",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
     }
   },
   {
@@ -1951,86 +2109,7 @@
     "total_objectives": 53,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Sprint"
-    }
-  },
-  {
-    "character_name": "Tm Opera O",
-    "objectives": {
-      "junior_year": {
-        "dates": [
-          "Junior Early Jul",
-          "Junior Late Jul",
-          "Junior Early Aug",
-          "Junior Late Aug",
-          "Junior Early Sep",
-          "Junior Late Sep",
-          "Junior Early Oct",
-          "Junior Late Oct",
-          "Junior Early Nov",
-          "Junior Late Nov",
-          "Junior Early Dec",
-          "Junior Late Dec"
-        ],
-        "count": 12
-      },
-      "classic_year": {
-        "dates": [
-          "Classic Pre-Debut",
-          "Classic Early Jan",
-          "Classic Late Jan",
-          "Classic Early Feb",
-          "Classic Early Mar",
-          "Classic Late Mar",
-          "Classic Late Apr",
-          "Classic Early May",
-          "Classic Early Jun",
-          "Classic Late Jun",
-          "Classic Early Jul",
-          "Classic Late Jul",
-          "Classic Early Aug",
-          "Classic Late Aug",
-          "Classic Early Sep",
-          "Classic Late Sep",
-          "Classic Early Oct",
-          "Classic Late Oct",
-          "Classic Early Nov",
-          "Classic Late Nov",
-          "Classic Early Dec"
-        ],
-        "count": 21
-      },
-      "senior_year": {
-        "dates": [
-          "Senior Pre-Debut",
-          "Senior Early Jan",
-          "Senior Late Jan",
-          "Senior Early Feb",
-          "Senior Late Feb",
-          "Senior Early Mar",
-          "Senior Late Mar",
-          "Senior Early Apr",
-          "Senior Early May",
-          "Senior Late May",
-          "Senior Early Jun",
-          "Senior Early Jul",
-          "Senior Late Jul",
-          "Senior Early Aug",
-          "Senior Late Aug",
-          "Senior Early Sep",
-          "Senior Late Sep",
-          "Senior Early Oct",
-          "Senior Late Oct",
-          "Senior Early Nov",
-          "Senior Early Dec"
-        ],
-        "count": 21
-      }
-    },
-    "total_objectives": 54,
-    "aptitude": {
-      "terrain": "None",
-      "distance": "None"
+      "distance": "Sprint, Mile"
     }
   },
   {
@@ -2184,7 +2263,7 @@
     "total_objectives": 49,
     "aptitude": {
       "terrain": "Turf",
-      "distance": "Mile"
+      "distance": "Mile, Medium"
     }
   },
   {

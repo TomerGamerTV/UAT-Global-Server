@@ -16,46 +16,45 @@ import bot.base.log as logger
 log = logger.get_logger(__name__)
 
 TITLE = [
-    "Race Details",
-    "Rest & Outing Confirmation",
-    "Rest & Recreation",
-    "Network Error",
-    "Try Again",
-    "Earned Title",
-    "Training Complete",
-    "Event Skip Settings",
-    "Outing Confirmation",
-    "Skill Acquisition Confirmation",
-    "Successfully Acquired Skill",
-    "Training End Confirmation",
-    "Uma Musume Details",
-    "Insufficient Fans",
-    "Outing",
-    "Skip Confirmation",
-    "Rest Confirmation",
-    "Race Recommendation Feature",
-    "Tactics",
-    "Strategy",
-    "Goal Not Reached",
-    "Target Fan Count Insufficient",
-    "Consecutive Racing",
-    "Infirmary Confirmation",
-    "Gift Box",
-    "Collection Successful",
-    "Character Story Unlocked",
-    "Target Achievement Count Insufficient",
-    "Event Story Unlocked",
-    "Confirm",
-    "Training Value Recovery",
-    "Select Training Difficulty",
-    "Factor Confirmation",
+    "Race Details",                    # TITLE[0]
+    "Rest & Outing Confirmation",     # TITLE[1]
+    "Rest & Recreation", ##handles the rest & recreation popup in summer # TITLE[2]
+    "Network Error",                  # TITLE[3]
+    "Try Again", ##handles the try again button when race failed (used clock items) # TITLE[4]
+    "Earned Title",                  # TITLE[5]
+    "Training Complete",              # TITLE[6]
+    "Quick Mode Settings", ##handles the quick mode settings popup dialog # TITLE[7]
+    "Recreation", ##handles the recreation popup dialog # TITLE[8]
+    "Confirmation", ##handles the initial confirmation when learning skill starts # TITLE[9]
+    "Skills Learned", ##handles the final completion dialog after learning skills is done # TITLE[10]
+    "Complete Career", ##handles the complete career popup dialog # TITLE[11]
+    "Umamusume Details", ##handles the umamusume details after career finish popup dialog # TITLE[12]
+    "Fan Count Below Target Race Requirement", # TITLE[13]
+    "Outing",                        # TITLE[14]
+    "Skip Confirmation", ##handles the skip confirmation content when first start career # TITLE[15]
+    "Rest", ##handles the rest popup confirmationdialog # TITLE[16]
+    "Race Recommendations", ##handles the race recommendation popup dialog # TITLE[17]
+    "Tactics", ##fallback to strategy # TITLE[18]
+    "Strategy", ##handles the strategy change popup in race # TITLE[19]
+    "Goal Not Reached", ##handles the goal not reached popup dialog (Oguri Cap G1 Goals) # TITLE[20]
+    "Insufficient Fans", ###maybe the right insufficient fans dialog???????????????### # TITLE[21]
+    "Warning", ##handles the warning 3 consecutive racing popup dialog # TITLE[22]
+    "Infirmary", ##handles the infirmary popup confirmation dialog # TITLE[23]
+    "Gift Box",                      # TITLE[24]
+    "Collection Successful", ###maybe event collection successful??????????????### # TITLE[25]
+    "Character Story Unlocked",      # TITLE[26]
+    "Skill Acquisition Confirmation", # TITLE[27]
+    "Successfully Acquired Skill",   # TITLE[28]
+    "Target Achievement Count Insufficient", # TITLE[29] - FIXED: was "Confirm"
+    "Event Story Unlocked",          # TITLE[30]
+    "Confirm", ##Recover TP Confirm button if you enable auto recover tp in UAT website # TITLE[31] - FIXED: was "Target Achievement Count Insufficient"
+    "Recover TP", ##Recover TP Confirm popup dialog to buy the recover tp item # TITLE[32]
+    "Factor Confirmation", ##handles the factor confirmation popup dialog (Fujikiseki Show) # TITLE[33]
     # Limited Time: Fujikiseki Show
-    "New Difficulty Unlocked",
+    "New Difficulty Unlocked", # TITLE[34]
     # Aoharu Cup
-    "Auto Formation",
-    "Battle Confirmation",
-    "Skills Learned",
-    "Complete Career",
+    "Auto Formation", # TITLE[35]
+    "Battle Confirmation", # TITLE[36]
 ]
 
 
@@ -85,6 +84,58 @@ def script_info(ctx: UmamusumeContext):
         else:
             log.info(f"✅ Found match: '{original_text}' -> '{title_text}'")
         
+        # Debug: Show which TITLE index this matches to
+        try:
+            title_index = TITLE.index(title_text)
+            log.info(f"🔍 DEBUG: title_text='{title_text}' matches TITLE[{title_index}]='{TITLE[title_index]}'")
+        except ValueError:
+            log.warning(f"⚠️ DEBUG: title_text='{title_text}' not found in TITLE array")
+        
+        # Force correct handler for "Confirm" - bypass TITLE array indexing issues
+        if title_text == "Confirm":
+            log.info("🔋 FORCED: Handling 'Confirm' (TP recovery) screen")
+            if not ctx.cultivate_detail.allow_recover_tp:
+                ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.TP_NOT_ENOUGH)
+            else:
+                ctx.ctrl.click_by_point(TO_RECOVER_TP)
+            return  # Exit early to prevent wrong handler execution
+        
+        # Force correct handler for "Recover TP" - bypass TITLE array indexing issues
+        if title_text == "Recover TP":
+            log.info("🔋 FORCED: Handling 'Recover TP' screen")
+            screen = ctx.ctrl.get_screen(to_gray=True)
+            
+            # Debug: Check image matching results
+            match1 = image_match(screen, REF_RECOVER_TP_1)
+            match2 = image_match(screen, REF_RECOVER_TP_2)
+            match3 = image_match(screen, REF_RECOVER_TP_3)
+            
+            log.info(f"🔍 DEBUG: REF_RECOVER_TP_1 match: {match1.find_match}")
+            log.info(f"🔍 DEBUG: REF_RECOVER_TP_2 match: {match2.find_match}")
+            log.info(f"🔍 DEBUG: REF_RECOVER_TP_3 match: {match3.find_match}")
+            
+            # Try to find REF_RECOVER_TP_1 (Use button)
+            if match1.find_match:
+                log.info("✅ Found REF_RECOVER_TP_1 - clicking USE_TP_DRINK")
+                ctx.ctrl.click_by_point(USE_TP_DRINK)
+            # Try to find REF_RECOVER_TP_2 (Confirm button)
+            elif match2.find_match:
+                log.info("✅ Found REF_RECOVER_TP_2 - clicking USE_TP_DRINK_CONFIRM")
+                ctx.ctrl.click_by_point(USE_TP_DRINK_CONFIRM)
+            # Try to find REF_RECOVER_TP_3 (Result close button)
+            elif match3.find_match:
+                log.info("✅ Found REF_RECOVER_TP_3 - clicking USE_TP_DRINK_RESULT_CLOSE")
+                ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
+            else:
+                log.warning("⚠️ No TP recovery image templates found - trying fallback")
+                # Try to find any "Confirm" or "Use" button by OCR
+                try:
+                    # Look for "Confirm" button around the typical position
+                    ctx.ctrl.click(600, 400, "Fallback TP recovery click - Confirm area")
+                except:
+                    # Final fallback - click center of screen
+                    ctx.ctrl.click(350, 600, "Final fallback TP recovery click")
+            return  # Exit early to prevent wrong handler execution
 
         if title_text == TITLE[0]:
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_3)
@@ -208,50 +259,36 @@ def script_info(ctx: UmamusumeContext):
                 # Fallback to hardcoded coordinates
                 ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN)
                 log.info("⚠️ Using fallback coordinates for skill confirmation - template not found")
-        if title_text == TITLE[27]:  # Successfully Acquired Skill  
+        if title_text == TITLE[28]:  # Successfully Acquired Skill  
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
             ctx.cultivate_detail.learn_skill_selected = False
-        if title_text == TITLE[28]:  # Target Achievement Count Insufficient
+        if title_text == TITLE[29]:  # Target Achievement Count Insufficient
+            log.info("🎯 Handling 'Target Achievement Count Insufficient' screen")
             ctx.ctrl.click_by_point(WIN_TIMES_NOT_ENOUGH_RETURN)
-        if title_text == TITLE[29]:  # Event Story Unlocked
+        if title_text == TITLE[30]:  # Event Story Unlocked
             ctx.ctrl.click_by_point(ACTIVITY_STORY_UNLOCK_CONFIRM)
-        if title_text == TITLE[30]:  # Confirm 
-            # Check if this is a skill learning exit confirmation
-            if ctx.cultivate_detail.learn_skill_done:
-                log.info("✅ Skill learning exit confirmation - clicking confirm to exit")
-                ctx.ctrl.click_by_point(CULTIVATE_OPERATION_COMMON_CONFIRM)
-                # Reset the flag to prevent further skill learning loops
-                ctx.cultivate_detail.learn_skill_done = False
-                return
-            else:
-                # Check if this might be a skill confirmation by looking for the template
-                img = ctx.current_screen
-                img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                from module.umamusume.asset.ui import CONFIRMATION_LEARNSKILL_BUTTON
-                result = image_match(img_gray, CONFIRMATION_LEARNSKILL_BUTTON)
-                log.info(f"🔍 Template matching result: {result.find_match}")
-                if result.find_match:
-                    # Use template matching coordinates for skill confirmation
-                    center_x = (result.matched_area[0][0] + result.matched_area[1][0]) // 2
-                    center_y = (result.matched_area[0][1] + result.matched_area[1][1]) // 2
-                    ctx.ctrl.click(center_x, center_y, "Skill confirmation using template matching (fallback)")
-                    log.info(f"✅ Found skill confirmation button at ({center_x}, {center_y}) via fallback")
-                else:
-                    # Use CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN coordinates for skill confirmations
-                    ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN)
-                    log.info("⚠️ Using skill confirmation coordinates - template not found")
-        if title_text == TITLE[31]:  # Training Value Recovery
+
+        if title_text == TITLE[31]:  # Confirm (TP recovery)
+            log.info("🔋 Handling 'Confirm' (TP recovery) screen")
             if not ctx.cultivate_detail.allow_recover_tp:
                 ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.TP_NOT_ENOUGH)
             else:
                 ctx.ctrl.click_by_point(TO_RECOVER_TP)
-        if title_text == TITLE[32]:  # Select Training Difficulty
+        if title_text == TITLE[32]:  # Recover TP
+            log.info("🔋 Handling 'Recover TP' screen")
             if image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_1).find_match:
+                log.info("✅ Found REF_RECOVER_TP_1 - clicking USE_TP_DRINK")
                 ctx.ctrl.click_by_point(USE_TP_DRINK)
             elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_2).find_match:
+                log.info("✅ Found REF_RECOVER_TP_2 - clicking USE_TP_DRINK_CONFIRM")
                 ctx.ctrl.click_by_point(USE_TP_DRINK_CONFIRM)
             elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_3).find_match:
+                log.info("✅ Found REF_RECOVER_TP_3 - clicking USE_TP_DRINK_RESULT_CLOSE")
                 ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
+            else:
+                log.warning("⚠️ No TP recovery image templates found - trying fallback")
+                # Fallback: try to click the first "Use" button
+                ctx.ctrl.click(600, 400, "Fallback TP recovery click")
         if title_text == TITLE[33]:  # Factor Confirmation
             # Limited time: Fuji Kiseki Show
             # Currently seems only used here "Select cultivation difficulty, if there are others in the future, need to adjust code structure"
@@ -287,19 +324,5 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[34]:  # New Difficulty Unlocked
             # Limited time: Fuji Kiseki Show
             ctx.ctrl.click(360, 850, "Confirm unlock new difficulty")
-        if title_text == TITLE[36]:  # Skills Learned
-            # Handle skills learned confirmation with user-provided coordinates
-            log.info("🎓 Handling 'Skills Learned' screen")
-            ctx.ctrl.click(358, 837, "Skills Learned confirmation")
-            log.info("✅ Clicked Skills Learned confirmation at (358, 837)")
-            # After confirming skills learned, click back button to exit
-            time.sleep(1)
-            log.info("✅ Skills confirmed - clicking back button to exit skill learning")
-            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
-        if title_text == TITLE[37]:  # Complete Career
-            # Handle complete career confirmation with user-provided coordinates
-            log.info("🏆 Handling 'Complete Career' screen")
-            ctx.ctrl.click(511, 918, "Complete Career finish button")
-            log.info("✅ Clicked Complete Career finish button at (511, 918)")
         time.sleep(1)
 
