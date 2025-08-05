@@ -1,9 +1,7 @@
-version: 0.0.1
 bot:
   auto:
     adb:
-      device_name: "127.0.0.1:5555"
       delay: 0.5
+      device_name: emulator-5554
     cpu_alloc: 4
-
-
+version: 0.0.1

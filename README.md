@@ -12,6 +12,7 @@
 - **🤖 Robust Bot System**: Dual detection (image + OCR) for reliable race fail handling
 - **⚡ Performance Optimization**: JSON-based data loading for faster operation
 - **🔧 Technical Upgrades**: Modern build system with automated releases
+- **📱 Smart Device Detection**: Automatic ADB device detection and selection
 
 ### 🆕 **New Features**
 - **Advanced Race Filtering**: Filter by race type, distance, terrain, and event character
@@ -19,6 +20,7 @@
 - **Event Choice Picker**: Smart event selection for optimal training
 - **70% English Translation**: Major UI and system text translated to English
 - **Automated Releases**: GitHub Actions for seamless executable distribution
+- **Auto Device Selection**: Interactive ADB device detection and selection
 
 ### 🔄 **Current Limitations**
 - **Uma Musume Selection**: Must be done manually in-game (not yet automated)
@@ -60,27 +62,11 @@ cd UAT-Global-Server
 2. Run `install.ps1` (Right-click → "Run with PowerShell")
 3. Ensure no `venv` folder exists in current directory
 
-### **Configuration**
-
-Edit `config.yaml`:
-
-```yaml
-bot:
-  auto:
-    adb:
-      device_name: "127.0.0.1:16384"  # Your emulator's ADB port
-      delay: 0
-    cpu_alloc: 4  # Number of allocated CPUs
-```
-
-**Common Emulator Ports:**
-- **MuMu12** (Recommended): `127.0.0.1:16384`
-- **LDPlayer/BlueStacks**: `emulator-5554`
-
 ### **Emulator Setup**
 - **Resolution**: 720 × 1280 (Portrait mode)
 - **DPI**: 180
 - **Graphics**: Standard (not Simple)
+- **ADB**: Must be enabled in emulator settings
 
 ### **Launch**
 ```bash
@@ -88,9 +74,17 @@ bot:
 ./run.ps1
 ```
 
+The application will automatically:
+1. 🔍 **Scan for ADB devices**
+2. 📱 **Show available devices**
+3. 🎮 **Detect devices with Umamusume running**
+4. ✅ **Let you select your preferred device**
+5. ⚙️ **Auto-update configuration**
+6. 🚀 **Start the web interface**
+
 **Success indicator:**
 ```
-UAT running on http://127.0.0.1:8071
+🚀 UAT running on http://127.0.0.1:8071
 ```
 
 Access the web interface at `http://127.0.0.1:8071` to configure and start tasks.
@@ -119,6 +113,11 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 ## 🔧 **Troubleshooting**
 
 ### **Common Issues**
+
+#### **ADB Device Detection**
+- **No devices found**: Ensure emulator is running and ADB is enabled
+- **ADB server issues**: The app automatically restarts ADB server if needed
+- **Device not detected**: Check emulator's ADB settings and USB debugging
 
 #### **PowerShell Script Issues**
 - **Script crashes**: Open console first to see error messages
@@ -166,6 +165,7 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 - ✅ **Web Interface Enhancement**: Advanced filtering and controls
 - ✅ **Performance Optimization**: JSON-based data loading
 - ✅ **Error Handling**: Robust fail-safe mechanisms
+- ✅ **Smart Device Detection**: Automatic ADB device selection
 
 ## 🤝 **Contributing**
 
