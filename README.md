@@ -185,11 +185,19 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## 📄 **License**
+## 📄 **License & Credits**
 
-This project is open source. Please respect the original author's work while contributing improvements.
+This project is a **Global Server adaptation** of the original China Server version by [@shiokaze](https://github.com/shiokaze/UmamusumeAutoTrainer).
+
+### **Original Project**
+- **Original Author**: [@shiokaze](https://github.com/shiokaze/UmamusumeAutoTrainer)
+- **Original Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) (China Server)
+
+### **This Project**
+- **Global Server Adaptation**: [UAT-Global-Server](https://github.com/BrayAlter/UAT-Global-Server)
+- **Based on**: Original China Server version
+- **Enhancements**: 70% translation, improved UI, Global Server compatibility
+
+**Please respect the original author's work while contributing improvements.**
 
 ---
-
-**🏆 From China Server automation to Global Server excellence - the most advanced Umamusume training tool available!**
-
