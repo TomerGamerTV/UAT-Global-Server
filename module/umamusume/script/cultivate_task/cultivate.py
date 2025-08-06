@@ -41,8 +41,20 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
     if not ctx.cultivate_detail.turn_info.turn_learn_skill_done and ctx.cultivate_detail.learn_skill_done:
         ctx.cultivate_detail.reset_skill_learn()
 
+    # Check if we should skip automatic skill learning
+    # Only skip when manual purchase is enabled AND we're at cultivate finish
+    skip_auto_skill_learning = (ctx.task.detail.manual_purchase_at_end and ctx.cultivate_detail.cultivate_finish)
+    
+    # Debug logging
+    log.debug(f"🔍 Skill learning check - Skill points: {ctx.cultivate_detail.turn_info.uma_attribute.skill_point}, Threshold: {ctx.cultivate_detail.learn_skill_threshold}")
+    log.debug(f"🔍 Manual purchase enabled: {ctx.task.detail.manual_purchase_at_end}, Cultivate finish: {ctx.cultivate_detail.cultivate_finish}")
+    log.debug(f"🔍 Skip auto skill learning: {skip_auto_skill_learning}")
+    
+    # Automatic skill learning during normal cultivation (not at cultivate finish)
     if (ctx.cultivate_detail.turn_info.uma_attribute.skill_point > ctx.cultivate_detail.learn_skill_threshold
-            and not ctx.cultivate_detail.turn_info.turn_learn_skill_done):
+            and not ctx.cultivate_detail.turn_info.turn_learn_skill_done
+            and not skip_auto_skill_learning):
+        log.info(f"🎯 Auto-learning skills - Skill points: {ctx.cultivate_detail.turn_info.uma_attribute.skill_point}")
         if len(ctx.cultivate_detail.learn_skill_list) > 0 or not ctx.cultivate_detail.learn_skill_only_user_provided:
             ctx.ctrl.click_by_point(CULTIVATE_SKILL_LEARN)
         else:
@@ -567,14 +579,125 @@ def script_cultivate_catch_doll_result(ctx: UmamusumeContext):
 
 
 def script_cultivate_finish(ctx: UmamusumeContext):
-    if not ctx.cultivate_detail.learn_skill_done or not ctx.cultivate_detail.cultivate_finish:
-        ctx.cultivate_detail.cultivate_finish = True
-        ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
+    if not ctx.task.detail.manual_purchase_at_end:
+        if not ctx.cultivate_detail.learn_skill_done or not ctx.cultivate_detail.cultivate_finish:
+            ctx.cultivate_detail.cultivate_finish = True
+            ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
+        else:
+            ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM)
     else:
-        ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM)
+        # Manual purchase mode - show notification and wait for user
+        if not ctx.cultivate_detail.manual_purchase_completed:
+            # Check if user has clicked "Learn Skills" button (indicating they want to purchase manually)
+            if not hasattr(ctx.cultivate_detail, 'manual_purchase_initiated'):
+                log.info("🔧 Manual purchase mode enabled - showing web notification to user")
+                try:
+                    # Send web notification to UAT interface
+                    import requests
+                    import json
+                    
+                    # Send notification to web interface
+                    notification_data = {
+                        "type": "manual_skill_purchase",
+                        "message": "Please learn skills manually, then press confirm when done",
+                        "timestamp": time.time()
+                    }
+                    
+                    try:
+                        # Send to local UAT web server
+                        response = requests.post(
+                            "http://localhost:8071/api/manual-skill-notification",
+                            json=notification_data,
+                            timeout=1
+                        )
+                        log.info("✅ Web notification sent successfully")
+                        
+                        # Wait for user confirmation via web interface
+                        while True:
+                            try:
+                                status_response = requests.get(
+                                    "http://localhost:8071/api/manual-skill-notification-status",
+                                    timeout=1
+                                )
+                                status_data = status_response.json()
+                                
+                                if status_data.get("confirmed"):
+                                    log.info("✅ User confirmed manual skill purchase via web interface")
+                                    # Mark manual purchase as completed
+                                    ctx.cultivate_detail.manual_purchase_completed = True
+                                    # Reset the notification state
+                                    requests.post("http://localhost:8071/api/manual-skill-notification-cancel")
+                                    break
+                                elif status_data.get("cancelled"):
+                                    log.info("❌ User cancelled manual skill purchase")
+                                    # Reset the notification state
+                                    requests.post("http://localhost:8071/api/manual-skill-notification-cancel")
+                                    return
+                                
+                                time.sleep(0.5)  # Check every 500ms
+                            except requests.exceptions.RequestException:
+                                # If web interface is not available, fall back to console
+                                break
+                        
+                    except requests.exceptions.RequestException as e:
+                        log.warning(f"⚠️ Web notification failed: {e}")
+                        # Fallback to console notification
+                        print("\n" + "🔔" * 50)
+                        print("🔔 MANUAL SKILL PURCHASE REQUIRED 🔔")
+                        print("🔔" * 50)
+                        print("Please learn skills manually, then press confirm when done.")
+                        print("Press Enter in the console when you're ready to continue...")
+                        print("🔔" * 50)
+                        input()  # Wait for user input
+                    
+                    log.info("✅ User acknowledged manual purchase notification")
+                except Exception as e:
+                    log.error(f"❌ Failed to show notification: {e}")
+                    # Fallback to simple console message
+                    print("\n" + "="*50)
+                    print("🔧 MANUAL SKILL PURCHASE REQUIRED")
+                    print("="*50)
+                    print("Please learn skills manually, then press confirm when done.")
+                    print("Press Enter in the console when you're ready to continue...")
+                    print("="*50)
+                    input()  # Wait for user input
+                
+                ctx.cultivate_detail.manual_purchase_initiated = True
+                # Don't click anything - let user handle manually
+                return
+            else:
+                # User has been notified, wait for them to complete manual purchase
+                # The completion will be detected in script_cultivate_learn_skill when they return
+                return
+        else:
+            # User has completed manual skill purchase, proceed with confirmation
+            log.info("✅ User completed manual skill purchase - proceeding with cultivation finish")
+            ctx.cultivate_detail.learn_skill_done = True
+            ctx.cultivate_detail.cultivate_finish = True
+            ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM)
 
 
 def script_cultivate_learn_skill(ctx: UmamusumeContext):
+    # Safety mechanism: If manual purchase is enabled AND we're at cultivate finish, 
+    # and the user has confirmed manual purchase, immediately return to finish UI
+    if (ctx.task.detail.manual_purchase_at_end and 
+        ctx.cultivate_detail.cultivate_finish and 
+        hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+        ctx.cultivate_detail.manual_purchase_completed):
+        log.info("🔧 Manual purchase completed - returning to cultivate finish UI")
+        ctx.cultivate_detail.learn_skill_done = True
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+        return
+        
+    # If manual purchase is enabled AND we're at cultivate finish, handle manual purchase completion
+    if ctx.task.detail.manual_purchase_at_end and ctx.cultivate_detail.cultivate_finish:
+        log.info("🔧 Manual purchase mode enabled - returning to cultivate finish UI")
+        # Mark manual purchase as completed since user has returned from skill menu
+        ctx.cultivate_detail.manual_purchase_completed = True
+        ctx.cultivate_detail.learn_skill_done = True
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+        return
+        
     if ctx.cultivate_detail.learn_skill_done:
         # If skills are already learned and confirmed, exit skill learning
         log.info("✅ Skills already learned and confirmed - exiting skill learning")
@@ -602,6 +725,16 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     # Traverse entire page, find all clickable skills
     skill_list = []
     while ctx.task.running():
+        # Safety check: If manual purchase was confirmed, immediately return
+        if (ctx.task.detail.manual_purchase_at_end and 
+            ctx.cultivate_detail.cultivate_finish and 
+            hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+            ctx.cultivate_detail.manual_purchase_completed):
+            log.info("🔧 Manual purchase confirmed during skill scanning - returning to finish UI")
+            ctx.cultivate_detail.learn_skill_done = True
+            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+            return
+            
         img = ctx.ctrl.get_screen()
         current_screen_skill_list = get_skill_list(img, learn_skill_list,learn_skill_blacklist)
         # Avoid duplicate counting (will occur when page turning is incomplete at page end)
@@ -613,6 +746,16 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
             break
         ctx.ctrl.swipe(x1=23, y1=1000, x2=23, y2=636, duration=1000, name="")
         time.sleep(1)
+        
+        # Additional safety check after each swipe
+        if (ctx.task.detail.manual_purchase_at_end and 
+            ctx.cultivate_detail.cultivate_finish and 
+            hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+            ctx.cultivate_detail.manual_purchase_completed):
+            log.info("🔧 Manual purchase confirmed after swipe - returning to finish UI")
+            ctx.cultivate_detail.learn_skill_done = True
+            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+            return
 
     log.debug("Current skill state: " + str(skill_list))
 
@@ -672,8 +815,28 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     # If a priority is completely empty, delete it directly
     ctx.cultivate_detail.learn_skill_list = [x for x in ctx.cultivate_detail.learn_skill_list if x != []]
 
+    # Safety check before starting skill clicking
+    if (ctx.task.detail.manual_purchase_at_end and 
+        ctx.cultivate_detail.cultivate_finish and 
+        hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+        ctx.cultivate_detail.manual_purchase_completed):
+        log.info("🔧 Manual purchase confirmed before skill clicking - returning to finish UI")
+        ctx.cultivate_detail.learn_skill_done = True
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+        return
+
     # Click skills
     while True:
+        # Safety check: If manual purchase was confirmed, immediately return
+        if (ctx.task.detail.manual_purchase_at_end and 
+            ctx.cultivate_detail.cultivate_finish and 
+            hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+            ctx.cultivate_detail.manual_purchase_completed):
+            log.info("🔧 Manual purchase confirmed during skill clicking - returning to finish UI")
+            ctx.cultivate_detail.learn_skill_done = True
+            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+            return
+            
         img = ctx.ctrl.get_screen()
         find_skill(ctx, img, target_skill_list, learn_any_skill=False)
         if len(target_skill_list) == 0:
@@ -686,6 +849,16 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
 
     log.debug("Skills to learn: " + str(ctx.cultivate_detail.learn_skill_list))
     log.debug("Skills learned: " + str([skill['skill_name'] for skill in skill_list if not skill['available']]))
+
+    # Safety check before final confirm button click
+    if (ctx.task.detail.manual_purchase_at_end and 
+        ctx.cultivate_detail.cultivate_finish and 
+        hasattr(ctx.cultivate_detail, 'manual_purchase_completed') and 
+        ctx.cultivate_detail.manual_purchase_completed):
+        log.info("🔧 Manual purchase confirmed before final confirm - returning to finish UI")
+        ctx.cultivate_detail.learn_skill_done = True
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
+        return
 
     ctx.cultivate_detail.learn_skill_done = True
     ctx.cultivate_detail.turn_info.turn_learn_skill_done = True

@@ -1,10 +1,7 @@
 <template>
   <div id="create-task-list-modal" class="modal fade" data-backdrop="static" data-keyboard="false">
-    <div  class="modal-dialog modal-dialog-centered modal-xl">
-      <div
-        class="modal-content"
-        :class="{ 'dimmed': showAoharuConfigModal || showSupportCardSelectModal }"
-      >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content" :class="{ 'dimmed': showAoharuConfigModal || showSupportCardSelectModal }">
         <h5 class="modal-header">
           Create New Task
         </h5>
@@ -13,7 +10,7 @@
             <div class="form-group">
               <label for="selectTaskType">⭐ Task Selection</label>
               <select v-model="selectedUmamusumeTaskType" class="form-control" id="selectTaskType">
-                <option v-for="task in umamusumeTaskTypeList" :value="task">{{task.name}}</option>
+                <option v-for="task in umamusumeTaskTypeList" :value="task">{{ task.name }}</option>
               </select>
             </div>
             <div class="form-group">
@@ -54,7 +51,8 @@
             <div class="row" v-if="selectedScenario === 1">
               <div class="col-4">
                 <div class="form-group">
-                  <span class="btn auto-btn ura-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openUraConfigModal">URA Configuration</span>
+                  <span class="btn auto-btn ura-btn-bg" style="width: 100%; background-color:#6c757d;"
+                    v-on:click="openUraConfigModal">URA Configuration</span>
                 </div>
               </div>
             </div>
@@ -62,7 +60,8 @@
             <div class="row" v-if="selectedScenario === 2">
               <div class="col-4">
                 <div class="form-group">
-                  <span class="btn auto-btn aoharu-btn-bg" style="width: 100%; background-color:#6c757d;" v-on:click="openAoharuConfigModal">Aoharu Cup Configuration</span>
+                  <span class="btn auto-btn aoharu-btn-bg" style="width: 100%; background-color:#6c757d;"
+                    v-on:click="openAoharuConfigModal">Aoharu Cup Configuration</span>
                 </div>
               </div>
             </div>
@@ -90,62 +89,63 @@
               <div class="col-8">
                 <div class="form-group">
                   <label for="race-select">⭐ Use Preset</label>
-                    <div class="form-inline">
-                      <select v-model="presetsUse" style="text-overflow: ellipsis;width: 40em;"  class="form-control" id="use_presets">
-                        <option v-for="set in cultivatePresets" :value="set">{{set.name}}</option>
-                      </select>
-                      <span class="btn auto-btn ml-2" v-on:click="applyPresetRace">Apply</span>
-                    </div>
+                  <div class="form-inline">
+                    <select v-model="presetsUse" style="text-overflow: ellipsis;width: 40em;" class="form-control"
+                      id="use_presets">
+                      <option v-for="set in cultivatePresets" :value="set">{{ set.name }}</option>
+                    </select>
+                    <span class="btn auto-btn ml-2" v-on:click="applyPresetRace">Apply</span>
+                  </div>
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
                   <label for="presetNameEditInput">Save as Preset</label>
                   <div class="form-inline">
-                    <input v-model="presetNameEdit" type="text" class="form-control" id="presetNameEditInput" placeholder="Preset Name">
+                    <input v-model="presetNameEdit" type="text" class="form-control" id="presetNameEditInput"
+                      placeholder="Preset Name">
                     <span class="btn auto-btn ml-2" v-on:click="addPresets">Save</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div class="row">
               <div class="col-5">
                 <div class="form-group">
                   <label>⭐ Friend Support Card Selection</label>
                   <div style="display: flex; align-items: center;">
-                    <input
-                      type="text"
-                      class="form-control"
-                      :value="renderSupportCardText(selectedSupportCard)"
-                      readonly
-                      id="selectedSupportCard"
-                    >
-                    <span class="btn auto-btn ml-2" style="white-space:nowrap;" v-on:click="openSupportCardSelectModal">Change</span>
+                    <input type="text" class="form-control" :value="renderSupportCardText(selectedSupportCard)" readonly
+                      id="selectedSupportCard">
+                    <span class="btn auto-btn ml-2" style="white-space:nowrap;"
+                      v-on:click="openSupportCardSelectModal">Change</span>
                   </div>
                 </div>
               </div>
               <div class="col-2">
                 <div class="form-group">
                   <label for="selectSupportCardLevel">Support Card Level (≥)</label>
-                  <input v-model="supportCardLevel" type="number" class="form-control" id="selectSupportCardLevel" placeholder="">
+                  <input v-model="supportCardLevel" type="number" class="form-control" id="selectSupportCardLevel"
+                    placeholder="">
                 </div>
               </div>
               <div class="col-3">
                 <div class="form-group">
                   <label for="inputClockUseLimit">Clock Usage Limit</label>
-                  <input v-model="clockUseLimit" type="number" class="form-control" id="inputClockUseLimit" placeholder="">
+                  <input v-model="clockUseLimit" type="number" class="form-control" id="inputClockUseLimit"
+                    placeholder="">
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)</div>
+              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)
+              </div>
             </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
-                    <label for="speed-value-input">Speed</label>
-                    <input type="number" v-model="expectSpeedValue" class="form-control" id="speed-value-input">
+                  <label for="speed-value-input">Speed</label>
+                  <input type="number" v-model="expectSpeedValue" class="form-control" id="speed-value-input">
                 </div>
               </div>
               <div class="col">
@@ -169,7 +169,8 @@
               <div class="col">
                 <div class="form-group">
                   <label for="intelligence-value-input">Wit</label>
-                  <input type="number" v-model="expectIntelligenceValue" class="form-control" id="intelligence-value-input">
+                  <input type="number" v-model="expectIntelligenceValue" class="form-control"
+                    id="intelligence-value-input">
                 </div>
               </div>
             </div>
@@ -179,11 +180,11 @@
                   <div class="advanced-options-title">
                     <i class="fas fa-cogs"></i>
                     Advanced Options
-              </div>
+                  </div>
                   <div class="advanced-options-toggle">
                     <span class="toggle-text">{{ showAdvanceOption ? 'Hide' : 'Show' }}</span>
                     <i class="fas" :class="showAdvanceOption ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-            </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -191,43 +192,36 @@
               <div class="form-group">
                 <div>⭐ Extra Weight</div>
               </div>
-              <p>Adjusts AI training preferences without affecting final target attributes. Generally used to prioritize certain training types. Weight range [-1.0 ~ 1.0], 0 means no extra weight applied.</p>
+              <p>Adjusts AI training preferences without affecting final target attributes. Generally used to prioritize
+                certain training types. Weight range [-1.0 ~ 1.0], 0 means no extra weight applied.</p>
               <p>❗ Setting weight to -1 will skip that training</p>
               <p>❗ Within the same year, all weights cannot be -1</p>
-              <p>When support cards or breeding stallion are weak, recommend increasing one attribute weight while decreasing others by the same amount</p>
+              <p>When support cards or breeding stallion are weak, recommend increasing one attribute weight while
+                decreasing others by the same amount</p>
               <div style="margin-bottom: 10px;">Year 1</div>
               <div class="row">
-                <div v-for="v,i in extraWeight1" class="col">
+                <div v-for="v, i in extraWeight1" class="col">
                   <div class="form-group">
-                    <input type="number"
-                           v-model="extraWeight1[i]"
-                           class="form-control"
-                           @input="onExtraWeightInput(extraWeight1, i)"
-                           id="speed-value-input">
+                    <input type="number" v-model="extraWeight1[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight1, i)" id="speed-value-input">
                   </div>
                 </div>
               </div>
               <div style="margin-bottom: 10px;">Year 2</div>
               <div class="row">
-                <div v-for="v,i in extraWeight2" class="col">
+                <div v-for="v, i in extraWeight2" class="col">
                   <div class="form-group">
-                    <input type="number"
-                           v-model="extraWeight2[i]"
-                           class="form-control"
-                           @input="onExtraWeightInput(extraWeight2, i)"
-                           id="speed-value-input">
+                    <input type="number" v-model="extraWeight2[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight2, i)" id="speed-value-input">
                   </div>
                 </div>
               </div>
               <div style="margin-bottom: 10px;">Year 3</div>
               <div class="row">
-                <div v-for="v,i in extraWeight3" class="col">
+                <div v-for="v, i in extraWeight3" class="col">
                   <div class="form-group">
-                    <input type="number"
-                           v-model="extraWeight3[i]"
-                           class="form-control"
-                           @input="onExtraWeightInput(extraWeight3, i)"
-                           id="speed-value-input">
+                    <input type="number" v-model="extraWeight3[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight3, i)" id="speed-value-input">
                   </div>
                 </div>
               </div>
@@ -285,7 +279,7 @@
                   <div class="race-options-title">
                     <i class="fas fa-flag-checkered"></i>
                     Race Options
-              </div>
+                  </div>
                   <div class="race-options-toggle">
                     <span class="toggle-text">{{ showRaceList ? 'Hide' : 'Show' }}</span>
                     <i class="fas" :class="showRaceList ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
@@ -303,107 +297,150 @@
                     <label>👤 Character Filter:</label>
                     <select v-model="selectedCharacter" class="form-control" @change="onCharacterChange">
                       <option value="">All Characters</option>
-                      <option v-for="character in characterList" :key="character.name" :value="character.name">{{character.name}}</option>
+                      <option v-for="character in characterList" :key="character.name" :value="character.name">
+                        {{ character.name }}</option>
                     </select>
                   </div>
                   <div class="col-md-4">
                     <label>🏁 Quick Selection:</label>
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All GI</button>
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All GII</button>
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All GIII</button>
-                      <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear All</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All
+                        GI</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All
+                        GII</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All
+                        GIII</button>
+                      <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear
+                        All</button>
                     </div>
                   </div>
                 </div>
-                
+
                 <!-- Filter Buttons -->
                 <div class="row mb-3">
                   <div class="col-md-3">
                     <label>🏆 Grade:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
-                      <button type="button" class="btn" :class="{'btn-primary': showGI, 'btn-outline-primary': !showGI}" @click="showGI = !showGI">
-                        <span style="background-color: #3485E3; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GI</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-primary': showGI, 'btn-outline-primary': !showGI }" @click="showGI = !showGI">
+                        <span
+                          style="background-color: #3485E3; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GI</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-primary': showGII, 'btn-outline-primary': !showGII}" @click="showGII = !showGII">
-                        <span style="background-color: #F75A86; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GII</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-primary': showGII, 'btn-outline-primary': !showGII }"
+                        @click="showGII = !showGII">
+                        <span
+                          style="background-color: #F75A86; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GII</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-primary': showGIII, 'btn-outline-primary': !showGIII}" @click="showGIII = !showGIII">
-                        <span style="background-color: #58C471; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GIII</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-primary': showGIII, 'btn-outline-primary': !showGIII }"
+                        @click="showGIII = !showGIII">
+                        <span
+                          style="background-color: #58C471; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GIII</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-primary': showOP, 'btn-outline-primary': !showOP}" @click="showOP = !showOP">
-                        <span style="background-color: #FFA500; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">OP</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-primary': showOP, 'btn-outline-primary': !showOP }" @click="showOP = !showOP">
+                        <span
+                          style="background-color: #FFA500; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">OP</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP}" @click="showPREOP = !showPREOP">
-                        <span style="background-color: #9370DB; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">PRE-OP</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP }"
+                        @click="showPREOP = !showPREOP">
+                        <span
+                          style="background-color: #9370DB; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">PRE-OP</span>
                       </button>
+                    </div>
                   </div>
-                </div>
                   <div class="col-md-3">
                     <label>🌱 Terrain:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
-                      <button type="button" class="btn" :class="{'btn-success': showTurf, 'btn-outline-success': !showTurf}" @click="showTurf = !showTurf">
-                        <span style="background-color: #28a745; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Turf</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-success': showTurf, 'btn-outline-success': !showTurf }"
+                        @click="showTurf = !showTurf">
+                        <span
+                          style="background-color: #28a745; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Turf</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-warning': showDirt, 'btn-outline-warning': !showDirt}" @click="showDirt = !showDirt">
-                        <span style="background-color: #ffc107; color: black; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Dirt</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-warning': showDirt, 'btn-outline-warning': !showDirt }"
+                        @click="showDirt = !showDirt">
+                        <span
+                          style="background-color: #ffc107; color: black; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Dirt</span>
                       </button>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label>📏 Distance:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
-                      <button type="button" class="btn" :class="{'btn-info': showSprint, 'btn-outline-info': !showSprint}" @click="showSprint = !showSprint">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Sprint</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-info': showSprint, 'btn-outline-info': !showSprint }"
+                        @click="showSprint = !showSprint">
+                        <span
+                          style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Sprint</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-info': showMile, 'btn-outline-info': !showMile}" @click="showMile = !showMile">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Mile</span>
+                      <button type="button" class="btn" :class="{ 'btn-info': showMile, 'btn-outline-info': !showMile }"
+                        @click="showMile = !showMile">
+                        <span
+                          style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Mile</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-info': showMedium, 'btn-outline-info': !showMedium}" @click="showMedium = !showMedium">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Medium</span>
+                      <button type="button" class="btn"
+                        :class="{ 'btn-info': showMedium, 'btn-outline-info': !showMedium }"
+                        @click="showMedium = !showMedium">
+                        <span
+                          style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Medium</span>
                       </button>
-                      <button type="button" class="btn" :class="{'btn-info': showLong, 'btn-outline-info': !showLong}" @click="showLong = !showLong">
-                        <span style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Long</span>
+                      <button type="button" class="btn" :class="{ 'btn-info': showLong, 'btn-outline-info': !showLong }"
+                        @click="showLong = !showLong">
+                        <span
+                          style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Long</span>
                       </button>
                     </div>
                   </div>
                 </div>
-                
-                
+
+
 
                 <!-- Race Lists -->
-                <div class="row"> 
+                <div class="row">
                   <div class="col-md-4">
                     <div class="card">
                       <div class="card-header">
                         <h6 class="mb-0">Year 1 (Junior Year)</h6>
                       </div>
-                                              <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                          <div class="race-grid">
-                            <div v-for="race in filteredRaces_1" :key="race.id" 
-                                 class="race-toggle" 
-                                 :class="{ 'selected': extraRace.includes(race.id) }"
-                                 @click="toggleRace(race.id)">
-                              <div class="race-content">
-                                <div class="race-name">{{race.name}}</div>
-                                <div class="race-badges">
-                                  <span v-if="race.type === 'G3'" class="badge badge-pill" style="background-color: #58C471;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G2'" class="badge badge-pill" style="background-color: #F75A86;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G1'" class="badge badge-pill" style="background-color: #3485E3;">{{race.type}}</span>
-                                  <span v-if="race.type === 'OP'" class="badge badge-pill" style="background-color: #FFA500;">{{race.type}}</span>
-                                  <span v-if="race.type === 'PRE-OP'" class="badge badge-pill" style="background-color: #9370DB;">{{race.type}}</span>
-                                  <span v-if="race.terrain === 'Turf'" class="badge badge-pill" style="background-color: #28a745; color: white;">{{race.terrain}}</span>
-                                  <span v-if="race.terrain === 'Dirt'" class="badge badge-pill" style="background-color: #ffc107; color: black;">{{race.terrain}}</span>
-                                  <span v-if="race.distance === 'Sprint'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Mile'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Medium'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Long'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                </div>
-                                <div class="race-details">{{race.date}} • {{race.venue}}</div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div class="race-grid">
+                          <div v-for="race in filteredRaces_1" :key="race.id" class="race-toggle"
+                            :class="{ 'selected': extraRace.includes(race.id) }" @click="toggleRace(race.id)">
+                            <div class="race-content">
+                              <div class="race-name">{{ race.name }}</div>
+                              <div class="race-badges">
+                                <span v-if="race.type === 'G3'" class="badge badge-pill"
+                                  style="background-color: #58C471;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G2'" class="badge badge-pill"
+                                  style="background-color: #F75A86;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G1'" class="badge badge-pill"
+                                  style="background-color: #3485E3;">{{ race.type }}</span>
+                                <span v-if="race.type === 'OP'" class="badge badge-pill"
+                                  style="background-color: #FFA500;">{{ race.type }}</span>
+                                <span v-if="race.type === 'PRE-OP'" class="badge badge-pill"
+                                  style="background-color: #9370DB;">{{ race.type }}</span>
+                                <span v-if="race.terrain === 'Turf'" class="badge badge-pill"
+                                  style="background-color: #28a745; color: white;">{{ race.terrain }}</span>
+                                <span v-if="race.terrain === 'Dirt'" class="badge badge-pill"
+                                  style="background-color: #ffc107; color: black;">{{ race.terrain }}</span>
+                                <span v-if="race.distance === 'Sprint'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Mile'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Medium'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Long'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                               </div>
+                              <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
                             </div>
                           </div>
                         </div>
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -411,32 +448,41 @@
                       <div class="card-header">
                         <h6 class="mb-0">Year 2 (Classic Year)</h6>
                       </div>
-                                              <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                          <div class="race-grid">
-                            <div v-for="race in filteredRaces_2" :key="race.id" 
-                                 class="race-toggle" 
-                                 :class="{ 'selected': extraRace.includes(race.id) }"
-                                 @click="toggleRace(race.id)">
-                              <div class="race-content">
-                                <div class="race-name">{{race.name}}</div>
-                                <div class="race-badges">
-                                  <span v-if="race.type === 'G3'" class="badge badge-pill" style="background-color: #58C471;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G2'" class="badge badge-pill" style="background-color: #F75A86;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G1'" class="badge badge-pill" style="background-color: #3485E3;">{{race.type}}</span>
-                                  <span v-if="race.type === 'OP'" class="badge badge-pill" style="background-color: #FFA500;">{{race.type}}</span>
-                                  <span v-if="race.type === 'PRE-OP'" class="badge badge-pill" style="background-color: #9370DB;">{{race.type}}</span>
-                                  <span v-if="race.terrain === 'Turf'" class="badge badge-pill" style="background-color: #28a745; color: white;">{{race.terrain}}</span>
-                                  <span v-if="race.terrain === 'Dirt'" class="badge badge-pill" style="background-color: #ffc107; color: black;">{{race.terrain}}</span>
-                                  <span v-if="race.distance === 'Sprint'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Mile'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Medium'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Long'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                </div>
-                                <div class="race-details">{{race.date}} • {{race.venue}}</div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div class="race-grid">
+                          <div v-for="race in filteredRaces_2" :key="race.id" class="race-toggle"
+                            :class="{ 'selected': extraRace.includes(race.id) }" @click="toggleRace(race.id)">
+                            <div class="race-content">
+                              <div class="race-name">{{ race.name }}</div>
+                              <div class="race-badges">
+                                <span v-if="race.type === 'G3'" class="badge badge-pill"
+                                  style="background-color: #58C471;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G2'" class="badge badge-pill"
+                                  style="background-color: #F75A86;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G1'" class="badge badge-pill"
+                                  style="background-color: #3485E3;">{{ race.type }}</span>
+                                <span v-if="race.type === 'OP'" class="badge badge-pill"
+                                  style="background-color: #FFA500;">{{ race.type }}</span>
+                                <span v-if="race.type === 'PRE-OP'" class="badge badge-pill"
+                                  style="background-color: #9370DB;">{{ race.type }}</span>
+                                <span v-if="race.terrain === 'Turf'" class="badge badge-pill"
+                                  style="background-color: #28a745; color: white;">{{ race.terrain }}</span>
+                                <span v-if="race.terrain === 'Dirt'" class="badge badge-pill"
+                                  style="background-color: #ffc107; color: black;">{{ race.terrain }}</span>
+                                <span v-if="race.distance === 'Sprint'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Mile'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Medium'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Long'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                               </div>
+                              <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
                             </div>
                           </div>
                         </div>
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -444,32 +490,41 @@
                       <div class="card-header">
                         <h6 class="mb-0">Year 3 (Senior Year)</h6>
                       </div>
-                                              <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                          <div class="race-grid">
-                            <div v-for="race in filteredRaces_3" :key="race.id" 
-                                 class="race-toggle" 
-                                 :class="{ 'selected': extraRace.includes(race.id) }"
-                                 @click="toggleRace(race.id)">
-                              <div class="race-content">
-                                <div class="race-name">{{race.name}}</div>
-                                <div class="race-badges">
-                                  <span v-if="race.type === 'G3'" class="badge badge-pill" style="background-color: #58C471;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G2'" class="badge badge-pill" style="background-color: #F75A86;">{{race.type}}</span>
-                                  <span v-if="race.type === 'G1'" class="badge badge-pill" style="background-color: #3485E3;">{{race.type}}</span>
-                                  <span v-if="race.type === 'OP'" class="badge badge-pill" style="background-color: #FFA500;">{{race.type}}</span>
-                                  <span v-if="race.type === 'PRE-OP'" class="badge badge-pill" style="background-color: #9370DB;">{{race.type}}</span>
-                                  <span v-if="race.terrain === 'Turf'" class="badge badge-pill" style="background-color: #28a745; color: white;">{{race.terrain}}</span>
-                                  <span v-if="race.terrain === 'Dirt'" class="badge badge-pill" style="background-color: #ffc107; color: black;">{{race.terrain}}</span>
-                                  <span v-if="race.distance === 'Sprint'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Mile'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Medium'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                  <span v-if="race.distance === 'Long'" class="badge badge-pill" style="background-color: #17a2b8; color: white;">{{race.distance}}</span>
-                                </div>
-                                <div class="race-details">{{race.date}} • {{race.venue}}</div>
+                      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div class="race-grid">
+                          <div v-for="race in filteredRaces_3" :key="race.id" class="race-toggle"
+                            :class="{ 'selected': extraRace.includes(race.id) }" @click="toggleRace(race.id)">
+                            <div class="race-content">
+                              <div class="race-name">{{ race.name }}</div>
+                              <div class="race-badges">
+                                <span v-if="race.type === 'G3'" class="badge badge-pill"
+                                  style="background-color: #58C471;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G2'" class="badge badge-pill"
+                                  style="background-color: #F75A86;">{{ race.type }}</span>
+                                <span v-if="race.type === 'G1'" class="badge badge-pill"
+                                  style="background-color: #3485E3;">{{ race.type }}</span>
+                                <span v-if="race.type === 'OP'" class="badge badge-pill"
+                                  style="background-color: #FFA500;">{{ race.type }}</span>
+                                <span v-if="race.type === 'PRE-OP'" class="badge badge-pill"
+                                  style="background-color: #9370DB;">{{ race.type }}</span>
+                                <span v-if="race.terrain === 'Turf'" class="badge badge-pill"
+                                  style="background-color: #28a745; color: white;">{{ race.terrain }}</span>
+                                <span v-if="race.terrain === 'Dirt'" class="badge badge-pill"
+                                  style="background-color: #ffc107; color: black;">{{ race.terrain }}</span>
+                                <span v-if="race.distance === 'Sprint'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Mile'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Medium'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
+                                <span v-if="race.distance === 'Long'" class="badge badge-pill"
+                                  style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                               </div>
+                              <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
                             </div>
                           </div>
                         </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -492,10 +547,10 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Skill Learning Section -->
             <div class="form-group">
-              
+
               <!-- Priority 0 Section -->
               <div class="priority-section">
                 <label class="form-label section-heading">
@@ -507,13 +562,13 @@
                     The skill that user already select listed in here
                   </div>
                   <div v-else class="selected-skills-list">
-                    <div v-for="skillName in getSelectedSkillsForPriority(0)" :key="skillName" 
-                         class="selected-skill-item">
+                    <div v-for="skillName in getSelectedSkillsForPriority(0)" :key="skillName"
+                      class="selected-skill-item">
                       {{ skillName }}
-                </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
               <!-- Dynamic Priority Sections -->
               <div v-for="priority in getActivePriorities().slice(1)" :key="priority" class="priority-section">
@@ -526,13 +581,13 @@
                     The skill that user already select listed in here
                   </div>
                   <div v-else class="selected-skills-list">
-                    <div v-for="skillName in getSelectedSkillsForPriority(priority)" :key="skillName" 
-                         class="selected-skill-item">
+                    <div v-for="skillName in getSelectedSkillsForPriority(priority)" :key="skillName"
+                      class="selected-skill-item">
                       {{ skillName }}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
               <!-- Add/Remove Priority Buttons -->
               <div class="form-group mt-3">
@@ -540,8 +595,8 @@
                   <button type="button" class="btn btn-outline-primary btn-sm" @click="addPriority">
                     Add Priority
                   </button>
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="removeLastPriority" 
-                          :disabled="activePriorities.length <= 1">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="removeLastPriority"
+                    :disabled="activePriorities.length <= 1">
                     Undo
                   </button>
                 </div>
@@ -549,7 +604,7 @@
             </div>
 
             <!-- Blacklist Section -->
-                  <div class="form-group">
+            <div class="form-group">
               <label class="form-label section-heading">
                 <i class="fas fa-ban"></i>
                 Blacklist
@@ -559,8 +614,7 @@
                   The skill that user already select blacklisted in here
                 </div>
                 <div v-else class="blacklisted-skills-list">
-                  <div v-for="skillName in blacklistedSkills" :key="skillName" 
-                       class="blacklisted-skill-item">
+                  <div v-for="skillName in blacklistedSkills" :key="skillName" class="blacklisted-skill-item">
                     {{ skillName }}
                   </div>
                 </div>
@@ -573,13 +627,19 @@
                 <div class="skill-list-title">
                   <i class="fas fa-list"></i>
                   Skill List
-                  </div>
+                </div>
                 <div class="skill-list-toggle">
                   <span class="toggle-text">{{ showSkillList ? 'Hide' : 'Show' }}</span>
                   <i class="fas" :class="showSkillList ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </div>
               </div>
-              
+              <div class="manual-end-toggle">
+                <label>
+                  <input type="checkbox" v-model="manualPurchase">
+                  Purchase skill manually at the end of career
+                </label>
+              </div>
+
               <div v-if="showSkillList" class="skill-list-content">
                 <!-- Skill Filter System -->
                 <div class="skill-filter-section">
@@ -626,10 +686,10 @@
                       <button type="button" class="btn btn-outline-secondary btn-sm" @click="clearSkillFilters">
                         <i class="fas fa-times"></i> Clear Filters
                       </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
+
                 <div class="skill-list-container">
                   <div class="skill-type-grid">
                     <div v-for="(skills, skillType) in filteredSkillsByType" :key="skillType" class="skill-type-card">
@@ -638,14 +698,10 @@
                         <span class="skill-count">{{ skills.length }} skills</span>
                       </div>
                       <div class="skill-type-content">
-                        <div v-for="skill in skills" :key="skill.name" 
-                             class="skill-item"
-                             :class="{ 
-                               'selected': selectedSkills.includes(skill.name), 
-                               'blacklisted': blacklistedSkills.includes(skill.name) 
-                             }"
-                             @click="toggleSkill(skill.name)"
-                             @contextmenu.prevent="toggleBlacklistSkill(skill.name)">
+                        <div v-for="skill in skills" :key="skill.name" class="skill-item" :class="{
+                          'selected': selectedSkills.includes(skill.name),
+                          'blacklisted': blacklistedSkills.includes(skill.name)
+                        }" @click="toggleSkill(skill.name)" @contextmenu.prevent="toggleBlacklistSkill(skill.name)">
                           <div class="skill-header">
                             <div class="skill-name">{{ skill.name }}</div>
                             <div class="skill-cost">Cost: {{ skill.base_cost }}</div>
@@ -656,7 +712,8 @@
                             <div class="skill-tags">
                               <span v-if="skill.strategy" class="skill-tag strategy-tag">{{ skill.strategy }}</span>
                               <span v-if="skill.distance" class="skill-tag distance-tag">{{ skill.distance }}</span>
-                              <span v-if="skill.tier" class="skill-tag tier-tag" :data-tier="skill.tier">{{ skill.tier }}</span>
+                              <span v-if="skill.tier" class="skill-tag tier-tag" :data-tier="skill.tier">{{ skill.tier
+                              }}</span>
                               <span v-if="skill.rarity" class="skill-tag rarity-tag">{{ skill.rarity }}</span>
                             </div>
                           </div>
@@ -673,8 +730,10 @@
               <div class="row">
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="learnSkillOnlyUserProvidedSelector">Only learn skills listed above during training</label>
-                    <select v-model="learnSkillOnlyUserProvided" class="form-control" id="learnSkillOnlyUserProvidedSelector">
+                    <label for="learnSkillOnlyUserProvidedSelector">Only learn skills listed above during
+                      training</label>
+                    <select v-model="learnSkillOnlyUserProvided" class="form-control"
+                      id="learnSkillOnlyUserProvidedSelector">
                       <option :value=true>Yes</option>
                       <option :value=false>No</option>
                     </select>
@@ -692,7 +751,8 @@
                 <div class="col-3">
                   <div class="form-group">
                     <label for="inputSkillLearnThresholdLimit">Learn skills when skill points exceed this value</label>
-                    <input v-model="learnSkillThreshold" type="number" class="form-control" id="inputSkillLearnThresholdLimit" placeholder="">
+                    <input v-model="learnSkillThreshold" type="number" class="form-control"
+                      id="inputSkillLearnThresholdLimit" placeholder="">
                   </div>
                 </div>
               </div>
@@ -715,28 +775,18 @@
           <span class="btn auto-btn" v-on:click="addTask">Confirm</span>
         </div>
       </div>
-              <!-- Aoharu Cup Configuration Modal -->
-      <AoharuConfigModal
-        v-model:show="showAoharuConfigModal"
-        :preliminaryRoundSelections="preliminaryRoundSelections"
-        :aoharuTeamNameSelection="aoharuTeamNameSelection"
-        @confirm="handleAoharuConfigConfirm"
-      ></AoharuConfigModal>
+      <!-- Aoharu Cup Configuration Modal -->
+      <AoharuConfigModal v-model:show="showAoharuConfigModal" :preliminaryRoundSelections="preliminaryRoundSelections"
+        :aoharuTeamNameSelection="aoharuTeamNameSelection" @confirm="handleAoharuConfigConfirm"></AoharuConfigModal>
       <!-- URA Configuration Modal -->
-      <UraConfigModal
-        v-model:show="showUraConfigModal"
-        :skillEventWeight="skillEventWeight"
-        :resetSkillEventWeightList="resetSkillEventWeightList"
-        @confirm="handleUraConfigConfirm"
-      ></UraConfigModal>
+      <UraConfigModal v-model:show="showUraConfigModal" :skillEventWeight="skillEventWeight"
+        :resetSkillEventWeightList="resetSkillEventWeightList" @confirm="handleUraConfigConfirm"></UraConfigModal>
       <!-- Support Card Selection Modal -->
-      <SupportCardSelectModal
-        v-model:show="showSupportCardSelectModal"
-        @cancel="closeSupportCardSelectModal"
-        @confirm="handleSupportCardConfirm"
-      ></SupportCardSelectModal>
+      <SupportCardSelectModal v-model:show="showSupportCardSelectModal" @cancel="closeSupportCardSelectModal"
+        @confirm="handleSupportCardConfirm"></SupportCardSelectModal>
       <!-- Overlay layer, supports two types of modals -->
-      <div v-if="showAoharuConfigModal || showSupportCardSelectModal || showUraConfigModal" class="modal-backdrop-overlay" @click.stop></div>
+      <div v-if="showAoharuConfigModal || showSupportCardSelectModal || showUraConfigModal"
+        class="modal-backdrop-overlay" @click.stop></div>
       <!-- Notification -->
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
@@ -747,7 +797,8 @@
       </div>
       <!-- Weight Warning Notification -->
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
-        <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+        <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true"
+          data-delay="2000">
           <div class="toast-body" style="color: #856404;">
             ⚠️ <b>All weights in the same year cannot be -1</b>
           </div>
@@ -774,11 +825,12 @@ export default {
     UraConfigModal,
     SupportCardSelectModal
   },
-  data:function () {
-    return{
-      showAdvanceOption:false,
-      showRaceList:false,
-      dataReady:false,
+  data: function () {
+    return {
+      manualPurchase: false,
+      showAdvanceOption: false,
+      showRaceList: false,
+      dataReady: false,
       hideG2: false,
       hideG3: false,
       // Race filtering properties
@@ -801,40 +853,40 @@ export default {
       characterTrainingPeriods: {},
       fujikisekiShowMode: false,
       fujikisekiShowDifficulty: 1,
-      levelDataList:[],
-      umamusumeTaskTypeList:[
+      levelDataList: [],
+      umamusumeTaskTypeList: [
         {
           id: 1,
           name: "Training",
         }
       ],
-      umamusumeList:[
-        {id:1, name:'Special Week'},
-        {id:2, name:'Silence Suzuka'},
-        {id:3, name:'Tokai Teio'},
-        {id:4, name:'Maruzensky'},
-        {id:5, name:'Oguri Cap'},
-        {id:6, name:'Taiki Shuttle'},
-        {id:7, name:'Mejiro Mcqueen'},
-        {id:8, name:'TM Opera O'},
-        {id:9, name:'Symboli Rudolf'},
-        {id:10, name:'Rice Shower'},
-        {id:11, name:'Gold Ship'},
-        {id:12, name:'Vodka'},
-        {id:13, name:'Daiwa Scarlet'},
-        {id:14, name:'Glass Wonder'},
-        {id:15, name:'El Condor Pasa'},
-        {id:16, name:'Air Groove'},
-        {id:17, name:'Mayano Top Gun'},
-        {id:18, name:'Super Creek'},
-        {id:19, name:'Mejiro Ryan'},
-        {id:20, name:'Agnes Tachyon'},
-        {id:21, name:'Winning Ticket'},
-        {id:22, name:'Sakura Bakushin O'},
-        {id:23, name:'Haru Urara'},
-        {id:24, name:'Matikanefukukitaru'},
-        {id:25, name:'Nice Nature'},
-        {id:26, name:'King Halo'}],
+      umamusumeList: [
+        { id: 1, name: 'Special Week' },
+        { id: 2, name: 'Silence Suzuka' },
+        { id: 3, name: 'Tokai Teio' },
+        { id: 4, name: 'Maruzensky' },
+        { id: 5, name: 'Oguri Cap' },
+        { id: 6, name: 'Taiki Shuttle' },
+        { id: 7, name: 'Mejiro Mcqueen' },
+        { id: 8, name: 'TM Opera O' },
+        { id: 9, name: 'Symboli Rudolf' },
+        { id: 10, name: 'Rice Shower' },
+        { id: 11, name: 'Gold Ship' },
+        { id: 12, name: 'Vodka' },
+        { id: 13, name: 'Daiwa Scarlet' },
+        { id: 14, name: 'Glass Wonder' },
+        { id: 15, name: 'El Condor Pasa' },
+        { id: 16, name: 'Air Groove' },
+        { id: 17, name: 'Mayano Top Gun' },
+        { id: 18, name: 'Super Creek' },
+        { id: 19, name: 'Mejiro Ryan' },
+        { id: 20, name: 'Agnes Tachyon' },
+        { id: 21, name: 'Winning Ticket' },
+        { id: 22, name: 'Sakura Bakushin O' },
+        { id: 23, name: 'Haru Urara' },
+        { id: 24, name: 'Matikanefukukitaru' },
+        { id: 25, name: 'Nice Nature' },
+        { id: 26, name: 'King Halo' }],
       // Character data from JSON file
       characterList: [],
       // Character training periods from JSON file
@@ -845,15 +897,15 @@ export default {
       umamusumeRaceList_1: [],
       umamusumeRaceList_2: [],
       umamusumeRaceList_3: [],
-      cultivatePresets:[],
-      cultivateDefaultPresets:[
-      {
+      cultivatePresets: [],
+      cultivateDefaultPresets: [
+        {
           name: "默认",
           race_list: [],
           skill: "",
-          skill_priority_list:[],
-          expect_attribute:[800, 800, 800, 400, 400],
-          follow_support_card: {id:10001, name:'在耀眼景色的前方', desc:'无声铃鹿'},
+          skill_priority_list: [],
+          expect_attribute: [800, 800, 800, 400, 400],
+          follow_support_card: { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -866,9 +918,9 @@ export default {
           name: "小栗帽基础育成赛程",
           race_list: [1701, 2303, 2401, 5208, 5407, 5904],
           skill: "",
-          skill_priority_list:[],
-          expect_attribute:[800, 650, 800, 300, 400],
-          follow_support_card: {id:20004, name:'一颗安心糖', desc:'超级溪流'},
+          skill_priority_list: [],
+          expect_attribute: [800, 650, 800, 300, 400],
+          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -880,9 +932,9 @@ export default {
           name: "大和赤骥基础育成赛程",
           race_list: [1701, 2303],
           skill: "",
-          skill_priority_list:[],
-          expect_attribute:[800, 600, 600, 300, 400],
-          follow_support_card: {id:20004, name:'一颗安心糖', desc:'超级溪流'},
+          skill_priority_list: [],
+          expect_attribute: [800, 600, 600, 300, 400],
+          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -894,9 +946,9 @@ export default {
           name: "目白麦昆基础育成赛程",
           race_list: [2203, 2401],
           skill: "",
-          skill_priority_list:[],
-          expect_attribute:[700, 700, 600, 350, 400],
-          follow_support_card: {id:20004, name:'一颗安心糖', desc:'超级溪流'},
+          skill_priority_list: [],
+          expect_attribute: [700, 700, 600, 350, 400],
+          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -905,61 +957,61 @@ export default {
           race_tactic_3: 4,
         },
         {
-          name:"历战小栗帽35战60w粉丝(需求觉醒3,借满破小海湾,种马速耐,支援卡带赛后加成高的)",
-          race_list:[1601,1701,1902,2103,2302,2401,2701,2905,3103,3303,3404,3601,4102,4203,4408,4506,4607,4804,4902,5208,5407,5601,5709,5904,6006,6602,6701,6807,7007,7111,7204],
-          skill:"大胃王",
-          skill_priority_list:[],
-          expect_attribute:[700,500,700,350,350],
-          follow_support_card: {id:20004, name:'一颗安心糖', desc:'超级溪流'},
-          follow_support_card_level:50,
-          clock_use_limit:2,
-          learn_skill_threshold:450,
-          race_tactic_1:4,
-          race_tactic_2:3,
-          race_tactic_3:3
+          name: "历战小栗帽35战60w粉丝(需求觉醒3,借满破小海湾,种马速耐,支援卡带赛后加成高的)",
+          race_list: [1601, 1701, 1902, 2103, 2302, 2401, 2701, 2905, 3103, 3303, 3404, 3601, 4102, 4203, 4408, 4506, 4607, 4804, 4902, 5208, 5407, 5601, 5709, 5904, 6006, 6602, 6701, 6807, 7007, 7111, 7204],
+          skill: "大胃王",
+          skill_priority_list: [],
+          expect_attribute: [700, 500, 700, 350, 350],
+          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
+          follow_support_card_level: 50,
+          clock_use_limit: 2,
+          learn_skill_threshold: 450,
+          race_tactic_1: 4,
+          race_tactic_2: 3,
+          race_tactic_3: 3
         }
       ],
-      expectSpeedValue : 650,
-      expectStaminaValue : 600,
+      expectSpeedValue: 650,
+      expectStaminaValue: 600,
       expectPowerValue: 650,
       expectWillValue: 300,
-      expectIntelligenceValue:300,
+      expectIntelligenceValue: 300,
 
       supportCardLevel: 50,
-      
+
       presetsUse: {
-          name: "默认",
-          race_list: [],
-          skill: "",
-          skill_priority_list:[],
-          skill_blacklist: "",
-          expect_attribute:[650, 800, 650, 400, 400],
-          follow_support_card: {id:10001, name:'在耀眼景色的前方', desc:'无声铃鹿'},
-          follow_support_card_level: 50,
-          clock_use_limit: 99,
-          learn_skill_threshold: 9999,
-          race_tactic_1: 4,
-          race_tactic_2: 4,
-          race_tactic_3: 4,
-          extraWeight:[],
-        },
+        name: "默认",
+        race_list: [],
+        skill: "",
+        skill_priority_list: [],
+        skill_blacklist: "",
+        expect_attribute: [650, 800, 650, 400, 400],
+        follow_support_card: { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' },
+        follow_support_card_level: 50,
+        clock_use_limit: 99,
+        learn_skill_threshold: 9999,
+        race_tactic_1: 4,
+        race_tactic_2: 4,
+        race_tactic_3: 4,
+        extraWeight: [],
+      },
       // ===  已选择  ===
       selectedExecuteMode: 1,
       expectTimes: 0,
       cron: "* * * * *",
-      
+
       selectedScenario: 1,
       selectedUmamusumeTaskType: undefined,
       selectedSupportCard: undefined,
       extraRace: [],
-      skillLearnPriorityList:[
-					{
-						priority:0,
-						skills:""
-					}
-				],
-      skillPriorityNum:1,
-      skillLearnBlacklist:"",
+      skillLearnPriorityList: [
+        {
+          priority: 0,
+          skills: ""
+        }
+      ],
+      skillPriorityNum: 1,
+      skillLearnBlacklist: "",
       learnSkillOnlyUserProvided: false,
       learnSkillBeforeRace: false,
       selectedRaceTactic1: 4,
@@ -983,8 +1035,8 @@ export default {
       aoharuTeamNameSelection: 4,
       showAoharuConfigModal: false,
       showUraConfigModal: false,
-      showSupportCardSelectModal: false,      
-      
+      showSupportCardSelectModal: false,
+
       // Skill data from JSON file
       skillPriority0: [],
       skillPriority1: [],
@@ -1014,24 +1066,24 @@ export default {
   computed: {
     filteredRaces_1() {
       return this.umamusumeRaceList_1.filter(race => {
-        const matchesSearch = !this.raceSearch || 
+        const matchesSearch = !this.raceSearch ||
           race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
           race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
-        const matchesType = 
+        const matchesType =
           (race.type === 'G1' && this.showGI) ||
           (race.type === 'G2' && this.showGII) ||
           (race.type === 'G3' && this.showGIII) ||
           (race.type === 'OP' && this.showOP) ||
           (race.type === 'PRE-OP' && this.showPREOP);
-        const matchesTerrain = 
+        const matchesTerrain =
           (race.terrain === 'Turf' && this.showTurf) ||
           (race.terrain === 'Dirt' && this.showDirt);
-        const matchesDistance = 
+        const matchesDistance =
           (race.distance === 'Sprint' && this.showSprint) ||
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        
+
         // Character filter logic
         let matchesCharacter = true;
         if (this.selectedCharacter) {
@@ -1039,13 +1091,13 @@ export default {
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
             const matchesTerrain = race.terrain === character.terrain;
-            
+
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
             const matchesDistance = characterDistances.includes(race.distance);
-            
+
             const matchesAptitude = matchesTerrain && matchesDistance;
-            
+
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
             const matchesTrainingPeriod = characterPeriods && (
@@ -1053,34 +1105,34 @@ export default {
               (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
               (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
             );
-            
+
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
         }
-        
+
         return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     },
     filteredRaces_2() {
       return this.umamusumeRaceList_2.filter(race => {
-        const matchesSearch = !this.raceSearch || 
+        const matchesSearch = !this.raceSearch ||
           race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
           race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
-        const matchesType = 
+        const matchesType =
           (race.type === 'G1' && this.showGI) ||
           (race.type === 'G2' && this.showGII) ||
           (race.type === 'G3' && this.showGIII) ||
           (race.type === 'OP' && this.showOP) ||
           (race.type === 'PRE-OP' && this.showPREOP);
-        const matchesTerrain = 
+        const matchesTerrain =
           (race.terrain === 'Turf' && this.showTurf) ||
           (race.terrain === 'Dirt' && this.showDirt);
-        const matchesDistance = 
+        const matchesDistance =
           (race.distance === 'Sprint' && this.showSprint) ||
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        
+
         // Character filter logic
         let matchesCharacter = true;
         if (this.selectedCharacter) {
@@ -1088,13 +1140,13 @@ export default {
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
             const matchesTerrain = race.terrain === character.terrain;
-            
+
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
             const matchesDistance = characterDistances.includes(race.distance);
-            
+
             const matchesAptitude = matchesTerrain && matchesDistance;
-            
+
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
             const matchesTrainingPeriod = characterPeriods && (
@@ -1102,34 +1154,34 @@ export default {
               (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
               (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
             );
-            
+
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
         }
-        
+
         return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     },
     filteredRaces_3() {
       return this.umamusumeRaceList_3.filter(race => {
-        const matchesSearch = !this.raceSearch || 
+        const matchesSearch = !this.raceSearch ||
           race.name.toLowerCase().includes(this.raceSearch.toLowerCase()) ||
           race.date.toLowerCase().includes(this.raceSearch.toLowerCase());
-        const matchesType = 
+        const matchesType =
           (race.type === 'G1' && this.showGI) ||
           (race.type === 'G2' && this.showGII) ||
           (race.type === 'G3' && this.showGIII) ||
           (race.type === 'OP' && this.showOP) ||
           (race.type === 'PRE-OP' && this.showPREOP);
-        const matchesTerrain = 
+        const matchesTerrain =
           (race.terrain === 'Turf' && this.showTurf) ||
           (race.terrain === 'Dirt' && this.showDirt);
-        const matchesDistance = 
+        const matchesDistance =
           (race.distance === 'Sprint' && this.showSprint) ||
           (race.distance === 'Mile' && this.showMile) ||
           (race.distance === 'Medium' && this.showMedium) ||
           (race.distance === 'Long' && this.showLong);
-        
+
         // Character filter logic
         let matchesCharacter = true;
         if (this.selectedCharacter) {
@@ -1137,13 +1189,13 @@ export default {
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
             const matchesTerrain = race.terrain === character.terrain;
-            
+
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
             const matchesDistance = characterDistances.includes(race.distance);
-            
+
             const matchesAptitude = matchesTerrain && matchesDistance;
-            
+
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
             const matchesTrainingPeriod = characterPeriods && (
@@ -1151,11 +1203,11 @@ export default {
               (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
               (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
             );
-            
+
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
         }
-        
+
         return matchesSearch && matchesType && matchesTerrain && matchesDistance && matchesCharacter;
       });
     },
@@ -1205,7 +1257,7 @@ export default {
     filteredSkillsByType() {
       const { strategy, distance, tier, rarity } = this.skillFilter;
       const allSkills = skillsData;
-      
+
       // Filter skills based on selected criteria
       const filteredSkills = allSkills.filter(skill => {
         const matchesStrategy = !strategy || (skill.strategy && skill.strategy === strategy);
@@ -1214,7 +1266,7 @@ export default {
         const matchesRarity = !rarity || (skill.rarity && skill.rarity === rarity);
         return matchesStrategy && matchesDistance && matchesTier && matchesRarity;
       });
-      
+
       // Group filtered skills by type
       const grouped = {};
       filteredSkills.forEach(skill => {
@@ -1223,7 +1275,7 @@ export default {
         }
         grouped[skill.skill_type].push(skill);
       });
-      
+
       return grouped;
     }
   },
@@ -1235,8 +1287,8 @@ export default {
     this.getPresets()
     this.successToast = $('#liveToast').toast({})
   },
-  methods:{
-    loadCharacterData: function() {
+  methods: {
+    loadCharacterData: function () {
       this.characterList = characterData.map(char => ({
         name: char.character_name,
         terrain: char.aptitude.terrain,
@@ -1251,57 +1303,55 @@ export default {
         };
       });
     },
-    loadRaceData: function() {
+    loadRaceData: function () {
       // Split races by year based on date
       const juniorRaces = raceData.races.filter(race => race.date.includes('Junior Year'));
       const classicRaces = raceData.races.filter(race => race.date.includes('Classic Year'));
       const seniorRaces = raceData.races.filter(race => race.date.includes('Senior Year'));
-      
+
       this.umamusumeRaceList_1 = juniorRaces;
       this.umamusumeRaceList_2 = classicRaces;
       this.umamusumeRaceList_3 = seniorRaces;
     },
-    loadSkillData: function() {
+    loadSkillData: function () {
       // Load all skills from JSON and organize by priority/tier
       const allSkills = skillsData;
-      
+
       // Organize skills by tier/priority - store full skill objects
       this.skillPriority0 = allSkills.filter(skill => skill.tier === 'SS');
       this.skillPriority1 = allSkills.filter(skill => skill.tier === 'S');
       this.skillPriority2 = allSkills.filter(skill => skill.tier === 'A');
     },
-    deleteBox(item,index){
-        if(this.skillLearnPriorityList.length<=1){
-          return false
-        }
-        this.skillLearnPriorityList.splice(index,1)
-        this.skillPriorityNum--
-        for(let i = index; i < this.skillPriorityNum; i++)
-        {
-          this.skillLearnPriorityList[i].priority--
-        }
-      },
-    addBox(item){
-        if(this.skillLearnPriorityList.length>=5)
-        {
-          return false
-        }
-        this.skillLearnPriorityList.push(
-          {
-            priority:this.skillPriorityNum++,
-            skills:''
-          }
-        )
+    deleteBox(item, index) {
+      if (this.skillLearnPriorityList.length <= 1) {
+        return false
+      }
+      this.skillLearnPriorityList.splice(index, 1)
+      this.skillPriorityNum--
+      for (let i = index; i < this.skillPriorityNum; i++) {
+        this.skillLearnPriorityList[i].priority--
+      }
     },
-    initSelect: function (){
-      this.selectedSupportCard = {id:10001, name:'在耀眼景色的前方', desc:'无声铃鹿'}
+    addBox(item) {
+      if (this.skillLearnPriorityList.length >= 5) {
+        return false
+      }
+      this.skillLearnPriorityList.push(
+        {
+          priority: this.skillPriorityNum++,
+          skills: ''
+        }
+      )
+    },
+    initSelect: function () {
+      this.selectedSupportCard = { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' }
       this.selectedUmamusumeTaskType = this.umamusumeTaskTypeList[0]
     },
-    switchRaceList: function(){
+    switchRaceList: function () {
       this.showRaceList = !this.showRaceList
     },
     // Quick selection methods
-    selectAllGI: function() {
+    selectAllGI: function () {
       const allGIRaces = [
         ...this.umamusumeRaceList_1.filter(race => race.type === 'GI'),
         ...this.umamusumeRaceList_2.filter(race => race.type === 'GI'),
@@ -1313,7 +1363,7 @@ export default {
         }
       });
     },
-    selectAllGII: function() {
+    selectAllGII: function () {
       const allGIIRaces = [
         ...this.umamusumeRaceList_1.filter(race => race.type === 'GII'),
         ...this.umamusumeRaceList_2.filter(race => race.type === 'GII'),
@@ -1325,7 +1375,7 @@ export default {
         }
       });
     },
-    selectAllGIII: function() {
+    selectAllGIII: function () {
       const allGIIIRaces = [
         ...this.umamusumeRaceList_1.filter(race => race.type === 'GIII'),
         ...this.umamusumeRaceList_2.filter(race => race.type === 'GIII'),
@@ -1337,14 +1387,14 @@ export default {
         }
       });
     },
-    clearAllRaces: function() {
+    clearAllRaces: function () {
       this.extraRace = [];
     },
-    onCharacterChange: function() {
+    onCharacterChange: function () {
       // Reset race selection when character changes
       this.extraRace = [];
     },
-    toggleRace: function(raceId) {
+    toggleRace: function (raceId) {
       const index = this.extraRace.indexOf(raceId);
       if (index > -1) {
         this.extraRace.splice(index, 1);
@@ -1352,7 +1402,7 @@ export default {
         this.extraRace.push(raceId);
       }
     },
-    toggleSkill: function(skillName) {
+    toggleSkill: function (skillName) {
       const index = this.selectedSkills.indexOf(skillName);
       if (index > -1) {
         // Remove from selected skills
@@ -1365,7 +1415,7 @@ export default {
         this.skillAssignments[skillName] = highestPriority;
       }
     },
-    toggleBlacklistSkill: function(skillName) {
+    toggleBlacklistSkill: function (skillName) {
       const index = this.blacklistedSkills.indexOf(skillName);
       if (index > -1) {
         this.blacklistedSkills.splice(index, 1);
@@ -1380,47 +1430,47 @@ export default {
       }
     },
     // Spoiler toggle methods
-    togglePriority0: function() {
+    togglePriority0: function () {
       this.showPriority0 = !this.showPriority0;
     },
-    togglePriority1: function() {
+    togglePriority1: function () {
       this.showPriority1 = !this.showPriority1;
     },
-    togglePriority2: function() {
+    togglePriority2: function () {
       this.showPriority2 = !this.showPriority2;
     },
-    switchAdvanceOption: function(){
+    switchAdvanceOption: function () {
       this.showAdvanceOption = !this.showAdvanceOption
     },
-    openUraConfigModal: function(){
+    openUraConfigModal: function () {
       this.showUraConfigModal = true;
     },
-    closeUraConfigModal: function(){
+    closeUraConfigModal: function () {
       this.showUraConfigModal = false;
     },
-    openAoharuConfigModal: function(){
+    openAoharuConfigModal: function () {
       this.showAoharuConfigModal = true;
     },
-    closeAoharuConfigModal: function(){
+    closeAoharuConfigModal: function () {
       this.showAoharuConfigModal = false;
     },
-    handleUraConfigConfirm: function(data) {
+    handleUraConfigConfirm: function (data) {
       this.skillEventWeight = [...data.skillEventWeight];
       this.resetSkillEventWeightList = data.resetSkillEventWeightList;
       this.showUraConfigModal = false;
     },
-    handleAoharuConfigConfirm: function(data) {
+    handleAoharuConfigConfirm: function (data) {
       this.preliminaryRoundSelections = [...data.preliminaryRoundSelections];
       this.aoharuTeamNameSelection = data.aoharuTeamNameSelection;
       this.showAoharuConfigModal = false;
     },
-    cancelTask: function(){
+    cancelTask: function () {
       $('#create-task-list-modal').modal('hide');
     },
-    addTask: function (){
+    addTask: function () {
       // Convert new skill system to bot-expected format
       var learn_skill_list = []
-      
+
       // Group selected skills by priority
       const skillsByPriority = {};
       this.selectedSkills.forEach(skillName => {
@@ -1430,7 +1480,7 @@ export default {
         }
         skillsByPriority[priority].push(skillName);
       });
-      
+
       // Convert to bot-expected format (list of lists)
       for (let priority = 0; priority <= Math.max(...this.activePriorities); priority++) {
         if (skillsByPriority[priority] && skillsByPriority[priority].length > 0) {
@@ -1439,10 +1489,10 @@ export default {
           learn_skill_list.push([]);
         }
       }
-      
+
       // Convert blacklisted skills to bot-expected format
       var learn_skill_blacklist = [...this.blacklistedSkills];
-      
+
       console.log(learn_skill_list)
       var ura_reset_skill_event_weight_list = this.resetSkillEventWeightList ? this.resetSkillEventWeightList.split(",").map(item => item.trim()) : []
       let payload = {
@@ -1460,6 +1510,7 @@ export default {
           "learn_skill_blacklist": learn_skill_blacklist,
           "tactic_list": [this.selectedRaceTactic1, this.selectedRaceTactic2, this.selectedRaceTactic3],
           "clock_use_limit": this.clockUseLimit,
+          "manual_purchase_at_end": this.manualPurchase,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
@@ -1478,21 +1529,21 @@ export default {
             "aoharuTeamNameSelection": this.aoharuTeamNameSelection
           } : null
         },
-        cron_job_info:{},
+        cron_job_info: {},
       }
-      if(this.selectedExecuteMode === 2){
+      if (this.selectedExecuteMode === 2) {
         payload.cron_job_info = {
           cron: this.cron
         }
       }
       console.log(JSON.stringify(payload))
       this.axios.post("/task", JSON.stringify(payload)).then(
-          ()=>{
-            $('#create-task-list-modal').modal('hide');
-          }
+        () => {
+          $('#create-task-list-modal').modal('hide');
+        }
       )
     },
-    applyPresetRace: function(){
+    applyPresetRace: function () {
       this.selectedScenario = this.presetsUse.scenario || 1
       this.extraRace = this.presetsUse.race_list
       this.expectSpeedValue = this.presetsUse.expect_attribute[0]
@@ -1501,25 +1552,23 @@ export default {
       this.expectWillValue = this.presetsUse.expect_attribute[3]
       this.expectIntelligenceValue = this.presetsUse.expect_attribute[4]
       this.selectedSupportCard = this.presetsUse.follow_support_card,
-      this.supportCardLevel = this.presetsUse.follow_support_card_level,
-      this.clockUseLimit = this.presetsUse.clock_use_limit,
-      this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
-      this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
-      this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
-      this.selectedRaceTactic3 = this.presetsUse.race_tactic_3,
-      this.skillLearnBlacklist = this.presetsUse.skill_blacklist
+        this.supportCardLevel = this.presetsUse.follow_support_card_level,
+        this.clockUseLimit = this.presetsUse.clock_use_limit,
+        this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
+        this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
+        this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
+        this.selectedRaceTactic3 = this.presetsUse.race_tactic_3,
+        this.skillLearnBlacklist = this.presetsUse.skill_blacklist
 
-      if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != [])
-      {
-        this.extraWeight1 =  this.presetsUse.extraWeight[0].map(v => Math.max(-1, Math.min(1, v)));
-        this.extraWeight2 =  this.presetsUse.extraWeight[1].map(v => Math.max(-1, Math.min(1, v)));
-        this.extraWeight3 =  this.presetsUse.extraWeight[2].map(v => Math.max(-1, Math.min(1, v)));
+      if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != []) {
+        this.extraWeight1 = this.presetsUse.extraWeight[0].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight2 = this.presetsUse.extraWeight[1].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight3 = this.presetsUse.extraWeight[2].map(v => Math.max(-1, Math.min(1, v)));
       }
-      else
-      {
-        this.extraWeight1 = [0,0,0,0,0]
-        this.extraWeight2 = [0,0,0,0,0]
-        this.extraWeight3 = [0,0,0,0,0]
+      else {
+        this.extraWeight1 = [0, 0, 0, 0, 0]
+        this.extraWeight2 = [0, 0, 0, 0, 0]
+        this.extraWeight3 = [0, 0, 0, 0, 0]
       }
 
       // Load new skill system data if available
@@ -1527,12 +1576,12 @@ export default {
         // New format - load directly
         this.selectedSkills = [...this.presetsUse.selectedSkills];
         this.blacklistedSkills = [...this.presetsUse.blacklistedSkills];
-        this.skillAssignments = {...this.presetsUse.skillAssignments};
+        this.skillAssignments = { ...this.presetsUse.skillAssignments };
         this.activePriorities = [...this.presetsUse.activePriorities];
-        
+
         // Also populate old system for UI compatibility
         this.skillLearnBlacklist = this.blacklistedSkills.join(", ");
-        
+
         // Convert new system back to old format for UI display
         const skillsByPriority = {};
         this.selectedSkills.forEach(skillName => {
@@ -1542,11 +1591,11 @@ export default {
           }
           skillsByPriority[priority].push(skillName);
         });
-        
+
         // Reset old system
-        this.skillLearnPriorityList = [{priority: 0, skills: ""}];
+        this.skillLearnPriorityList = [{ priority: 0, skills: "" }];
         this.skillPriorityNum = 1;
-        
+
         // Populate old system from new system
         for (let priority = 0; priority <= Math.max(...this.activePriorities); priority++) {
           if (skillsByPriority[priority] && skillsByPriority[priority].length > 0) {
@@ -1586,33 +1635,27 @@ export default {
           });
         }
       }
-      
+
       // Legacy skill loading for backward compatibility
-      if ('skill' in this.presetsUse && this.presetsUse.skill != "")
-      {
+      if ('skill' in this.presetsUse && this.presetsUse.skill != "") {
         this.skillLearnPriorityList[0].skills = this.presetsUse.skill
-        while(this.skillPriorityNum > 1)
-        {
-          this.deleteBox(0,this.skillPriorityNum-1)
+        while (this.skillPriorityNum > 1) {
+          this.deleteBox(0, this.skillPriorityNum - 1)
         }
       }
-      else
-      {
-        for (let i = 0; i < this.presetsUse.skill_priority_list.length; i++)
-        {
-          if (i >= this.skillPriorityNum)
-          {
+      else {
+        for (let i = 0; i < this.presetsUse.skill_priority_list.length; i++) {
+          if (i >= this.skillPriorityNum) {
             this.addBox()
           }
           this.skillLearnPriorityList[i].skills = this.presetsUse.skill_priority_list[i]
         }
-        while(this.presetsUse.skill_priority_list.length != 0 &&
-              this.skillPriorityNum > this.presetsUse.skill_priority_list.length)
-        {
-          this.deleteBox(0,this.skillPriorityNum-1)
+        while (this.presetsUse.skill_priority_list.length != 0 &&
+          this.skillPriorityNum > this.presetsUse.skill_priority_list.length) {
+          this.deleteBox(0, this.skillPriorityNum - 1)
         }
       }
-      
+
       // 读取青春杯配置（如果存在）
       if ('ura_config' in this.presetsUse) {
         this.skillEventWeight = [...this.presetsUse.ura_config.skillEventWeight];
@@ -1628,11 +1671,11 @@ export default {
         this.preliminaryRoundSelections = [2, 1, 1, 1];
         this.aoharuTeamNameSelection = 4;
       }
-      
+
     },
-    getPresets: function(){
+    getPresets: function () {
       this.axios.post("/umamusume/get-presets", "").then(
-          res=>{
+        res => {
           let tmplist = []
           tmplist = tmplist.concat(this.cultivateDefaultPresets)
           tmplist = tmplist.concat(res.data)
@@ -1640,11 +1683,11 @@ export default {
         }
       )
     },
-    addPresets: function(){
+    addPresets: function () {
       // Convert new skill system to old format for backward compatibility
       var skill_priority_list = [];
       var skill_blacklist = this.blacklistedSkills.join(", ");
-      
+
       // Group selected skills by priority
       const skillsByPriority = {};
       this.selectedSkills.forEach(skillName => {
@@ -1654,7 +1697,7 @@ export default {
         }
         skillsByPriority[priority].push(skillName);
       });
-      
+
       // Convert to old format (skill_priority_list)
       for (let priority = 0; priority <= Math.max(...this.activePriorities); priority++) {
         if (skillsByPriority[priority] && skillsByPriority[priority].length > 0) {
@@ -1663,14 +1706,14 @@ export default {
           skill_priority_list.push([""]);
         }
       }
-      
+
       let preset = {
         name: this.presetNameEdit,
         scenario: this.selectedScenario,
         race_list: this.extraRace,
         skill_priority_list: skill_priority_list,
         skill_blacklist: skill_blacklist,
-        expect_attribute:[this.expectSpeedValue, this.expectStaminaValue, this.expectPowerValue, this.expectWillValue, this.expectIntelligenceValue],
+        expect_attribute: [this.expectSpeedValue, this.expectStaminaValue, this.expectPowerValue, this.expectWillValue, this.expectIntelligenceValue],
         follow_support_card: this.selectedSupportCard,
         follow_support_card_level: this.supportCardLevel,
         clock_use_limit: this.clockUseLimit,
@@ -1686,7 +1729,7 @@ export default {
         // New skill system data
         selectedSkills: [...this.selectedSkills],
         blacklistedSkills: [...this.blacklistedSkills],
-        skillAssignments: {...this.skillAssignments},
+        skillAssignments: { ...this.skillAssignments },
         activePriorities: [...this.activePriorities]
       }
       // 仅当剧本对应时, 添加URA或青春杯配置
@@ -1706,10 +1749,10 @@ export default {
       }
       console.log(JSON.stringify(payload))
       this.axios.post("/umamusume/add-presets", JSON.stringify(payload)).then(
-        ()=>{
+        () => {
           this.successToast.toast('show')
           this.getPresets()
-        } 
+        }
       )
     },
     onExtraWeightInput(arr, idx) {
@@ -1734,10 +1777,10 @@ export default {
         }, 2000);
       }
     },
-    openSupportCardSelectModal: function() {
+    openSupportCardSelectModal: function () {
       this.showSupportCardSelectModal = true;
     },
-    closeSupportCardSelectModal: function() {
+    closeSupportCardSelectModal: function () {
       this.showSupportCardSelectModal = false;
     },
     handleSupportCardConfirm(card) {
@@ -1759,19 +1802,19 @@ export default {
       }
     },
     // New methods for dynamic priority system
-    getActivePriorities: function() {
+    getActivePriorities: function () {
       return this.activePriorities;
     },
-    getSelectedSkillsForPriority: function(priority) {
+    getSelectedSkillsForPriority: function (priority) {
       return this.selectedSkills.filter(skillName => {
         return this.skillAssignments[skillName] === priority;
       });
     },
-    addPriority: function() {
+    addPriority: function () {
       const maxPriority = Math.max(...this.activePriorities);
       this.activePriorities.push(maxPriority + 1);
     },
-    removeLastPriority: function() {
+    removeLastPriority: function () {
       if (this.activePriorities.length > 1) {
         const removedPriority = this.activePriorities.pop();
         // Move skills from removed priority to the highest remaining priority
@@ -1795,15 +1838,14 @@ export default {
       this.showSkillList = !this.showSkillList;
     }
   },
-  watch:{
+  watch: {
 
   }
 }
 </script>
 
 <style scoped>
-
-.btn{
+.btn {
   padding: 0.4rem 0.8rem !important;
   font-size: 1rem !important;
 }
@@ -1817,18 +1859,21 @@ export default {
 
 /* 取消按钮样式 */
 .cancel-btn {
-  background-color: #dc3545 !important; /* Bootstrap的danger红色 */
+  background-color: #dc3545 !important;
+  /* Bootstrap的danger红色 */
   color: white !important;
   padding: 0.4rem 0.8rem !important;
   font-size: 1rem !important;
   border-radius: 0.25rem;
-  margin-right: 10px; /* 与确认按钮间距 */
+  margin-right: 10px;
+  /* 与确认按钮间距 */
   border: none;
   cursor: pointer;
 }
 
 .cancel-btn:hover {
-  background-color: #c82333 !important; /* 悬停时更深的红色 */
+  background-color: #c82333 !important;
+  /* 悬停时更深的红色 */
   color: white !important;
 }
 
@@ -1846,8 +1891,10 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1055; /* 确保在TaskEditModal之上，但在AoharuConfigModal之下 */
-  pointer-events: auto; /* 阻止与背景元素的交互 */
+  z-index: 1055;
+  /* 确保在TaskEditModal之上，但在AoharuConfigModal之下 */
+  pointer-events: auto;
+  /* 阻止与背景元素的交互 */
 }
 
 /* 只有青春杯配置弹窗时让TaskEditModal变暗 */
@@ -2094,7 +2141,8 @@ export default {
   margin-bottom: 16px;
 }
 
-.selected-skills-box, .blacklist-box {
+.selected-skills-box,
+.blacklist-box {
   border: 2px dashed #dee2e6;
   border-radius: 8px;
   padding: 16px;
@@ -2103,7 +2151,8 @@ export default {
   transition: all 0.2s ease;
 }
 
-.selected-skills-box:hover, .blacklist-box:hover {
+.selected-skills-box:hover,
+.blacklist-box:hover {
   border-color: #007bff;
   background: #f0f8ff;
 }
@@ -2116,13 +2165,15 @@ export default {
   font-size: 14px;
 }
 
-.selected-skills-list, .blacklisted-skills-list {
+.selected-skills-list,
+.blacklisted-skills-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.selected-skill-item, .blacklisted-skill-item {
+.selected-skill-item,
+.blacklisted-skill-item {
   background: #007bff;
   color: white;
   padding: 4px 8px;
@@ -2155,12 +2206,12 @@ export default {
   border-radius: 8px;
   background: #f8f9fa;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
 }
 
 .skill-type-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
 
@@ -2182,7 +2233,7 @@ export default {
 .skill-count {
   font-size: 11px;
   opacity: 0.9;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   padding: 2px 8px;
   border-radius: 12px;
 }
@@ -2243,7 +2294,7 @@ export default {
   font-size: 10px;
   opacity: 0.9;
   font-weight: 500;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   padding: 2px 6px;
   border-radius: 8px;
 }
@@ -2521,6 +2572,7 @@ export default {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

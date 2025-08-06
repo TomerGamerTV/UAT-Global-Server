@@ -19,6 +19,7 @@ class TaskDetail:
     allow_recover_tp: bool
     cultivate_progress_info: dict
     extra_weight: list
+    manual_purchase_at_end: bool
     # 剧本相关配置
     scenario_config: ScenarioConfig
     # 限时: 富士奇石的表演秀
@@ -65,6 +66,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.learn_skill_only_user_provided = attachment_data['learn_skill_only_user_provided']
     td.allow_recover_tp = attachment_data['allow_recover_tp']
     td.extra_weight = attachment_data['extra_weight']
+    td.manual_purchase_at_end = attachment_data['manual_purchase_at_end']
     td.cultivate_result = {}
     # 剧本相关设置
     td.scenario_config = ScenarioConfig(

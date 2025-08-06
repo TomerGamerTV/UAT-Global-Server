@@ -121,8 +121,18 @@ class U2AndroidController(AndroidController):
     def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration=0.2, name=""):
         if name != "":
             log.debug("swipe >> " + name)
-        _ = self.execute_adb_shell("shell input swipe " + str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " "
-                                   + str(duration), True)
+        
+        offset_x1 = random.randint(-5, 5)
+        offset_y1 = random.randint(-5, 5)
+        offset_x2 = random.randint(-5, 5)
+        offset_y2 = random.randint(-5, 5)
+        
+        x1 += offset_x1
+        y1 += offset_y1
+        x2 += offset_x2
+        y2 += offset_y2
+        
+        _ = self.execute_adb_shell("shell input swipe " + str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(duration), True)
         time.sleep(self.config.delay)
 
     # ===== common =====

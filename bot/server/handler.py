@@ -1,4 +1,6 @@
 import os
+import time
+from typing import Dict, Any
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +19,56 @@ server.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Global state for manual skill notifications
+manual_skill_notification_state = {
+    "show": False,
+    "message": "",
+    "timestamp": 0,
+    "confirmed": False,
+    "cancelled": False
+}
+
+@server.post("/api/manual-skill-notification")
+def manual_skill_notification(notification_data: Dict[str, Any]):
+    """Receive manual skill purchase notification from bot"""
+    global manual_skill_notification_state
+    manual_skill_notification_state.update({
+        "show": True,
+        "message": notification_data.get("message", ""),
+        "timestamp": notification_data.get("timestamp", time.time()),
+        "confirmed": False,
+        "cancelled": False
+    })
+    return {"status": "success"}
+
+@server.get("/api/manual-skill-notification-status")
+def get_manual_skill_notification_status():
+    """Get current notification status for frontend polling"""
+    global manual_skill_notification_state
+    return manual_skill_notification_state
+
+@server.post("/api/manual-skill-notification-confirm")
+def confirm_manual_skill_notification():
+    """Confirm manual skill purchase completion"""
+    global manual_skill_notification_state
+    manual_skill_notification_state.update({
+        "show": False,
+        "confirmed": True,
+        "cancelled": False
+    })
+    return {"status": "confirmed"}
+
+@server.post("/api/manual-skill-notification-cancel")
+def cancel_manual_skill_notification():
+    """Cancel manual skill purchase"""
+    global manual_skill_notification_state
+    manual_skill_notification_state.update({
+        "show": False,
+        "confirmed": False,
+        "cancelled": True
+    })
+    return {"status": "cancelled"}
 
 
 @server.post("/task")

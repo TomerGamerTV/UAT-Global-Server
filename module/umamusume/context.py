@@ -29,6 +29,7 @@ class CultivateContextDetail:
     allow_recover_tp: bool
     parse_factor_done: bool
     extra_weight: list
+    manual_purchase_completed: bool
 
     def __init__(self):
         self.expect_attribute = None
@@ -47,6 +48,7 @@ class CultivateContextDetail:
         self.allow_recover_tp = False
         self.parse_factor_done = False
         self.extra_weight = []
+        self.manual_purchase_completed = False
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
