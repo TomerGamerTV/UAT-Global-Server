@@ -4,22 +4,75 @@
       <div id="nav">
       </div>
       <router-view/>
+      <manual-skill-notification-modal 
+        v-model:show="showManualSkillNotification"
+        @confirm="handleManualSkillConfirm"
+        @cancel="handleManualSkillCancel"
+      />
     </div>
   </div>
 </template>
 <script>
+import ManualSkillNotificationModal from '@/components/ManualSkillNotificationModal.vue'
+import axios from '@/util/axiosConf.js'
+
 export default {
   name: 'App',
-  components: {},
+  components: {
+    ManualSkillNotificationModal
+  },
   data:function(){
     return{
       error:'',
       success:'',
       info:'',
+      showManualSkillNotification: false
     }
   },
   mounted (){
-
+    // Listen for manual skill notification events from the backend
+    this.setupWebSocket();
+  },
+  methods: {
+    setupWebSocket() {
+      // This will be used to receive notifications from the backend
+      // For now, we'll use a simple polling mechanism
+      this.checkForManualSkillNotification();
+    },
+    checkForManualSkillNotification() {
+      // Poll for manual skill notification status
+      setInterval(() => {
+        axios.get('/api/manual-skill-notification-status', null, false)
+          .then(response => {
+            if (response.data.show) {
+              this.showManualSkillNotification = true;
+            }
+          })
+          .catch(() => {
+            // Ignore errors - notification status endpoint might not exist yet
+          });
+      }, 1000); // Check every second
+    },
+    handleManualSkillConfirm() {
+      // Send confirmation to backend
+      axios.post('/api/manual-skill-notification-confirm', {}, false)
+        .then(() => {
+          this.showManualSkillNotification = false;
+        })
+        .catch(() => {
+          // Ignore errors
+        });
+    },
+    handleManualSkillCancel() {
+      // Send cancellation to backend
+      axios.post('/api/manual-skill-notification-cancel', {}, false)
+        .then(() => {
+          this.showManualSkillNotification = false;
+        })
+        .catch(() => {
+          // Ignore errors
+        });
+    }
   },
   watch:{
 
