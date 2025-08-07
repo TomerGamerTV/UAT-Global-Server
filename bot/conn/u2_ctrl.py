@@ -115,11 +115,11 @@ class U2AndroidController(AndroidController):
         if y <= 0:
             y = 1
         
-        duration_ms = random.randint(0, 100) + hold_duration
-        _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration_ms), True)
+        duration = random.randint(0, 100) + hold_duration
+        _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration), True)
         time.sleep(self.config.delay)
 
-    def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration_ms=0.2, name=""):
+    def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration=0.2, name=""):
         if name != "":
             log.debug("swipe >> " + name)
         
@@ -133,7 +133,7 @@ class U2AndroidController(AndroidController):
         x2 += offset_x2
         y2 += offset_y2
         
-        _ = self.execute_adb_shell("shell input swipe " + str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(duration_ms), True)
+        _ = self.execute_adb_shell("shell input swipe " + str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(duration), True)
         time.sleep(self.config.delay)
 
     # ===== common =====
