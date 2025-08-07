@@ -82,27 +82,27 @@ class U2AndroidController(AndroidController):
         return cur_screen
 
     # ===== ctrl =====
-
-    def click_by_point(self, point: ClickPoint, random_offset=True):
+    def click_by_point(self, point: ClickPoint, random_offset=True, hold_duration=0):
         if self.recent_point is not None:
             if self.recent_point == point and time.time() - self.recent_operation_time < self.same_point_operation_interval:
                 log.warning("request for a same point too frequently")
                 return
         if point.target_type == ClickPointType.CLICK_POINT_TYPE_COORDINATE:
-            self.click(point.coordinate.x, point.coordinate.y, name=point.desc, random_offset=random_offset)
+            self.click(point.coordinate.x, point.coordinate.y, name=point.desc, random_offset=random_offset, hold_duration=hold_duration)
         elif point.target_type == ClickPointType.CLICK_POINT_TYPE_TEMPLATE:
             cur_screen = self.get_screen(to_gray=True)
             if point.template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
                 match_result = template_match(cur_screen, point.template.template_image)
                 if match_result.find_match:
-                    self.click(match_result.center_point[0], match_result.center_point[1], random_offset=random_offset)
+                    self.click(match_result.center_point[0], match_result.center_point[1], random_offset=random_offset, hold_duration=hold_duration)
         self.recent_point = point
         self.recent_operation_time = time.time()
 
-    def click(self, x, y, name="", random_offset=True, max_x=720, max_y=1280):
+    def click(self, x, y, name="", random_offset=True, max_x=720, max_y=1280, hold_duration=0):
+        print("dis ran")
         if name != "":
             log.debug("click >> " + name)
-        if random:
+        if random_offset: # why was this just "random" before
             offset_x = random.randint(-5, 5)
             offset_y = random.randint(-5, 5)
             x += offset_x
@@ -115,7 +115,9 @@ class U2AndroidController(AndroidController):
             x = 1
         if y <= 0:
             y = 1
-        _ = self.execute_adb_shell("shell input tap " + str(x) + " " + str(y), True)
+        
+        duration_ms = random.randint(0, 100) + hold_duration
+        _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration_ms), True)
         time.sleep(self.config.delay)
 
     def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration=0.2, name=""):

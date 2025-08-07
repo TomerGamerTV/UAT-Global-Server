@@ -569,9 +569,9 @@ def script_fujikiseki_show_result_1(ctx: UmamusumeContext):
 def script_fujikiseki_show_result_2(ctx: UmamusumeContext):
     ctx.ctrl.click(360, 1120, "Confirm Fuji Kiseki Show mode result")
 
-# 1.878s 2s 0.649s
+# 1.878s 2s 0.649s (the first one is actually correct lol i didnt test the rest)
 def script_cultivate_catch_doll(ctx: UmamusumeContext):
-    ctx.ctrl.click_by_point(CULTIVATE_CATCH_DOLL_START)
+    ctx.ctrl.click_by_point(CULTIVATE_CATCH_DOLL_START, hold_duration=1878)
 
 
 def script_cultivate_catch_doll_result(ctx: UmamusumeContext):
