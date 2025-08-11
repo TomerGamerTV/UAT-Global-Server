@@ -1015,7 +1015,7 @@ export default {
         },
         {
           name: "Oguri Cap Basic Training Schedule",
-          race_list: [1701, 2303, 2401, 5208, 5407, 5904],
+          race_list: [2013, 2046, 2056, 2251, 2101, 2113],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [800, 650, 800, 300, 400],
@@ -1029,7 +1029,7 @@ export default {
         },
         {
           name: "Daiwa Scarlet Basic Training Schedule",
-          race_list: [1701, 2303],
+          race_list: [2013, 2046],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [800, 600, 600, 300, 400],
@@ -1043,7 +1043,7 @@ export default {
         },
         {
           name: "Mejiro Mcqueen Basic Training Schedule",
-          race_list: [2203, 2401],
+          race_list: [2041, 2205],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [700, 700, 600, 350, 400],
