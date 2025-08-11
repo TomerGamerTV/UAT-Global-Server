@@ -39,7 +39,7 @@
               </div>
               <div class="col">
                 <div class="form-group">
-                  <label for="selectAutoRecoverTP">Auto-recover when TP is low (Carrots only)</label>
+                  <label for="selectAutoRecoverTP">Auto-recover when TP is low (TP Bottle)</label>
                   <select v-model="recoverTP" class="form-control" id="selectAutoRecoverTP">
                     <option :value=true>Yes</option>
                     <option :value=false>No</option>
@@ -250,7 +250,7 @@
                 certain training types. Weight range [-1.0 ~ 1.0], 0 means no extra weight applied.</p>
               <p>❗ Setting weight to -1 will skip that training</p>
               <p>❗ Within the same year, all weights cannot be -1</p>
-              <p>When support cards or breeding stallion are weak, recommend increasing one attribute weight while
+              <p>When support cards or uma legacy are weak, recommend increasing one attribute weight while
                 decreasing others by the same amount</p>
               <div style="margin-bottom: 10px;">Year 1</div>
               <div class="row">

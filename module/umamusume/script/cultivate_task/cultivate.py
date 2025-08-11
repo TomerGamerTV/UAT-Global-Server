@@ -373,6 +373,12 @@ def script_umamusume_select(ctx: UmamusumeContext):
 
 
 def script_extend_umamusume_select(ctx: UmamusumeContext):
+    ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_AUTO_SELECT)
+    time.sleep(1)
+    ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_INCLUDE_GUEST)
+    time.sleep(1)
+    ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_CONFIRM)
+    time.sleep(1)
     ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
 
 

@@ -298,7 +298,7 @@ def parse_umamusume_remain_stamina_value(ctx: UmamusumeContext, img):
     sub_img_remain_stamina = img[160:161, 229:505]
     stamina_counter = 0
     for c in sub_img_remain_stamina[0]:
-        if not compare_color_equal(c, [117, 117, 117]):
+        if not compare_color_equal(c, [117, 117, 117], tolerance=20):
             stamina_counter += 1
     remain_stamina = int(stamina_counter / 276 * 100)
     ctx.cultivate_detail.turn_info.remain_stamina = remain_stamina
