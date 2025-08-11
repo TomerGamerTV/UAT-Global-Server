@@ -348,12 +348,18 @@
                     <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
                   </div>
                   <div class="col-md-4">
-                    <label>👤 Character Filter:</label>
+                    <label>👤 Character Filter: <i class="fas fa-info-circle text-muted" title="Filter races based on character's terrain/distance aptitude and training schedule"></i></label>
                     <select v-model="selectedCharacter" class="form-control" @change="onCharacterChange">
                       <option value="">All Characters</option>
                       <option v-for="character in characterList" :key="character.name" :value="character.name">
                         {{ character.name }}</option>
                     </select>
+                    <small v-if="selectedCharacter" class="text-info">
+                      {{ getCompatibleRacesCount() }} compatible, {{ getIncompatibleRacesCount() }} filtered out
+                    </small>
+                    <small v-else class="text-muted">
+                      Select a character to filter races by compatibility
+                    </small>
                   </div>
                   <div class="col-md-4">
                     <label>🏁 Quick Selection:</label>
@@ -860,6 +866,44 @@
       </div>
     </div>
   </div>
+
+              <!-- Custom Character Change Confirmation Modal -->
+            <div v-if="showCharacterChangeModal" class="modal fade show character-change-modal" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Character Filter Change</h5>
+          <button type="button" class="close" @click="closeCharacterChangeModal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>You have <strong>{{ extraRace.length }}</strong> race(s) selected.</p>
+          <div v-if="selectedCharacter">
+            <p>Changing to <strong>"{{ selectedCharacter }}"</strong> will:</p>
+            <ul>
+              <li>Show <strong>{{ getCompatibleRacesCount() }}</strong> compatible race(s)</li>
+              <li>Hide <strong>{{ getIncompatibleRacesCount() }}</strong> incompatible race(s)</li>
+            </ul>
+          </div>
+          <div v-else>
+            <p>Removing character filter will show all races.</p>
+          </div>
+          <p>What would you like to do with your current race selections?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" @click="handleClearSelection">
+            <i class="fas fa-trash"></i> Clear Selection
+            <small class="d-block">Clear the entire selection</small>
+          </button>
+          <button type="button" class="btn btn-primary" @click="handleFilterSelection">
+            <i class="fas fa-filter"></i> Filter Selection Based on Character Compatibility
+            <small class="d-block">Keep the selection but only keep the character compatibility that has already selected</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -905,6 +949,7 @@ export default {
       characterList: [],
       characterAptitudes: {},
       characterTrainingPeriods: {},
+      showCharacterChangeModal: false,
       fujikisekiShowMode: false,
       fujikisekiShowDifficulty: 1,
       levelDataList: [],
@@ -1136,13 +1181,13 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesTerrain = race.terrain === character.terrain;
+            const matchesCharacterTerrain = race.terrain === character.terrain;
 
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
-            const matchesDistance = characterDistances.includes(race.distance);
+            const matchesCharacterDistance = characterDistances.includes(race.distance);
 
-            const matchesAptitude = matchesTerrain && matchesDistance;
+            const matchesAptitude = matchesCharacterTerrain && matchesCharacterDistance;
 
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
@@ -1185,13 +1230,13 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesTerrain = race.terrain === character.terrain;
+            const matchesCharacterTerrain = race.terrain === character.terrain;
 
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
-            const matchesDistance = characterDistances.includes(race.distance);
+            const matchesCharacterDistance = characterDistances.includes(race.distance);
 
-            const matchesAptitude = matchesTerrain && matchesDistance;
+            const matchesAptitude = matchesCharacterTerrain && matchesCharacterDistance;
 
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
@@ -1234,13 +1279,13 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesTerrain = race.terrain === character.terrain;
+            const matchesCharacterTerrain = race.terrain === character.terrain;
 
             // Handle multiple distances (e.g., "Medium, Long")
             const characterDistances = character.distance.split(', ').map(d => d.trim());
-            const matchesDistance = characterDistances.includes(race.distance);
+            const matchesCharacterDistance = characterDistances.includes(race.distance);
 
-            const matchesAptitude = matchesTerrain && matchesDistance;
+            const matchesAptitude = matchesCharacterTerrain && matchesCharacterDistance;
 
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
@@ -1437,8 +1482,93 @@ export default {
       this.extraRace = [];
     },
     onCharacterChange: function () {
-      // Reset race selection when character changes
+      // Smart filtering: Show custom confirmation modal when character changes
+      if (this.extraRace.length > 0) {
+        this.showCharacterChangeModal = true;
+      }
+    },
+    
+    getCompatibleRacesCount: function() {
+      if (!this.selectedCharacter) return 0;
+      
+      let count = 0;
+      // Count compatible races from all three race lists
+      [this.filteredRaces_1, this.filteredRaces_2, this.filteredRaces_3].forEach(races => {
+        if (races) count += races.length;
+      });
+      
+      return count;
+    },
+    
+    getIncompatibleRacesCount: function() {
+      if (!this.selectedCharacter) return 0;
+      
+      let totalRaces = 0;
+      let compatibleRaces = 0;
+      
+      // Count total races from all three race lists
+      [this.umamusumeRaceList_1, this.umamusumeRaceList_2, this.umamusumeRaceList_3].forEach(races => {
+        if (races) totalRaces += races.length;
+      });
+      
+      compatibleRaces = this.getCompatibleRacesCount();
+      return totalRaces - compatibleRaces;
+    },
+    
+    // Character change modal methods
+    closeCharacterChangeModal: function() {
+      this.showCharacterChangeModal = false;
+    },
+    
+    handleClearSelection: function() {
+      // Clear the entire selection
       this.extraRace = [];
+      this.closeCharacterChangeModal();
+    },
+    
+    handleFilterSelection: function() {
+      // Keep the selection but only keep races that are compatible with the selected character
+      if (this.selectedCharacter) {
+        const character = this.characterList.find(c => c.name === this.selectedCharacter);
+        if (character) {
+          // Filter races to only keep compatible ones
+          this.extraRace = this.extraRace.filter(raceId => {
+            // Find the race in any of the three race lists
+            let race = null;
+            [this.umamusumeRaceList_1, this.umamusumeRaceList_2, this.umamusumeRaceList_3].forEach(raceList => {
+              if (!race) {
+                race = raceList.find(r => r.id === raceId);
+              }
+            });
+            
+            if (!race) return false;
+            
+            // Check if race matches character's aptitude (terrain and distance)
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
+            
+            // Check if race date is within character's training periods
+            const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
+            if (characterPeriods && characterPeriods.length > 0) {
+              const raceDate = new Date(race.date);
+              const isInTrainingPeriod = characterPeriods.some(period => {
+                const startDate = new Date(period.start);
+                const endDate = new Date(period.end);
+                return raceDate >= startDate && raceDate <= endDate;
+              });
+              return matchesAptitude && isInTrainingPeriod;
+            }
+            
+            return matchesAptitude;
+          });
+        }
+      }
+      this.closeCharacterChangeModal();
     },
     toggleRace: function (raceId) {
       const index = this.extraRace.indexOf(raceId);
@@ -2743,5 +2873,40 @@ export default {
 .race-options-content {
   margin-top: 15px;
   animation: fadeIn 0.3s ease;
+}
+
+/* Custom Character Change Modal Styles */
+.character-change-modal.show {
+  z-index: 1050;
+}
+
+.character-change-modal .modal-dialog {
+  max-width: 500px;
+}
+
+.character-change-modal .modal-footer .btn {
+  min-width: 200px;
+  margin: 5px;
+  text-align: left;
+  padding: 12px 16px;
+}
+
+.character-change-modal .modal-footer .btn small {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.character-change-modal .modal-footer .btn i {
+  margin-right: 8px;
+  width: 16px;
+}
+
+.character-change-modal .modal-body ul {
+  margin-bottom: 0;
+}
+
+.character-change-modal .modal-body li {
+  margin-bottom: 5px;
 }
 </style>
