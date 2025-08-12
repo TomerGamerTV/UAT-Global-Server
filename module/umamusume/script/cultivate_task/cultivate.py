@@ -295,7 +295,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         img = ctx.ctrl.get_screen()
                         retry += 1
                     if retry == max_retry:
-                        return
+                        # Training is restricted by the game - clear it and continue
+                        log.info(f"🚫 Training {TrainingType(i + 1).name} is restricted by game - skipping")
+                        _clear_training(ctx, TrainingType(i + 1))
+                        continue
                     
                     thread = threading.Thread(target=_parse_training_in_thread,
                                             args=(ctx, img, TrainingType(i + 1)))
