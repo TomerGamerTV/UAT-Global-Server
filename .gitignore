@@ -136,6 +136,7 @@ dmypy.json
 brayscript/
 
 # Project specific
-userdata/
-!userdata/umamusume/starter_presets/
+userdata/umamusume/presets/
+userdata/log_*.txt
+userdata/*.txt
 **/__pycache__/
