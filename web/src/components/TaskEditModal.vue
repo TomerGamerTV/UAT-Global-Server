@@ -1080,65 +1080,6 @@ export default {
       umamusumeRaceList_2: [],
       umamusumeRaceList_3: [],
       cultivatePresets: [],
-      cultivateDefaultPresets: [
-        {
-          name: "Default",
-          race_list: [],
-          skill: "",
-          skill_priority_list: [],
-          expect_attribute: [800, 800, 800, 400, 400],
-          follow_support_card: { id: 10001, name: 'Beyond This Shining Moment', desc: 'Silence Suzuka' },
-          follow_support_card_level: 50,
-          clock_use_limit: 99,
-          learn_skill_threshold: 9999,
-          race_tactic_1: 4,
-          race_tactic_2: 4,
-          race_tactic_3: 4,
-
-        },
-        {
-          name: "Oguri Cap Basic Training Schedule",
-          race_list: [2013, 2046, 2056, 2251, 2101, 2113],
-          skill: "",
-          skill_priority_list: [],
-          expect_attribute: [800, 650, 800, 300, 400],
-          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
-          follow_support_card_level: 50,
-          clock_use_limit: 99,
-          learn_skill_threshold: 9999,
-          race_tactic_1: 4,
-          race_tactic_2: 4,
-          race_tactic_3: 4,
-        },
-        {
-          name: "Daiwa Scarlet Basic Training Schedule",
-          race_list: [2013, 2046],
-          skill: "",
-          skill_priority_list: [],
-          expect_attribute: [800, 600, 600, 300, 400],
-          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
-          follow_support_card_level: 50,
-          clock_use_limit: 99,
-          learn_skill_threshold: 9999,
-          race_tactic_1: 4,
-          race_tactic_2: 4,
-          race_tactic_3: 4,
-        },
-        {
-          name: "Mejiro Mcqueen Basic Training Schedule",
-          race_list: [2041, 2205],
-          skill: "",
-          skill_priority_list: [],
-          expect_attribute: [700, 700, 600, 350, 400],
-          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
-          follow_support_card_level: 50,
-          clock_use_limit: 99,
-          learn_skill_threshold: 9999,
-          race_tactic_1: 4,
-          race_tactic_2: 4,
-          race_tactic_3: 4,
-        }
-      ],
       expectSpeedValue: 650,
       expectStaminaValue: 600,
       expectPowerValue: 650,
@@ -1148,7 +1089,7 @@ export default {
       supportCardLevel: 50,
 
       presetsUse: {
-        name: "Default",
+        name: "Basic Career Preset",
         race_list: [],
         skill: "",
         skill_priority_list: [],
@@ -1975,10 +1916,8 @@ export default {
     getPresets: function () {
       this.axios.post("/umamusume/get-presets", "").then(
         res => {
-          let tmplist = []
-          tmplist = tmplist.concat(this.cultivateDefaultPresets)
-          tmplist = tmplist.concat(res.data)
-          this.cultivatePresets = tmplist
+          // All presets now come from the server (including starter presets)
+          this.cultivatePresets = res.data
         }
       )
     },

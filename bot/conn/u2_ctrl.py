@@ -115,7 +115,9 @@ class U2AndroidController(AndroidController):
         if y <= 0:
             y = 1
         
-        duration = random.randint(0, 100) + hold_duration
+
+        duration = random.randint(0, 166) + hold_duration #maybe im just paranoid but <100ms seemed like a number they would check
+
         _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration), True)
         time.sleep(self.config.delay)
 

@@ -198,39 +198,17 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
         return
 
-    if ctx.cultivate_detail.turn_info.turn_operation is not None:
-        if (ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type ==
-                TurnOperationType.TURN_OPERATION_TYPE_TRAINING):
-            ctx.ctrl.click_by_point(
-                TRAINING_POINT_LIST[ctx.cultivate_detail.turn_info.turn_operation.training_type.value - 1])
+    turn_op = ctx.cultivate_detail.turn_info.turn_operation
+
+    if turn_op is not None:
+        if turn_op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
+            training_type = turn_op.training_type
+            ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
             time.sleep(0.5)
-            ctx.ctrl.click_by_point(
-                TRAINING_POINT_LIST[ctx.cultivate_detail.turn_info.turn_operation.training_type.value - 1])
+            ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
             time.sleep(3)
             return
-        elif (ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type ==
-                TurnOperationType.TURN_OPERATION_TYPE_RACE):
-            # For race operations, check if we have extra races available
-            if has_extra_race:
-                log.info("🏁 Extra races available - redirecting to race instead of training")
-                # Go back to main menu to execute race operation
-                ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
-                return
-            else:
-                # No extra races, let the AI decide what to do (training, rest, etc.)
-                log.info("🏁 Race operation detected - letting AI decide next action")
-                # Force AI to make a decision based on current state
-                from module.umamusume.script.cultivate_task.ai import get_operation
-                new_operation = get_operation(ctx)
-                if new_operation and new_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_RACE:
-                    # AI decided to do something else (training, rest, etc.)
-                    log.info(f"🤖 AI decided to do {new_operation.turn_operation_type.name} instead of race")
-                    ctx.cultivate_detail.turn_info.turn_operation = new_operation
-                    # Continue with normal flow to execute the AI decision
-                else:
-                    # AI still wants to race, proceed with race
-                    log.info("🏁 AI confirmed race operation - proceeding with race")
-                    return
+
         else:
             ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
             return
@@ -240,18 +218,18 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             """Helper function to run parsing in a separate thread."""
             parse_training_result(ctx, img, train_type)
             parse_training_support_card(ctx, img, train_type)
-        
+
         def _clear_training(ctx: UmamusumeContext, train_type: TrainingType):
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].speed_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].stamina_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].power_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].will_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].intelligence_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].skill_point_incr = 0
-            ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].support_card_info_list = []
-            
-        
-        threads :list[threading.Thread] = []
+            til = ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1]
+            til.speed_incr = 0
+            til.stamina_incr = 0
+            til.power_incr = 0
+            til.will_incr = 0
+            til.intelligence_incr = 0
+            til.skill_point_incr = 0
+            til.support_card_info_list = []
+
+        threads: list[threading.Thread] = []
 
         # Get extra weight for current year
         date = ctx.cultivate_detail.turn_info.date
@@ -269,10 +247,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         if train_type == TrainingType.TRAINING_TYPE_UNKNOWN:
             return
         viewed = train_type.value
+
         # Only start parsing when weight is not -1, otherwise clear
-        if extra_weight[viewed-1] > -1:
-            thread = threading.Thread(target=_parse_training_in_thread,
-                                            args=(ctx, img, train_type))
+        if extra_weight[viewed - 1] > -1:
+            thread = threading.Thread(target=_parse_training_in_thread, args=(ctx, img, train_type))
             threads.append(thread)
             thread.start()
         else:
@@ -296,9 +274,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         log.info(f"🚫 Training {TrainingType(i + 1).name} is restricted by game - skipping")
                         _clear_training(ctx, TrainingType(i + 1))
                         continue
-                    
-                    thread = threading.Thread(target=_parse_training_in_thread,
-                                            args=(ctx, img, TrainingType(i + 1)))
+
+                    thread = threading.Thread(target=_parse_training_in_thread, args=(ctx, img, TrainingType(i + 1)))
                     threads.append(thread)
                     thread.start()
                 else:
@@ -308,37 +285,27 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             thread.join()
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
-    
-    # Now actually perform the selected training (normal behavior)
-    if ctx.cultivate_detail.turn_info.turn_operation is not None:
-        if (ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type ==
-                TurnOperationType.TURN_OPERATION_TYPE_TRAINING):
-            # Perform the selected training
-            training_type = ctx.cultivate_detail.turn_info.turn_operation.training_type
-            log.info(f"🏋️ Performing selected training: {training_type.name}")
-            ctx.ctrl.click_by_point(
-                TRAINING_POINT_LIST[training_type.value - 1])
-            time.sleep(0.5)
-            ctx.ctrl.click_by_point(
-                TRAINING_POINT_LIST[training_type.value - 1])
-            time.sleep(3)
-            return
-        elif (ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type ==
-                TurnOperationType.TURN_OPERATION_TYPE_RACE):
-            # For race operations, let the AI decide what to do
-            log.info("🏁 Race operation - letting AI decide based on current state")
-            # Let the AI decide based on stamina, motivation, etc.
-            # The AI will choose the best action (training, rest, medic, trip)
-            return
-    else:
-        # No operation decided yet - go back to main menu to let AI decide
-        log.info("🤔 No operation decided yet - returning to main menu for AI decision")
-        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+
+
+    if (
+        ctx.cultivate_detail.turn_info.turn_operation is None
+        or ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_TRAINING
+        or ctx.cultivate_detail.turn_info.turn_operation.training_type == TrainingType.TRAINING_TYPE_UNKNOWN
+    ):
+
+        from module.umamusume.script.cultivate_task.ai import get_operation
+        ctx.cultivate_detail.turn_info.turn_operation = get_operation(ctx)
+
+    op = ctx.cultivate_detail.turn_info.turn_operation
+    if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING and op.training_type != TrainingType.TRAINING_TYPE_UNKNOWN:
+        ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
+        time.sleep(0.5)
+        ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
+        time.sleep(3)
         return
     
-    if not ctx.cultivate_detail.turn_info.parse_main_menu_finish:
-        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
-        return
+    ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+    return
 
 
 def script_main_menu(ctx: UmamusumeContext):
@@ -1001,7 +968,20 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         ctx.cultivate_detail.learn_skill_done = True
         ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
     else:
-        log.warning(f"⚠️ No skills were processed - learn_skill_done flag not set")
+        # For user-provided only mode, if no skills were processed, it means all desired skills are already learned
+        if ctx.cultivate_detail.learn_skill_only_user_provided:
+            log.info(f"✅ User-provided only mode: No skills to learn - all desired skills already learned")
+            ctx.cultivate_detail.learn_skill_done = True
+            ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
+        else:
+            # Check if all skills are already learned (priority -1 means already learned)
+            all_skills_already_learned = all(skill["priority"] == -1 for skill in skill_list)
+            if all_skills_already_learned:
+                log.info(f"✅ All desired skills are already learned - marking skill learning as complete")
+                ctx.cultivate_detail.learn_skill_done = True
+                ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
+            else:
+                log.warning(f"⚠️ No skills were processed - learn_skill_done flag not set")
     
     # After learning skills, click the confirm button first, then back button
     log.info("✅ Skills learned - clicking confirm button first")
