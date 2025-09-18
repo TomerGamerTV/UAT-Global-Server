@@ -134,3 +134,5 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 ## 🤝 **Contributing**
 
 wait for bray to come back and contribute to the orginal. Or make your own detached fork. I wont be here anymore in 2 weeks.
+
+DO NOT FORK THIS AND MAKE A PULL REQUEST I WONT BE HERE TO MERGE IT
