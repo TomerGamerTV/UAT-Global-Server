@@ -79,6 +79,9 @@ TITLE = [
     # Aoharu Cup
     "Auto Formation", # TITLE[35]
     "Battle Confirmation", # TITLE[36]
+    "Rewards Collected", # TITLE[37] after career if theres story
+    "Event Story Unlocked", # TITLE[38] after career if theres story
+    "Connection Error" #39 
 ]
 
 
@@ -102,6 +105,12 @@ def script_info(ctx: UmamusumeContext):
             title_text = find_similar_text(original_text, TITLE, 0.6)
             if title_text == "":
                 log.warning(f"Still no match with lower threshold - OCR: '{original_text}'")
+                try:
+                    ctx.ctrl.click_by_point(ESCAPE)
+                    log.info("fallback click")
+                    time.sleep(1)
+                except Exception as e:
+                    log.error(f"Fallback ESCAPE click failed: {e}")
                 return
             else:
                 log.info(f"✅ Found match with lower threshold: '{original_text}' -> '{title_text}'")
@@ -126,41 +135,29 @@ def script_info(ctx: UmamusumeContext):
         
         # Force correct handler for "Recover TP" - bypass TITLE array indexing issues
         if title_text == "Recover TP":
-            log.info("🔋 FORCED: Handling 'Recover TP' screen")
             screen = ctx.ctrl.get_screen(to_gray=True)
-            
-            # Debug: Check image matching results
-            match1 = image_match(screen, REF_RECOVER_TP_1)
-            match2 = image_match(screen, REF_RECOVER_TP_2)
-            match3 = image_match(screen, REF_RECOVER_TP_3)
-            
-            log.info(f"🔍 DEBUG: REF_RECOVER_TP_1 match: {match1.find_match}")
-            log.info(f"🔍 DEBUG: REF_RECOVER_TP_2 match: {match2.find_match}")
-            log.info(f"🔍 DEBUG: REF_RECOVER_TP_3 match: {match3.find_match}")
-            
-            # Try to find REF_RECOVER_TP_1 (Use button)
-            if match1.find_match:
-                log.info("✅ Found REF_RECOVER_TP_1 - clicking USE_TP_DRINK")
-                ctx.ctrl.click_by_point(USE_TP_DRINK)
-            # Try to find REF_RECOVER_TP_2 (Confirm button)
-            elif match2.find_match:
-                log.info("✅ Found REF_RECOVER_TP_2 - clicking USE_TP_DRINK_CONFIRM")
+            if image_match(screen, REF_RECOVER_TP_1).find_match:
+                if image_match(screen, REF_TP_RECOVER_DRINK).find_match: # 如果还有tp饮料, 就直接喝饮料
+                    ctx.ctrl.click_by_point(USE_TP_DRINK)
+                else:
+                    # TODO: 没有考虑钻石也没了的情况
+                    if ctx.cultivate_detail.allow_recover_tp == 2: # 允许用钻石回复TP
+                        ctx.ctrl.click_by_point(USE_CARROT_RECOVER_TP)
+                    else: # 只允许用体力药
+                        # 直接结束任务
+                        ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.TP_DRINK_NOT_ENOUGH)
+                    
+            elif image_match(screen, REF_RECOVER_TP_2).find_match:
                 ctx.ctrl.click_by_point(USE_TP_DRINK_CONFIRM)
-            # Try to find REF_RECOVER_TP_3 (Result close button)
-            elif match3.find_match:
-                log.info("✅ Found REF_RECOVER_TP_3 - clicking USE_TP_DRINK_RESULT_CLOSE")
+            elif image_match(screen, REF_RECOVER_TP_2_CARROT).find_match:
+                ctx.ctrl.click_by_point(USE_CARROT_RECOVER_TP_ADD)
+                time.sleep(2)
+                ctx.ctrl.click_by_point(USE_CARROT_RECOVER_CONFIRM)
+            elif image_match(screen, REF_RECOVER_TP_3).find_match or\
+                 image_match(screen, REF_RECOVER_TP_3_CARROT).find_match:
                 ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
-            else:
-                log.warning("⚠️ No TP recovery image templates found - trying fallback")
-                # Try to find any "Confirm" or "Use" button by OCR
-                try:
-                    # Look for "Confirm" button around the typical position
-                    ctx.ctrl.click(600, 400, "Fallback TP recovery click - Confirm area")
-                except:
-                    # Final fallback - click center of screen
-                    ctx.ctrl.click(350, 600, "Final fallback TP recovery click")
-            return  # Exit early to prevent wrong handler execution
-
+        if title_text == TITLE[39]: #disconnect
+            ctx.ctrl.click(383, 840, "reconnect")
         if title_text == TITLE[0]: #race details
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_3)
             time.sleep(1)
@@ -341,6 +338,7 @@ def script_info(ctx: UmamusumeContext):
                 # Get current screen and search for suitable race template
                 img = ctx.ctrl.get_screen(to_gray=True)
                 from module.umamusume.asset import REF_SUITABLE_RACE
+                
                 suitable_race_match = image_match(img, REF_SUITABLE_RACE)
                 
                 if suitable_race_match.find_match:
@@ -481,21 +479,21 @@ def script_info(ctx: UmamusumeContext):
                 ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.TP_NOT_ENOUGH)
             else:
                 ctx.ctrl.click_by_point(TO_RECOVER_TP)
-        if title_text == TITLE[32]:  # Recover TP
-            log.info("🔋 Handling 'Recover TP' screen")
-            if image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_1).find_match:
-                log.info("✅ Found REF_RECOVER_TP_1 - clicking USE_TP_DRINK")
-                ctx.ctrl.click_by_point(USE_TP_DRINK)
-            elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_2).find_match:
-                log.info("✅ Found REF_RECOVER_TP_2 - clicking USE_TP_DRINK_CONFIRM")
-                ctx.ctrl.click_by_point(USE_TP_DRINK_CONFIRM)
-            elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_3).find_match:
-                log.info("✅ Found REF_RECOVER_TP_3 - clicking USE_TP_DRINK_RESULT_CLOSE")
-                ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
-            else:
-                log.warning("⚠️ No TP recovery image templates found - trying fallback")
-                # Fallback: try to click the first "Use" button
-                ctx.ctrl.click(600, 400, "Fallback TP recovery click")
+        # if title_text == TITLE[32]:  # Recover TP
+        #     log.info("🔋 Handling 'Recover TP' screen")
+        #     if image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_1).find_match:
+        #         log.info("✅ Found REF_RECOVER_TP_1 - clicking USE_TP_DRINK")
+        #         ctx.ctrl.click_by_point(USE_TP_DRINK)
+        #     elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_2).find_match:
+        #         log.info("✅ Found REF_RECOVER_TP_2 - clicking USE_TP_DRINK_CONFIRM")
+        #         ctx.ctrl.click_by_point(USE_TP_DRINK_CONFIRM)
+        #     elif image_match(ctx.ctrl.get_screen(to_gray=True), REF_RECOVER_TP_3).find_match:
+        #         log.info("✅ Found REF_RECOVER_TP_3 - clicking USE_TP_DRINK_RESULT_CLOSE")
+        #         ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
+        #     else:
+        #         log.warning("⚠️ No TP recovery image templates found - trying fallback")
+        #         # Fallback: try to click the first "Use" button
+        #         ctx.ctrl.click(600, 400, "Fallback TP recovery click")
         if title_text == TITLE[33]:  # Factor Confirmation
             # Limited time: Fuji Kiseki Show
             # Currently seems only used here "Select cultivation difficulty, if there are others in the future, need to adjust code structure"
@@ -531,5 +529,7 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[34]:  # New Difficulty Unlocked
             # Limited time: Fuji Kiseki Show
             ctx.ctrl.click(360, 850, "Confirm unlock new difficulty")
-        time.sleep(1)
 
+        if title_text in (TITLE[37], TITLE[38]):
+            ctx.ctrl.click_by_point(STORY_REWARDS_COLLECTED_CLOSE)
+        time.sleep(1)

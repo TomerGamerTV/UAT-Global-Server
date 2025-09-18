@@ -1,3 +1,18 @@
+Hello bray I'll be detaching this fork for now since im 99% sure ur not coming back
+
+# ⚠️🚨 !!ATTENTION!! 🚨⚠️  
+### THE [ORIGINAL CREATOR](https://github.com/BrayAlter/UAT-Global-Server) IS MISSING IN ACTION 
+
+unfortunately I too will no longer have time to work on this so hopefully he returns soon
+
+⏰ On **September 30th 2025 onwards** I will no longer have time to work on this.  
+I will do what I can to iron out everything before then.  
+But when a new scenario shows up (Make a new track, grand live ect ect), I need **YOUR** help to make a **fork** to deal with that.  
+
+I will be relying on you guys to automate the future senarios. 🙏
+
+If not I guess ill be stuck playing URA lmao
+
 # 🏇 Umamusume Auto Trainer (Global Server Edition)
 
 **Uma Musume Pretty Derby Global Server Automatic Career Tool**
@@ -15,106 +30,63 @@ This project is a **Global Server adaptation** of the original China Server vers
 - **Original Author**: [@shiokaze](https://github.com/shiokaze/UmamusumeAutoTrainer)
 - **Original Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) (China Server)
 
-### **This Project**
-- **Global Server Adaptation**: [UAT-Global-Server](https://github.com/BrayAlter/UAT-Global-Server)
-- **Based on**: Original China Server version
-- **Enhancements**: 70% translation, improved UI, Global Server compatibility
-
-**Please respect the original author's work while contributing improvements.**
+-This is now a detatced fork of [UmamusumeAutoTrainer](https://github.com/BrayAlter/UAT-Global-Server)
 
 
 ---
-
-
-## 🌟 **What's New in Global Server Edition**
-
-### 🎯 **Major Improvements**
-- **🌍 Global Server Migration**: 70% translation and asset updates for Global Server compatibility
-- **🎨 Enhanced Web Interface**: Advanced race filtering, skill choice system, and improved user experience
-- **🤖 Reliable Race Identification**: Dual verification (template + OCR) for accurate race ID detection
-- **⚡ Performance Optimization**: JSON-based data loading for faster operation
-- **📱 Smart Device Detection**: Automatic ADB device detection and selection when start the program (emulator must open the game first)
-
-### 🆕 **New Features**
-- **Advanced Race Filtering**: Filter by race type, distance, terrain, and event character
-- **Skill Choice System**: Intelligent skill selection interface in web application
-- **Event Choice Picker**: Smart event selection for optimal training
-- **70% English Translation**: Major UI and system text translated to English
-- **Auto Device Selection**: Interactive ADB device detection and selection
-- **🎮 Manual Skill Purchase**: New feature allowing manual skill selection at the end of career while maintaining automatic skill learning during normal training
-- **Preset Saving System (UAT Web)**: Save and load your preferred race filter settings instantly
-
-### 🔄 **Current Limitations**
-- **Uma Musume Selection**: Must be done manually in-game (not yet automated)
-- **Support Card Selection**: Manual selection in-game required
-
-
 ## 🚀 **Features**
 
 ### **Core Automation**
-- ✅ **Automatic Training**: Complete training scenarios for all Uma Musume
-- ✅ **Customizable Targets**: Training attributes, racing tactics, additional races
-- ✅ **Skill Learning**: Optimized skill acquisition for 3-star spark farming
-- ✅ **Manual Skill Purchase**: Option to manually select skills at career end while keeping auto-learning during training
-- ✅ **Inheritance Compatibility**: Improved training strategy support
-- ✅ **Loop Training Bot Logic**: Continuous stat-growth training loop for long runs — see the 📹 [Demo Video](https://youtu.be/XDETTIpzGd8)
-- ✅ **Reliable Race Identification**: Template + OCR dual verification with automatic fallback
-- ✅ **Extra Race Prioritization**: Extra races override recreation/rest/medic and use specific race IDs
+- ✅ **Automatic Training**: Complete training scenarios for ALL Uma Musume  
+  - This includes the handling of:  
+    - **Custom races** 
+    - **Skill acquisition**
+    - **Claw machine**
+    - **Running styles** 
+    - **Alarm clock usage** 
+    - **Building fiendship early, focus on rainbows later** 
+    - **Optimal event choices (Knows when to build friendship/recover energy and mood)** 
+    - **Skipping bad turns with wit training**
 
-### **Advanced Web Interface**
-- 🎛️ **Race Management**: Advanced filtering and selection tools
-- 📊 **Real-time Monitoring**: Live task status and progress tracking
-- ⚙️ **Easy Configuration**: Intuitive settings and preset management
-- 🎯 **Smart Character Filter**: Preserves selections when switching characters, shows live match counters, and lets you clear all or keep only compatible races (manual select on UAT web; Bootstrap confirmation dialog). Includes support for the playable character Smart Falcon.
-- 🔔 **Web Notifications**: Modern notification system for manual skill purchase
-- 💾 **Preset Saving System**: Quickly save/load race filter presets
-- 🖥️ **Remastered UI**: Modernized layout and improved responsiveness
+
+- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card
+  - Everything is automated you can just afk for **DAYS** until legacy umas are full
+  - Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update.
+  - Supports background play via emulators.
+
+
+- ✅ **Saving of presets**: Save training parameters for easy access in future runs 
+
+## 🚨 **Safety**
+- Question: Is this safe?
+- Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE**
+
+running this 24/7 looks sus as hell so I would suggest turning it off for a few hours every day. 
+(im just gonna risk it and run it 24/7 ill let you guys know if i get banned)
 
 ## 📦 **Installation & Setup**
 
-### **Option 1: Download Release (Recommended)**
-1. Go to [Releases](https://github.com/BrayAlter/UAT-Global-Server/releases)
-2. Download the latest release zip file
-3. Extract and run `UmamusumeAutoTrainer.exe`
-
-### **Option 2: Build from Source**
-
 #### **Clone Repository**
 ```bash
-git clone https://github.com/BrayAlter/UAT-Global-Server.git
+git clone https://github.com/oofmatoes/UAT-Global-Server
 cd UAT-Global-Server
 ```
-
-#### **Install Dependencies**
-1. Install Python 3.10.9: [Download Link](https://www.python.org/downloads/release/python-3109/)
-2. Run `install.ps1` (Right-click → "Run with PowerShell")
-3. Ensure no `venv` folder exists in current directory
 
 ### **Emulator Setup**
 - **Resolution**: 720 × 1280 (Portrait mode)
 - **DPI**: 180
 - **Graphics**: Standard (not Simple)
 - **ADB**: Must be enabled in emulator settings
-- **IMPORTANT**: Open umamusume app before launch
 
 ### **Launch**
 ```bash
-# Run the application
-./run.ps1
+pip install -r requirements.txt
+
+python main.py
 ```
 
-The application will automatically:
-1. 🔍 **Scan for ADB devices**
-2. 📱 **Show available devices**
-3. 🎮 **Detect devices with Umamusume running**
-4. ✅ **Let you select your preferred device**
-5. ⚙️ **Auto-update configuration**
-6. 🚀 **Start the web interface**
+---
 
-#### **Preflight Health Checks**
-- Verifies ADB connectivity and device responsiveness before starting the bot
-- Validates screenshot stream quality to avoid running on corrupted/static images
-- Surfaces clear, English error messages for quick diagnosis
 
 **Success indicator:**
 ```
@@ -137,7 +109,6 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 1. **Graphics**: Must be set to "Standard", not "Basic"
 2. **Training Setup**: **Manually select** Uma Musume, Legacy, and Support Cards in-game before starting
 3. **Support Cards**: Avoid friend cards (no specific outing strategy)
-4. **Starting Position**: Be at Career Menu (where the UI Shows Training, Race, Recreation) 
 
 ### **Website Settings RECOMMENDED**
 - **Attribute Setting**: Set desired target attributes in the UI. If unsure, do a manual run first and copy the resulting attributes into the UAT interface.
@@ -168,63 +139,7 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 #### **Web Interface Issues**
 - **Module loading fails**: Ensure proper file permissions and paths
 
-### **Error Recovery**
-1. **Stuck interfaces**: Take screenshot, attach error logs
-2. **Recognition failures**: Manual intervention, then restart
-3. **Connection resets**: Restart both emulator and script
-
-## 🛠️ **Technical Details**
-
-### **System Requirements**
-- **OS**: Windows 10/11
-- **Python**: 3.10.9 (for source builds)
-- **Emulator**: Android emulator with ADB support
-- **Memory**: 4GB+ RAM recommended
-
-### **Dependencies**
-- **Computer Vision**: OpenCV for image recognition
-- **Machine Learning**: PaddleOCR for text detection
-- **Web Framework**: FastAPI + Vue.js
-- **Automation**: UIAutomator2 for Android control
-
-## 🎯 **Roadmap**
-
-### **Planned Features**
-- [ ] **Repeatable Tasks**: Automated execution at specific repeatable times
-- [x] **AI Training Logic**: Enhanced decision-making algorithms
-- [ ] **Event Configuration**: Advanced event choice options
-- [ ] **Daily Automation**: Auto-complete daily tasks (daily races, fans farming, event)
-- [x] **Uma Musume Auto-Selection**: Automated character, legacy, and support card selection
-- [x] **Card Name Translation**: Complete English translation for support card names
-- [ ] **Accurate Translation**: Complete English accurate translation
-
-### **Recent Updates**
-- ✅ Smart Character Race Filtering (keeps selections, live counters, keep-only-compatible option)
-- ✅ Dual Verification Race ID (template + OCR with fallback)
-- ✅ Extra Race Prioritization (overrides recreation/rest/medic; uses specific race IDs)
-- ✅ Loop Training Bot Logic
-- ✅ Preset Saving System in web UI (save/load race filter presets)
-- ✅ Smart Falcon added to Character Race Filter
-- ✅ Health checks before startup (ADB/device/screenshot pipeline)
-- ✅ Web UI remaster (modern layout; fixed “Select All G1 G2 G3”)
-- ✅ Multiple fixes: race list refresh, modal sizing, selection reset, corrupted screenshots, CSS conflicts
 
 ## 🤝 **Contributing**
 
-We welcome contributions! If you find issues or have improvements:
-
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Submit a pull request**
-
-### **Development Setup**
-```bash
-# Install development dependencies
-pip install -r requirements.txt
-
-# Run in development mode
-python main.py
-```
-
----
+wait for bray to come back and contribute to the orginal. Or make your own detached fork. I wont be here anymore in 2 weeks.

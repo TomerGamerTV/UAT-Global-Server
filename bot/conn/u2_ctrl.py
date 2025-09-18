@@ -12,9 +12,10 @@ import threading
 from bot.base.common import ImageMatchMode
 from bot.base.point import ClickPoint, ClickPointType
 from bot.conn.ctrl import AndroidController
-from bot.recog.image_matcher import template_match
+from bot.recog.image_matcher import template_match, image_match
 from config import CONFIG, Config
 from dataclasses import dataclass, field
+from module.umamusume.asset.template import REF_DONT_CLICK
 
 log = logger.get_logger(__name__)
 
@@ -64,8 +65,12 @@ class U2AndroidController(AndroidController):
     path = "deps\\adb\\"
     recent_point = None
     recent_operation_time = None
-    same_point_operation_interval = 0.3
+    same_point_operation_interval = 0.5
     u2client = None
+
+    repetitive_click_name = None
+    repetitive_click_count = 0
+    repetitive_other_clicks = 0
 
     def __init__(self):
         pass
@@ -101,6 +106,47 @@ class U2AndroidController(AndroidController):
     def click(self, x, y, name="", random_offset=True, max_x=720, max_y=1280, hold_duration=0):
         if name != "":
             log.debug("click >> " + name)
+
+        if isinstance(name, str) and name.strip() != "":
+            click_name = name
+            if self.repetitive_click_name is None:
+                self.repetitive_click_name = click_name
+                self.repetitive_click_count = 1
+                self.repetitive_other_clicks = 0
+            else:
+                if click_name == self.repetitive_click_name:
+                    self.repetitive_click_count += 1
+                else:
+                    self.repetitive_other_clicks += 1
+                    if self.repetitive_other_clicks >= 2:
+                        self.repetitive_click_name = click_name
+                        self.repetitive_click_count = 1
+                        self.repetitive_other_clicks = 0
+
+            if (
+                self.repetitive_click_name == click_name and
+                self.repetitive_click_count >= 10 and
+                self.repetitive_other_clicks < 2
+            ):
+                try:
+                    self.recover_home_and_reopen()
+                finally:
+                    self.repetitive_click_name = None
+                    self.repetitive_click_count = 0
+                    self.repetitive_other_clicks = 0
+                time.sleep(self.config.delay)
+                return
+
+        try:
+            if 263 <= x <= 458 and 559 <= y <= 808:
+                screen_gray = self.get_screen(to_gray=True)
+                match = image_match(screen_gray, REF_DONT_CLICK)
+                if getattr(match, "find_match", False):
+                    log.info("unsafe click blocked")
+                    return
+        except Exception as e:
+            log.info("wtf")
+
         if random_offset: # why was this just "random" before
             offset_x = random.randint(-5, 5)
             offset_y = random.randint(-5, 5)
@@ -148,6 +194,19 @@ class U2AndroidController(AndroidController):
         else:
             threading.Thread(target=cmd.communicate, args=())
         return cmd
+
+    def recover_home_and_reopen(self):
+        try:
+            log.info("rannnnn")
+            self.execute_adb_shell("shell input keyevent 3", True)
+            time.sleep(0.8)
+        except Exception:
+            pass
+        try:
+            self.execute_adb_shell("shell monkey -p com.cygames.umamusume -c android.intent.category.LAUNCHER 1", True)
+            time.sleep(1.2)
+        except Exception:
+            pass
 
     def start_app(self, package_name, activity_name=None):
         if activity_name:

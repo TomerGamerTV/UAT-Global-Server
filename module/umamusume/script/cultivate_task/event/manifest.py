@@ -5,7 +5,9 @@ from urllib.parse import quote
 import time
 import json
 import os
+from collections import Counter
 
+from bot.conn.fetch import *
 
 # For HTML parsing
 try:
@@ -65,7 +67,7 @@ def load_events_database():
         log.error(f"❌ Error loading events database: {e}")
         return {}
 
-def get_local_event_choice(event_name: str) -> Union[int, None]:
+def get_local_event_choice(ctx: UmamusumeContext, event_name: str) -> Union[int, None]:
     """Get optimal choice from local database - if not found, it's auto-skipped"""
     events_db = load_events_database()
     
@@ -75,7 +77,79 @@ def get_local_event_choice(event_name: str) -> Union[int, None]:
     # Try exact match only
     if event_name in events_db:
         log.info(f"✅ Found event '{event_name}' in local database")
-        return calculate_optimal_choice_from_db(events_db[event_name])
+        return calculate_optimal_choice_from_db(ctx, events_db[event_name])
+    
+    def normalizeString(text: str) -> str:
+        if not text:
+            return ""
+        text = text.strip().lower()
+        text = " ".join(text.split())
+        quotes = "\"'“”‘’`"
+        while len(text) >= 2 and text[0] in quotes and text[-1] in quotes:
+            text = text[1:-1].strip()
+        return text
+
+    def positionalRatio(left: str, right: str) -> float:
+        length_left = len(left)
+        if length_left == 0:
+            return 0.0
+        match_count = 0
+        for position in range(length_left):
+            if left[position] == right[position]:
+                match_count += 1
+        return match_count / length_left
+
+    def build_bigrams(text: str) -> Counter:
+        return Counter(text[i:i+2] for i in range(len(text) - 1)) if len(text) >= 2 else Counter()
+
+    def jaccard_counter_ratio(a: Counter, b: Counter) -> float:
+        if not a and not b:
+            return 1.0
+        inter = sum((a & b).values())
+        union = sum((a | b).values())
+        return inter / union if union else 0.0
+
+    query = normalizeString(event_name)
+    query_length = len(query)
+    query_bigrams = build_bigrams(query)
+
+    index_cache = getattr(get_local_event_choice, "cacheIndex", None)
+    source_cache = getattr(get_local_event_choice, "cacheSource", None)
+    if index_cache is None or source_cache is not events_db:
+        cache_list = []
+        for original_key in events_db.keys():
+            normalized_key = normalizeString(original_key)
+            cache_list.append((original_key, normalized_key, len(normalized_key), build_bigrams(normalized_key)))
+        setattr(get_local_event_choice, "cacheIndex", cache_list)
+        setattr(get_local_event_choice, "cacheSource", events_db)
+        index_cache = cache_list
+
+    best_key = None
+    best_score = 0.0
+    best_len_ratio = 0.0
+    for original_key, normalized_key, normalized_length, normalized_bigrams in index_cache:
+        if normalized_length == query_length:
+            positional = positionalRatio(query, normalized_key)
+            bigram_score = jaccard_counter_ratio(query_bigrams, normalized_bigrams)
+            score = positional if positional > bigram_score else bigram_score
+            if score > best_score:
+                best_score = score
+                best_len_ratio = 1.0
+                best_key = original_key
+                if score == 1.0:
+                    break
+        else:
+            len_ratio = min(query_length, normalized_length) / max(query_length, normalized_length)
+            bigram_score = jaccard_counter_ratio(query_bigrams, normalized_bigrams)
+            score = bigram_score
+            if score > best_score or (score == best_score and len_ratio > best_len_ratio):
+                best_score = score
+                best_len_ratio = len_ratio
+                best_key = original_key
+
+    if best_key is not None and best_score >= 0.91 and best_len_ratio >= 0.91:
+        log.info(f"detected='{event_name}' matched='{best_key}'")
+        return calculate_optimal_choice_from_db(ctx, events_db[best_key])
     
     # If not found, it's likely an auto-skipped event
     log.info(f"🔄 Event '{event_name}' not in database - likely auto-skipped, using random choice")
@@ -83,57 +157,74 @@ def get_local_event_choice(event_name: str) -> Union[int, None]:
 
 
 
-def calculate_optimal_choice_from_db(event_data: dict) -> int:
+def calculate_optimal_choice_from_db(ctx: UmamusumeContext, event_data: dict) -> int:
     """Calculate optimal choice from database event data"""
     choices = event_data['choices']
     stats = event_data['stats']
-    
     if not choices:
         return 1
-    
-    # Calculate optimal choice based on stat values
+
+    state = fetch_state()
+    energy = state["energy"]
+    year_text = state["year"] if state["year"] else "Unknown"
+    mood_val = state["mood"]
+    mood_text = f"Level {mood_val}" if mood_val is not None else "Unknown"
+    log.info(f"HP: {energy}, Year: {year_text}, Mood: {mood_text}")
+
+    weights = {
+        'Power': 10,
+        'Speed': 10,
+        'Guts': 20,
+        'Stamina': 10,
+        'Wisdom': 1,
+        'Friendship': 15,
+        'Mood': 9999,
+        'Max Energy': 50,
+        'HP': 16,
+        'Skill': 10,
+        'Skill Hint': 100,
+        'Skill Pts': 10
+    }
+
+    if year_text == "Junior":
+        weights['Friendship'] = 35
+    elif year_text == "Senior":
+        weights['Friendship'] = 0
+        weights['Max Energy'] = 0
+
+    if mood_val == 5:
+        weights['Mood'] = 0
+        log.info("Mood already maxxed")
+
+    if energy > 90:
+        weights['HP'] = 0
+        log.info("Energy already near full")
+    elif 40 <= energy <= 60:
+        weights['HP'] = 30
+        log.info("Focusing on energy to avoid rest")
+
     best_choice = None
     best_score = -1
-    
+
     for choice_num, choice_stats in stats.items():
-        # Convert choice_num to int (JSON keys are strings)
         choice_num_int = int(choice_num)
         score = 0
-        
-        # Weight different stats (adjust weights as needed)
-        weights = {
-            'Power': 2,
-            'Speed': 2, 
-            'Guts': 1.5,
-            'Stamina': 1.5,
-            'Wisdom': 1,
-            'Friendship': 1,
-            'Mood': 1,
-            'Max Energy': 1,
-            'HP': 1,
-            'Skill': 3,
-            'Skill Hint': 2,
-            'Skill Pts': 2
-        }
-        
         for stat, value in choice_stats.items():
             if stat in weights:
                 score += value * weights[stat]
-        
         if score > best_score:
             best_score = score
             best_choice = choice_num_int
-    
+
     if best_choice:
         log.info(f"🎯 Optimal choice: {best_choice} (Score: {best_score})")
         return best_choice
-    
-    # Fallback: return first choice if no scoring possible
+
     if choices:
         first_choice = min(int(k) for k in choices.keys())
         log.info(f"🔄 Fallback choice: {first_choice}")
         return first_choice
-    
+
     return 1
     
 # Cache for automatic event choices to avoid repeated web requests
@@ -289,7 +380,7 @@ def get_event_choice(ctx: UmamusumeContext, event_name: str) -> int:
     
     # NEW: Try local database first (FAST - no web scraping)
     log.info(f"🔍 Checking local database for event '{event_name}'...")
-    local_choice = get_local_event_choice(event_name)
+    local_choice = get_local_event_choice(ctx, event_name)
     if local_choice is not None:
         log.info(f"⚡ FAST: Found event '{event_name}' in local database - Choice {local_choice}")
         return local_choice

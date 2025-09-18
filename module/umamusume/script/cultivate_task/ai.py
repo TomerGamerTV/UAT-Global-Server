@@ -5,7 +5,6 @@ import numpy as np
 import cv2
 from module.umamusume.asset.template import UI_CULTIVATE_URA_RACE_1, UI_CULTIVATE_URA_RACE_2, UI_CULTIVATE_URA_RACE_3
 from bot.recog.image_matcher import image_match
-
 log = logger.get_logger(__name__)
 
 # Simple cache for race data to avoid repeated lookups
@@ -23,17 +22,20 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     turn_operation = TurnOperation()
     if not ctx.cultivate_detail.debut_race_win:
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
-
+    # this is stupid change later
+    if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 80:
+        log.info(f"🏥 Fast path: Low stamina ({ctx.cultivate_detail.turn_info.remain_stamina}) - prioritizing medic")
+        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
+        return turn_operation
+    
+    
     # Fast path: If we have a clear decision based on stamina/motivation, skip complex calculations
     if ctx.cultivate_detail.turn_info.remain_stamina <= 48:
         log.info(f"🏥 Fast path: Low stamina ({ctx.cultivate_detail.turn_info.remain_stamina}) - prioritizing rest")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
         return turn_operation
     
-    if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 65:
-        log.info(f"🏥 Fast path: Low stamina ({ctx.cultivate_detail.turn_info.remain_stamina}) - prioritizing medic")
-        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
-        return turn_operation
+
 
     # Cache screen image to avoid multiple conversions
     cached_screen = None
@@ -72,40 +74,40 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
 
     # Year 1 to before Year 2 training camp
     if ctx.cultivate_detail.turn_info.date <= 36:
-        attr_weight = 0.2
-        support_card_weight = 0.6
-        training_level_weight = 0.2
+        attr_weight = 0
+        support_card_weight = 1
+        training_level_weight = 0
     # During Year 2 training camp
     elif 36 < ctx.cultivate_detail.turn_info.date <= 40:
-        attr_weight = 0.8
-        support_card_weight = 0.2
+        attr_weight = 0
+        support_card_weight = 1
         training_level_weight = 0
     # After Year 2 training camp to before Year 3
     elif 40 < ctx.cultivate_detail.turn_info.date <= 48:
-        attr_weight = 0.6
-        support_card_weight = 0.2
-        training_level_weight = 0.2
+        attr_weight = 0
+        support_card_weight = 1
+        training_level_weight = 0
     # Before Year 3 training camp
     elif 48 < ctx.cultivate_detail.turn_info.date <= 60:
-        attr_weight = 0.6
-        support_card_weight = 0.1
-        training_level_weight = 0.3
+        attr_weight = 0
+        support_card_weight = 1
+        training_level_weight = 0
     # During Year 3 training camp
     elif 60 < ctx.cultivate_detail.turn_info.date <= 64:
-        attr_weight = 1
-        support_card_weight = 0
+        attr_weight = 0
+        support_card_weight = 1
         training_level_weight = 0
     # Year 3 to end
     elif 64 < ctx.cultivate_detail.turn_info.date <= 99:
-        attr_weight = 0.8
-        support_card_weight = 0
-        training_level_weight = 0.2
+        attr_weight = 0
+        support_card_weight = 1
+        training_level_weight = 0
     else:
-        attr_weight = 1
-        support_card_weight = 0
+        attr_weight = 0
+        support_card_weight = 1
         training_level_weight = 0
 
-    # Training score
+    # attribute growth is very faulty as ocr kinda suck and training level weight is always 0 so only support card weight can be relied on
     training_score = []
     for i in range(5):
         training_score.append(normalized_attribute_result[i] * attr_weight + normalized_support_card_result[i] *
@@ -165,14 +167,23 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             log.info(f"🏆 Detected URA championship race: {ura_race_id} at date {date}")
             # Check if we should rest/recreate instead of racing
             medic = False
-            if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 65:
+            if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 85:
                 medic = True
 
             trip = False
-            if not ctx.cultivate_detail.turn_info.medic_room_available and (ctx.cultivate_detail.turn_info.date <= 36 and ctx.cultivate_detail.turn_info.motivation_level.value <= 3 and ctx.cultivate_detail.turn_info.remain_stamina < 90 and not support_card_max >= 3
+            if not ctx.cultivate_detail.turn_info.medic_room_available and (ctx.cultivate_detail.turn_info.date <= 36 and ctx.cultivate_detail.turn_info.motivation_level.value <= 3 and ctx.cultivate_detail.turn_info.remain_stamina < 90 and not support_card_max >= 2
                                                                         or 40 < ctx.cultivate_detail.turn_info.date <= 60 and ctx.cultivate_detail.turn_info.motivation_level.value <= 4 and ctx.cultivate_detail.turn_info.remain_stamina < 90
                                                                         or 64 < ctx.cultivate_detail.turn_info.date <= 99 and ctx.cultivate_detail.turn_info.motivation_level.value <= 4 and ctx.cultivate_detail.turn_info.remain_stamina < 90):
-                trip = True
+                try:
+                    best_idx = training_score.index(np.max(training_score))
+                    relevant = ctx.cultivate_detail.turn_info.training_info_list[best_idx].relevant_count
+                except Exception:
+                    relevant = 0
+                if relevant >= 3:
+                    log.info("No recreation as good training detected")
+                    trip = False
+                else:
+                    trip = True
 
             rest = False
             if ctx.cultivate_detail.turn_info.remain_stamina <= 48:
@@ -212,15 +223,24 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             return turn_operation
 
     medic = False
-    if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 65:
+    if ctx.cultivate_detail.turn_info.medic_room_available and ctx.cultivate_detail.turn_info.remain_stamina <= 85:
         medic = True
 
     trip = False
     if not ctx.cultivate_detail.turn_info.medic_room_available and (ctx.cultivate_detail.turn_info.date <= 36 and ctx.cultivate_detail.turn_info.motivation_level.value < ctx.cultivate_detail.motivation_threshold_year1 and ctx.cultivate_detail.turn_info.remain_stamina < 90 and not support_card_max >= 3
                                                                     or 40 < ctx.cultivate_detail.turn_info.date <= 60 and ctx.cultivate_detail.turn_info.motivation_level.value < ctx.cultivate_detail.motivation_threshold_year2 and ctx.cultivate_detail.turn_info.remain_stamina < 90
                                                                     or 64 < ctx.cultivate_detail.turn_info.date <= 99 and ctx.cultivate_detail.turn_info.motivation_level.value < ctx.cultivate_detail.motivation_threshold_year3 and ctx.cultivate_detail.turn_info.remain_stamina < 90):
-        trip = True
-        log.info(f"🎯 Trip triggered - Current motivation: {ctx.cultivate_detail.turn_info.motivation_level.value}, Thresholds: Y1={ctx.cultivate_detail.motivation_threshold_year1}, Y2={ctx.cultivate_detail.motivation_threshold_year2}, Y3={ctx.cultivate_detail.motivation_threshold_year3}")
+        try:
+            best_idx = training_score.index(np.max(training_score))
+            relevant = ctx.cultivate_detail.turn_info.training_info_list[best_idx].relevant_count
+        except Exception:
+            relevant = 0
+        if relevant >= 3:
+            log.info("No recreation as good training detected")
+            trip = False
+        else:
+            trip = True
+           
 
     rest = False
     if ctx.cultivate_detail.turn_info.remain_stamina <= 48:
@@ -241,8 +261,38 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
 
     if expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
+        date_num = ctx.cultivate_detail.turn_info.date
+        if date_num in (59, 60): 
+            rainbow = 0
+            try:
+                best_idx = training_score.index(np.max(training_score))
+                id_counts = {}
+                for sc in ctx.cultivate_detail.turn_info.training_info_list[best_idx].support_card_info_list:
+                    k = id(sc)
+                    id_counts[k] = id_counts.get(k, 0) + 1
+                rainbow = sum(1 for v in id_counts.values() if v >= 2)
+            except Exception:
+                rainbow = 0
+            if rainbow < 2:
+                log.info("Low rainbow count conserving energy for summer")
+                if ctx.cultivate_detail.turn_info.remain_stamina < 60:
+                    expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+                else:
+                    expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
+                    turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
+
+    if expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
-        turn_operation.training_type = TrainingType(training_score.index(np.max(training_score)) + 1)
+        try:
+            relevant_counts = [ctx.cultivate_detail.turn_info.training_info_list[i].relevant_count for i in range(5)]
+        except Exception:
+            relevant_counts = [0, 0, 0, 0, 0]
+        # log.info(f"relevant_counts = {relevant_counts}")
+        if all(rc == 0 for rc in relevant_counts):
+            log.info("no good training option. umamusume is a wit game")
+            turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
+        else:
+            turn_operation.training_type = TrainingType(training_score.index(np.max(training_score)) + 1)
 
     if turn_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         turn_operation.turn_operation_type_replace = expect_operation_type

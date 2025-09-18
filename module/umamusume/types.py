@@ -19,16 +19,18 @@ class SupportCardInfo:
     can_incr_aoharu_train: bool
 
     def __init__(self,
-                 name: str = "support_card",
-                 card_type: SupportCardType = SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN,
-                 favor: SupportCardFavorLevel = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN,
-                 has_event: bool = False,
-                 can_incr_aoharu_train: bool = False):
+                name: str = "support_card",
+                card_type: SupportCardType = SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN,
+                favor: SupportCardFavorLevel = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN,
+                has_event: bool = False,
+                can_incr_aoharu_train: bool = False,
+                center: tuple[int, int] | None = None):
         self.name = name
         self.card_type = card_type
         self.favor = favor
         self.has_event = has_event
         self.can_incr_aoharu_train = can_incr_aoharu_train
+        self.center = center
 
 
 class TrainingInfo:
@@ -39,6 +41,8 @@ class TrainingInfo:
     will_incr: int
     intelligence_incr: int
     skill_point_incr: int
+    # not maxxed or rainbow
+    relevant_count: int
 
     def __init__(self):
         self.speed_incr = 0
@@ -48,21 +52,11 @@ class TrainingInfo:
         self.intelligence_incr = 0
         self.skill_point_incr = 0
         self.support_card_info_list = []
+        self.relevant_count = 0
 
     def log_training_info(self, scenario_type: ScenarioType):
-        log.info("Training Result: Speed: %s, Stamina: %s, Power: %s, Guts: %s, Intelligence: %s, Skill Points: %s", self.speed_incr,
-                 self.stamina_incr, self.power_incr, self.will_incr,
-                 self.intelligence_incr, self.skill_point_incr)
-        text = "Support cards for this training: ["
-        if scenario_type == ScenarioType.SCENARIO_TYPE_AOHARUHAI:       
-            for c in self.support_card_info_list:
-                text += "[Support Card Name: " + str(c.name) + ", Support Card Type: " + str(c.card_type.name) + ", Support Card Bond Level: " + str(c.favor.name) + ", Can Increase Aoharu Friendship: " + str(c.can_incr_aoharu_train) + "] "
-        else:
-            for c in self.support_card_info_list:
-                if c.favor != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
-                    text += "[Support Card Name: " + str(c.name) + ", Support Card Type: " + str(c.card_type.name) + ", Support Card Bond Level: " + str(c.favor.name) + "] "
-        text += "]"
-        log.info(text)
+        #useless for now
+        return
 
 
 class UmaAttribute:
