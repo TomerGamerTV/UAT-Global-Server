@@ -125,7 +125,7 @@ class U2AndroidController(AndroidController):
 
             if (
                 self.repetitive_click_name == click_name and
-                self.repetitive_click_count >= 10 and
+                self.repetitive_click_count >= 6 and #helps to prevent getting stuck
                 self.repetitive_other_clicks < 2
             ):
                 try:
