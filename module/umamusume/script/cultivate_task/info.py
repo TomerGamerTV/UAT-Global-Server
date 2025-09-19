@@ -83,7 +83,8 @@ TITLE = [
     "Rewards Collected", # TITLE[37] after career if theres story
     "Event Story Unlocked", # TITLE[38] after career if theres story
     "Connection Error", #39 
-    "Data Update" #40
+    "Data Update", #40
+    "Data Download", #41
 ]
 
 
@@ -162,8 +163,10 @@ def script_info(ctx: UmamusumeContext):
                 ctx.ctrl.click_by_point(USE_TP_DRINK_RESULT_CLOSE)
         if title_text == TITLE[39]: #disconnect
             ctx.ctrl.click(383, 840, "reconnect")
-        if title_text == TITLE[40]: #disconnect
+        if title_text == TITLE[40]:
             ctx.ctrl.click(383, 840, "update")
+        if title_text == TITLE[41]:
+            ctx.ctrl.click(383, 840, "update2")
         if title_text == TITLE[0]: #race details
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_3)
             time.sleep(1)
