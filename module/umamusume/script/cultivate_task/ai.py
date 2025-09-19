@@ -26,7 +26,7 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     # this is stupid change later
     state = fetch_state()
     energy = state.get("energy", 0)
-    mood_val = state.get("mood", 0)
+    mood_val = state.get("mood") or 0
     if ctx.cultivate_detail.turn_info.medic_room_available and energy <= 80:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing medic")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
