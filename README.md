@@ -38,7 +38,9 @@ This project is a **Global Server adaptation** of the original China Server vers
     - **Running styles** 
     - **Alarm clock usage** 
     - **Building fiendship early, focus on rainbows later** 
-    - **Optimal event choices (Knows when to build friendship/recover energy and mood)** 
+    - **Optimal event choices (Knows when to build friendship/recover energy and mood)**
+      - If you want a specify a event choice instead of having the bot pick what it thinks is the best option; open up "UAT-Global-Server\resource\umamusume\data\event_data.json" and change the desired event stat gains to a very big number so it wins everytime
+      - Sometimes it fails to detect the event even with fuzzy search and defaults to the first choice. When that happens you will have to rename the event to match whats being detected 
     - **Skipping bad turns with wit training**
 
 
@@ -69,6 +71,7 @@ cd UAT-Global-Server
 ```
 
 ### **Emulator Setup**
+- **Only tested on bluestacks pie64**
 - **Resolution**: 720 × 1280 (Portrait mode)
 - **DPI**: 180
 - **Graphics**: Standard (not Simple)
@@ -109,12 +112,6 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 2. **Training Setup**: **Manually select** Uma Musume, Legacy, and Support Cards in-game before starting
 3. **Support Cards**: Avoid friend cards (no specific outing strategy)
 
-### **Website Settings RECOMMENDED**
-- **Attribute Setting**: Set desired target attributes in the UI. If unsure, do a manual run first and copy the resulting attributes into the UAT interface.
-- **Race Selection**: Configure your race schedule to avoid failing fan-count goals. Use the Smart Character Filter; it preserves selections when changing characters and can keep only compatible races.
-- **Skill Optimization**: Configure desired skills. Priority `0` means the bot will purchase those skills first.
-- **Manual Skill Purchase**: Enable to select end-of-career skills manually while keeping auto-learning during training.
-
 ## 🔧 **Troubleshooting**
 
 ### **Common Issues**
@@ -138,6 +135,14 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 #### **Web Interface Issues**
 - **Module loading fails**: Ensure proper file permissions and paths
 
+## ⚠️ **Known issues/Wont fix**
+- I have made the bot quite slow to improve reliability
+  - The focus of this bot is to be ran unsupervised for long periods of time (days/weeks) hence speed is not my concern reliability is.
+  - All of my testing is done on "Loop until canceled" and "Auto recover tp" There might be bugs in single run mode
+- Bot seems to get stuck sometimes
+  - There are failsafes in place. It should break out of it within 5 mintues. if not then yeah I'll fix it.
+- The event detection reads the text wrong sometimes
+  - Go fund paddleocr  
 
 ## 🤝 **Contributing**
 
