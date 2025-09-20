@@ -243,9 +243,6 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[10]: #Skills Learned
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
         if title_text == TITLE[11]: #Complete Career
-            if getattr(ctx.cultivate_detail, "final_skill_sweep_active", False):
-                log.info("I swear to god")
-                return
             ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM_AGAIN)
         if title_text == TITLE[12]: #Umamusume Details
             ctx.ctrl.click_by_point(CULTIVATE_RESULT_CONFIRM)
