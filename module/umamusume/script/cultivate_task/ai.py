@@ -46,92 +46,66 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     if ctx.current_screen is not None:
         cached_screen = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
 
-    attribute_result = get_training_basic_attribute_score(ctx, ctx.cultivate_detail.turn_info,
-                                                          ctx.cultivate_detail.expect_attribute)
-    support_card_result = get_training_support_card_score(ctx)
-    support_card_event_result = get_support_card_event_score(ctx)
-    training_level_result = get_training_level_score(ctx)
+    turn_info = ctx.cultivate_detail.turn_info
+    date = turn_info.date
 
-    attribute_result_max = np.max(attribute_result)
-    attribute_result_min = np.min(attribute_result)
-    if attribute_result_max != attribute_result_min:
-        normalized_attribute_result = (attribute_result - attribute_result_min) / (
-                attribute_result_max - attribute_result_min)
+    try:
+        support_card_max = max(len(ti.support_card_info_list) for ti in turn_info.training_info_list)
+    except Exception:
+        support_card_max = 0
+
+    if date <= 24:
+        w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.01
+    elif 24 < date <= 48:
+        w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.09
+    elif 48 < date <= 60:
+        w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.12
     else:
-        normalized_attribute_result = [1, 1, 1, 1, 1]
+        w_lv1, w_lv2, w_rainbow = 0.03, 0.05, 0.15
 
-    support_card_max = np.max(support_card_result)
-    support_card_min = np.min(support_card_result)
-    if support_card_max != support_card_min:
-        normalized_support_card_result = (support_card_result - support_card_min) / (
-                support_card_max - support_card_min)
-    else:
-        normalized_support_card_result = [1, 1, 1, 1, 1]
+    from module.umamusume.define import SupportCardType, SupportCardFavorLevel, TrainingType
+    type_map = [
+        SupportCardType.SUPPORT_CARD_TYPE_SPEED,
+        SupportCardType.SUPPORT_CARD_TYPE_STAMINA,
+        SupportCardType.SUPPORT_CARD_TYPE_POWER,
+        SupportCardType.SUPPORT_CARD_TYPE_WILL,
+        SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE,
+    ]
 
-    training_level_max = np.max(training_level_result)
-    training_level_min = np.min(training_level_result)
-    if training_level_min != training_level_max:
-        normalized_training_level_result = (training_level_result - training_level_min) / (
-                training_level_max - training_level_min)
-    else:
-        normalized_training_level_result = [1, 1, 1, 1, 1]
+    training_score = [0.0, 0.0, 0.0, 0.0, 0.0]
+    total_rainbows_all = 0
 
-    # Year 1 to before Year 2 training camp
-    if ctx.cultivate_detail.turn_info.date <= 36:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    # During Year 2 training camp
-    elif 36 < ctx.cultivate_detail.turn_info.date <= 40:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    # After Year 2 training camp to before Year 3
-    elif 40 < ctx.cultivate_detail.turn_info.date <= 48:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    # Before Year 3 training camp
-    elif 48 < ctx.cultivate_detail.turn_info.date <= 60:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    # During Year 3 training camp
-    elif 60 < ctx.cultivate_detail.turn_info.date <= 64:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    # Year 3 to end
-    elif 64 < ctx.cultivate_detail.turn_info.date <= 99:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
-    else:
-        attr_weight = 0
-        support_card_weight = 1
-        training_level_weight = 0
+    for idx in range(5):
+        til = turn_info.training_info_list[idx]
+        target_type = type_map[idx]
+        score = 0.0
+        rainbow_count = 0
+        for sc in (getattr(til, "support_card_info_list", []) or []):
+            favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
+            ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+            if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
+                score += 0.001
+                continue
+            if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
+                continue
+            is_rb = False
+            if hasattr(sc, "is_rainbow") and bool(getattr(sc, "is_rainbow")) and (ctype == target_type):
+                is_rb = True
+            if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
+                is_rb = True
+            if is_rb:
+                rainbow_count += 1
+                score += w_rainbow
+                continue
+            if favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
+                continue
+            if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
+                score += w_lv1
+            elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
+                score += w_lv2
+        total_rainbows_all += rainbow_count
+        training_score[idx] = score
 
-    # attribute growth is very faulty as ocr kinda suck and training level weight is always 0 so only support card weight can be relied on
-    training_score = []
-    for i in range(5):
-        training_score.append(normalized_attribute_result[i] * attr_weight + normalized_support_card_result[i] *
-                              support_card_weight + normalized_training_level_result[i] * training_level_weight + 
-                              support_card_event_result[i])
-    # Set training score to 0 for weights of -1    
-    extra_weight = [0, 0, 0, 0, 0]
-    date = ctx.cultivate_detail.turn_info.date
-    if len(ctx.cultivate_detail.extra_weight) == 3:
-        if 0 < date <= 24:
-            extra_weight = ctx.cultivate_detail.extra_weight[0]
-        elif 24 < date <= 48:
-            extra_weight = ctx.cultivate_detail.extra_weight[1]
-        elif 48 < date:
-            extra_weight = ctx.cultivate_detail.extra_weight[2]
-    if -1 in extra_weight:
-        log.debug("Setting training score to 0 for weights of -1")
-        for i in range(5):
-            if extra_weight[i] <= -1:
-                training_score[i] = 0
     log.debug("Overall training score: " + str(training_score))
 
     # Can only participate in races after debut race success
@@ -291,12 +265,24 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             relevant_counts = [ctx.cultivate_detail.turn_info.training_info_list[i].relevant_count for i in range(5)]
         except Exception:
             relevant_counts = [0, 0, 0, 0, 0]
-        # log.info(f"relevant_counts = {relevant_counts}")
         if all(rc == 0 for rc in relevant_counts):
             log.info("no good training option. umamusume is a wit game")
             turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
         else:
-            turn_operation.training_type = TrainingType(training_score.index(np.max(training_score)) + 1)
+            if date >= 61 and total_rainbows_all == 0:
+                turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
+            else:
+                max_score = max(training_score) if len(training_score) == 5 else 0
+                if max_score < 0.05:
+                    turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
+                else:
+                    eps = 1e-9
+                    tie_count = sum(1 for s in training_score if abs(s - max_score) < eps)
+                    if tie_count > 1:
+                        turn_operation.training_type = TrainingType.TRAINING_TYPE_INTELLIGENCE
+                    else:
+                        best_idx = int(np.argmax(training_score))
+                        turn_operation.training_type = TrainingType(best_idx + 1)
 
     if turn_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         turn_operation.turn_operation_type_replace = expect_operation_type

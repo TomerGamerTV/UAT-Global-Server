@@ -253,7 +253,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         threads: list[threading.Thread] = []
 
-        # Get extra weight for current year
         date = ctx.cultivate_detail.turn_info.date
         if date == 0:
             extra_weight = [0, 0, 0, 0, 0]
@@ -270,7 +269,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             return
         viewed = train_type.value
 
-        # Only start parsing when weight is not -1, otherwise clear
         if extra_weight[viewed - 1] > -1:
             thread = threading.Thread(target=_parse_training_in_thread, args=(ctx, img, train_type))
             threads.append(thread)
@@ -292,7 +290,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         img = ctx.ctrl.get_screen()
                         retry += 1
                     if retry == max_retry:
-                        # Training is restricted by the game - clear it and continue
                         log.info(f"🚫 Training {TrainingType(i + 1).name} is restricted by game - skipping")
                         _clear_training(ctx, TrainingType(i + 1))
                         continue
@@ -305,6 +302,72 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         for thread in threads:
             thread.join()
+
+        date = ctx.cultivate_detail.turn_info.date
+        if date <= 24:
+            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.01
+        elif 24 < date <= 48:
+            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.09
+        elif 48 < date <= 60:
+            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.12
+        else:
+            w_lv1, w_lv2, w_rainbow = 0.03, 0.05, 0.15
+
+        from module.umamusume.define import SupportCardType, SupportCardFavorLevel
+        type_map = [
+            SupportCardType.SUPPORT_CARD_TYPE_SPEED,
+            SupportCardType.SUPPORT_CARD_TYPE_STAMINA,
+            SupportCardType.SUPPORT_CARD_TYPE_POWER,
+            SupportCardType.SUPPORT_CARD_TYPE_WILL,
+            SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE,
+        ]
+        names = ["Speed", "Stamina", "Power", "Guts", "Intelligence"]
+
+        log.info("Score:")
+        log.info(f"lv1: {w_lv1}")
+        log.info(f"lv2: {w_lv2}")
+        log.info(f"Rainbows: {w_rainbow}")
+
+        for idx in range(5):
+            til = ctx.cultivate_detail.turn_info.training_info_list[idx]
+            target_type = type_map[idx]
+            lv1c = 0
+            lv2c = 0
+            rbc = 0
+            unk = 0
+            score = 0.0
+            for sc in (getattr(til, "support_card_info_list", []) or []):
+                favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
+                ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+                if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
+                    unk += 1
+                    score += 0.001
+                    continue
+                if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
+                    unk += 1
+                    continue
+                is_rb = False
+                if hasattr(sc, "is_rainbow"):
+                    is_rb = bool(getattr(sc, "is_rainbow")) and (ctype == target_type)
+                if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
+                    is_rb = True
+                if is_rb:
+                    rbc += 1
+                    score += w_rainbow
+                    continue
+                if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
+                    lv1c += 1
+                    score += w_lv1
+                elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
+                    lv2c += 1
+                    score += w_lv2
+            log.info(f"{names[idx]}:")
+            log.info(f"  lv1: {lv1c}")
+            log.info(f"  lv2: {lv2c}")
+            log.info(f"  Rainbows: {rbc}")
+            if unk:
+                log.info(f"  Unknown: {unk}")
+            log.info(f"  Total score: {score:.3f}")
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 

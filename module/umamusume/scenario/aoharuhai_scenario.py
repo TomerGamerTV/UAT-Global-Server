@@ -153,23 +153,22 @@ class AoharuHaiScenario(BaseScenario):
                 cx = base_x + int(match_center[0])
                 cy = base_y + int(match_center[1])
 
-            if (can_incr_aoharu_train) or (support_card_favor_process is not SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN):
-                name_map = {
-                    SupportCardType.SUPPORT_CARD_TYPE_SPEED: "support_card_type_speed",
-                    SupportCardType.SUPPORT_CARD_TYPE_STAMINA: "support_card_type_stamina",
-                    SupportCardType.SUPPORT_CARD_TYPE_POWER: "support_card_type_power",
-                    SupportCardType.SUPPORT_CARD_TYPE_WILL: "support_card_type_will",
-                    SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE: "support_card_type_intelligence",
-                    SupportCardType.SUPPORT_CARD_TYPE_FRIEND: "support_card_type_friend",
-                }
-                info = SupportCardInfo(
-                    name=name_map.get(support_card_type, "support_card"),
-                    card_type=support_card_type,
-                    favor=support_card_favor_process,
-                    can_incr_aoharu_train=can_incr_aoharu_train
-                )
-                info.center = (cx, cy)
-                support_card_list_info_result.append(info)
+            name_map = {
+                SupportCardType.SUPPORT_CARD_TYPE_SPEED: "support_card_type_speed",
+                SupportCardType.SUPPORT_CARD_TYPE_STAMINA: "support_card_type_stamina",
+                SupportCardType.SUPPORT_CARD_TYPE_POWER: "support_card_type_power",
+                SupportCardType.SUPPORT_CARD_TYPE_WILL: "support_card_type_will",
+                SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE: "support_card_type_intelligence",
+                SupportCardType.SUPPORT_CARD_TYPE_FRIEND: "support_card_type_friend",
+            }
+            info = SupportCardInfo(
+                name=name_map.get(support_card_type, "support_card"),
+                card_type=support_card_type,
+                favor=support_card_favor_process,
+                can_incr_aoharu_train=can_incr_aoharu_train
+            )
+            info.center = (cx, cy)
+            support_card_list_info_result.append(info)
 
             base_y += inc
 

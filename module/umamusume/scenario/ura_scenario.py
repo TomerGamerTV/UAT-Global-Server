@@ -122,14 +122,13 @@ class URAScenario(BaseScenario):
                 cx = base_x + int(match_center[0])
                 cy = base_y + int(match_center[1])
 
-            if support_card_favor_process is not SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
-                info = SupportCardInfo(
-                    card_type=support_card_type,
-                    favor=support_card_favor_process,
-                    has_event=support_card_event_available
-                )
-                info.center = (cx, cy)
-                support_card_list_info_result.append(info)
+            info = SupportCardInfo(
+                card_type=support_card_type,
+                favor=support_card_favor_process,
+                has_event=support_card_event_available
+            )
+            info.center = (cx, cy)
+            support_card_list_info_result.append(info)
 
             base_y += inc
 
