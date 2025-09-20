@@ -48,6 +48,7 @@ This project is a **Global Server adaptation** of the original China Server vers
   - Everything is automated you can just afk for **DAYS** until legacy umas are full
   - Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)
   - Supports background play via emulators.
+  - If Auto tp recovery is set to false it will wait until you have enough tp to start the career run
 
 
 - ✅ **Saving of presets**: Save training parameters for easy access in future runs 
