@@ -1126,6 +1126,8 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.info(f"✅ Skill learning completed - processed {len(target_skill_list)} skills out of {len(skill_list)} available")
         ctx.cultivate_detail.learn_skill_done = True
         ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
+        if len(target_skill_list) > 0:
+            ctx.cultivate_detail.learn_skill_selected = True
     else:
         # For user-provided only mode, if no skills were processed, it means all desired skills are already learned
         if ctx.cultivate_detail.learn_skill_only_user_provided:
