@@ -45,7 +45,7 @@ This project is a **Global Server adaptation** of the original China Server vers
 
 
 - ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card
-  - Everything is automated you can just afk for **DAYS** until legacy umas are full
+  - Everything is 100% automated you can just afk for **DAYS** until legacy umas are full
   - Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)
   - Supports background play via emulators.
   - If Auto tp recovery is set to false it will wait until you have enough tp to start the career run
@@ -54,7 +54,8 @@ This project is a **Global Server adaptation** of the original China Server vers
 - ✅ **Saving of presets**: Save training parameters for easy access in future runs 
 
 ### 🎥 **Demo Run**
-[Demo run](https://youtu.be/J07n4wvLSCw)
+- I'd say its about 80% as competent as a actual player. This makes the bot not just a fan/parent farmer but it's more than capable of producing ACES
+[Demo run with a f2p deck](https://youtu.be/J07n4wvLSCw)
 
 ## 🚨 **Safety**
 - Question: Is this safe?
