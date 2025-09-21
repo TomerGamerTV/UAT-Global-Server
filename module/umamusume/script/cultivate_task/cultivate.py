@@ -474,7 +474,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
     choice_index = get_event_choice(ctx, event_name)
     if not isinstance(choice_index, int) or choice_index < 1:
         choice_index = 1
-    if choice_index > 3:
+    if choice_index > 5:
         choice_index = 1
     try:
         tpl = Template(f"dialogue{choice_index}", UMAMUSUME_REF_TEMPLATE_PATH)
