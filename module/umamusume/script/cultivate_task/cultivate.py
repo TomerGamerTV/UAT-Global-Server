@@ -334,6 +334,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         ]
         names = ["Speed", "Stamina", "Power", "Guts", "Intelligence"]
         computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
+        rbc_counts = [0, 0, 0, 0, 0]
 
         log.info("Score:")
         log.info(f"lv1: {w_lv1}")
@@ -400,16 +401,33 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 pass
             log.info(f"  Total score: {score:.3f}")
             computed_scores[idx] = score
+            rbc_counts[idx] = rbc
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 
         max_score = max(computed_scores) if len(computed_scores) == 5 else 0.0
         eps = 1e-9
-        ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
-        if 4 in ties:
+        relevant_counts = [getattr(ctx.cultivate_detail.turn_info.training_info_list[i], 'relevant_count', 0) for i in range(5)]
+        if all(s < 0.01 for s in computed_scores):
+            log.info("no good training option. umamusume is a wit game")
+            chosen_idx = 4
+        elif all(rc == 0 for rc in relevant_counts):
+            log.info("no good training option. umamusume is a wit game")
+            chosen_idx = 4
+        elif date >= 61 and sum(rbc_counts) == 0:
             chosen_idx = 4
         else:
-            chosen_idx = min(ties) if len(ties) > 0 else int(np.argmax(computed_scores))
+            if date in (59, 60):
+                best_idx_tmp = int(np.argmax(computed_scores))
+                if rbc_counts[best_idx_tmp] < 2:
+                    log.info("Low rainbow count conserving energy for summer")
+                    chosen_idx = 4
+                else:
+                    ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
+                    chosen_idx = 4 if 4 in ties else (min(ties) if len(ties) > 0 else best_idx_tmp)
+            else:
+                ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
+                chosen_idx = 4 if 4 in ties else (min(ties) if len(ties) > 0 else int(np.argmax(computed_scores)))
         if ctx.cultivate_detail.turn_info.turn_operation is None:
             ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
         ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
