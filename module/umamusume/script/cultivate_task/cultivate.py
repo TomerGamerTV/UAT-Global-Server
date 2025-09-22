@@ -227,9 +227,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         if turn_op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
             training_type = turn_op.training_type
             ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
-            time.sleep(0.5)
+            time.sleep(0.35)
             ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
-            time.sleep(3)
+            time.sleep(1.5)
             return
 
         else:
@@ -323,6 +323,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE,
         ]
         names = ["Speed", "Stamina", "Power", "Guts", "Intelligence"]
+        computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
 
         log.info("Score:")
         log.info(f"lv1: {w_lv1}")
@@ -369,59 +370,17 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if unk:
                 log.info(f"  Unknown: {unk}")
             log.info(f"  Total score: {score:.3f}")
+            computed_scores[idx] = score
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 
-        from module.umamusume.define import SupportCardType, SupportCardFavorLevel
-        date = ctx.cultivate_detail.turn_info.date
-        if date <= 24:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.01
-        elif 24 < date <= 48:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.09
-        elif 48 < date <= 60:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.12
-        else:
-            w_lv1, w_lv2, w_rainbow = 0.03, 0.05, 0.15
-        type_map = [
-            SupportCardType.SUPPORT_CARD_TYPE_SPEED,
-            SupportCardType.SUPPORT_CARD_TYPE_STAMINA,
-            SupportCardType.SUPPORT_CARD_TYPE_POWER,
-            SupportCardType.SUPPORT_CARD_TYPE_WILL,
-            SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE,
-        ]
-        local_score = [0.0, 0.0, 0.0, 0.0, 0.0]
-        for idx in range(5):
-            til = ctx.cultivate_detail.turn_info.training_info_list[idx]
-            target_type = type_map[idx]
-            s = 0.0
-            for sc in (getattr(til, "support_card_info_list", []) or []):
-                favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
-                ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
-                if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
-                    s += 0.001
-                    continue
-                if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
-                    continue
-                is_rb = False
-                if hasattr(sc, "is_rainbow"):
-                    is_rb = bool(getattr(sc, "is_rainbow")) and (ctype == target_type)
-                if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
-                    is_rb = True
-                if is_rb:
-                    s += w_rainbow
-                    continue
-                if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
-                    s += w_lv1
-                elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
-                    s += w_lv2
-            local_score[idx] = s
-        max_score = max(local_score) if len(local_score) == 5 else 0.0
+        max_score = max(computed_scores) if len(computed_scores) == 5 else 0.0
         eps = 1e-9
-        ties = [i for i, v in enumerate(local_score) if abs(v - max_score) < eps]
+        ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
         if 4 in ties:
             chosen_idx = 4
         else:
-            chosen_idx = min(ties) if len(ties) > 0 else int(np.argmax(local_score))
+            chosen_idx = min(ties) if len(ties) > 0 else int(np.argmax(computed_scores))
         if ctx.cultivate_detail.turn_info.turn_operation is None:
             ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
         ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
@@ -440,9 +399,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     op = ctx.cultivate_detail.turn_info.turn_operation
     if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING and op.training_type != TrainingType.TRAINING_TYPE_UNKNOWN:
         ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
-        time.sleep(0.5)
+        time.sleep(0.35)
         ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
-        time.sleep(3)
+        time.sleep(1.5)
         return
     
     ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
@@ -458,7 +417,7 @@ def script_main_menu(ctx: UmamusumeContext):
 
 def script_scenario_select(ctx: UmamusumeContext):
     target_scenario = ctx.cultivate_detail.scenario.scenario_type()
-    time.sleep(3) # If network is very poor, this might not wait enough
+    time.sleep(2) # If network is very poor, this might not wait enough
 
     for i in range(1, len(ScenarioType)):
         img = ctx.ctrl.get_screen(to_gray=True)
@@ -506,16 +465,16 @@ def script_follow_support_card_select(ctx: UmamusumeContext):
             if find_support_card(ctx, img):
                 return
             ctx.ctrl.swipe(x1=350, y1=1000, x2=350, y2=400, duration=600, name="scroll down list")
-            time.sleep(0.7)
+            time.sleep(0.5)
             img = ctx.ctrl.get_screen()
         for __ in range(3):
             if find_support_card(ctx, img):
                 return
             ctx.ctrl.swipe(x1=350, y1=400, x2=350, y2=1000, duration=600, name="scroll up list")
-            time.sleep(0.7)
+            time.sleep(0.5)
             img = ctx.ctrl.get_screen()
         ctx.ctrl.click_by_point(FOLLOW_SUPPORT_CARD_SELECT_REFRESH)
-        time.sleep(1.6)
+        time.sleep(1.2)
     ctx.ctrl.click_by_point(FOLLOW_SUPPORT_CARD_SELECT_REFRESH)
 
 
@@ -635,7 +594,7 @@ def script_cultivate_goal_race(ctx: UmamusumeContext):
 
 
 def script_cultivate_race_list(ctx: UmamusumeContext):
-    time.sleep(2)
+    time.sleep(1.0)
     if ctx.cultivate_detail.turn_info is None:
         log.warning("Turn information not initialized")
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
