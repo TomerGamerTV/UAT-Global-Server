@@ -3,12 +3,13 @@ import paddleocr
 from difflib import SequenceMatcher
 import bot.base.log as logger
 import time
+import os
 
 log = logger.get_logger(__name__)
 
-OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False)
-OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False)
-OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False)
+OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=os.cpu_count())
+OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=os.cpu_count())
+OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=os.cpu_count())
 
 # ocr 文字识别图片
 def ocr(img, lang="en"):

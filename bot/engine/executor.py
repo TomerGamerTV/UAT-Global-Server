@@ -111,6 +111,99 @@ class Executor:
             # Launch application
             log.debug("Starting: "+manifest.app_package_name)
             ctx.ctrl.start_app(manifest.app_package_name, manifest.app_activity_name)
+
+            def screen_watchdog():
+                last_img = None
+                unchanged = 0
+
+                def preprocess(im):
+                    try:
+                        return cv2.resize(im, (360, 640))
+                    except Exception:
+                        return im
+
+                while self.active and task.task_status == TaskStatus.TASK_STATUS_RUNNING:
+                    time.sleep(30)
+                    try:
+                        img = controller.get_screen(to_gray=True)
+                        if img is None:
+                            unchanged += 1
+                            print(f"{unchanged}/3", flush=True)
+                            try:
+                                log.info(f"watchdog {unchanged}/3")
+                            except Exception:
+                                pass
+                        else:
+                            cur = preprocess(img)
+                            if last_img is None:
+                                last_img = cur
+                                unchanged = 0
+                                print("0/3", flush=True)
+                                try:
+                                    log.info("watchdog 0/3")
+                                except Exception:
+                                    pass
+                                continue
+                            prev = preprocess(last_img)
+                            try:
+                                diff = cv2.absdiff(cur, prev)
+                                score = float(diff.mean())
+                            except Exception:
+                                score = 0.0
+                            try:
+                                brightness = float(cur.mean())
+                            except Exception:
+                                brightness = 0.0
+                            if score < 1.0 or brightness < 8.0:
+                                unchanged += 1
+                                print(f"{unchanged}/3", flush=True)
+                                try:
+                                    log.info(f"watchdog {unchanged}/3")
+                                except Exception:
+                                    pass
+                            else:
+                                unchanged = 0
+                                print("0/3", flush=True)
+                                try:
+                                    log.info("watchdog 0/3")
+                                except Exception:
+                                    pass
+                            last_img = cur
+
+                        if unchanged >= 3:
+                            print("3/3 restarting app", flush=True)
+                            try:
+                                log.info("watchdog 3/3 restarting app")
+                            except Exception:
+                                pass
+                            try:
+                                import bot.conn.u2_ctrl as u2c
+                                u2c.INPUT_BLOCKED = True
+                                controller.execute_adb_shell("shell am force-stop com.cygames.umamusume", True)
+                                time.sleep(1.0)
+                                controller.start_app(manifest.app_package_name, manifest.app_activity_name)
+                                time.sleep(2.0)
+                            except Exception:
+                                pass
+                            finally:
+                                try:
+                                    u2c.INPUT_BLOCKED = False
+                                except Exception:
+                                    pass
+                            unchanged = 0
+                            last_img = None
+                            print("0/3", flush=True)
+                            try:
+                                log.info("watchdog 0/3")
+                            except Exception:
+                                pass
+                            continue
+                    except Exception:
+                        unchanged = 0
+                        last_img = None
+
+            watchdog_thread = threading.Thread(target=screen_watchdog, args=(), daemon=True)
+            watchdog_thread.start()
             while self.active:
                 if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
                     ctx.current_screen = ctx.ctrl.get_screen()

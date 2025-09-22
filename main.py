@@ -5,11 +5,36 @@ import os
 import yaml
 import time
 import cv2
+import random
+import datetime
+import bot.base.log as logger
+import os
+
+try:
+    cores = str(os.cpu_count() or 1)
+    os.environ.setdefault("OMP_NUM_THREADS", cores)
+    os.environ.setdefault("MKL_NUM_THREADS", cores)
+    os.environ.setdefault("OPENBLAS_NUM_THREADS", cores)
+    os.environ.setdefault("VECLIB_MAXIMUM_THREADS", cores)
+    cv2.setUseOptimized(True)
+    cv2.setNumThreads(int(cores))
+except Exception:
+    pass
+from bot.base.task import TaskStatus
+import bot.conn.u2_ctrl as u2_ctrl
 
 from bot.base.manifest import register_app
 from bot.engine.scheduler import scheduler
 from module.umamusume.manifest import UmamusumeManifest
 from uvicorn import run
+
+log = logger.get_logger(__name__)
+
+start_time = 0
+end_time = 24
+KEEPALIVE_ACTIVE = True
+DAILY_WAIT_OFFSET = random.randint(16, 188)
+DAILY_OFFSET_DAY = datetime.date.today()
 
 
 def _get_adb_path():
@@ -327,16 +352,98 @@ def run_health_checks():
     return True
 
 
-def app_keepalive_loop(device_id):
-    package = "com.cygames.umamusume"
+def normalize_start_end():
+    global start_time, end_time
+    try:
+        start_time = max(0, min(24, int(start_time)))
+        end_time = max(0, min(24, int(end_time)))
+    except Exception:
+        start_time, end_time = 0, 24
+
+
+def is_in_allowed_window(now: datetime.datetime) -> bool:
+    s, e = start_time, end_time
+    h = now.hour
+    if s == e:
+        return True
+    if s < e:
+        return s <= h < e
+    else:
+        return h >= s or h < e
+
+
+def next_window_start(now: datetime.datetime) -> datetime.datetime:
+    s, e = start_time, end_time
+    today = now.date()
+    if s == e:
+        return now
+    start_today = datetime.datetime.combine(today, datetime.time(hour=s))
+    if s < e:
+        if now < start_today:
+            return start_today
+        else:
+            return start_today + datetime.timedelta(days=1)
+    else:
+        if now.hour < s and now >= datetime.datetime.combine(today, datetime.time(hour=0)):
+            return start_today
+        else:
+            return start_today + datetime.timedelta(days=1)
+
+
+def refresh_daily_offset():
+    global DAILY_WAIT_OFFSET, DAILY_OFFSET_DAY
+    today = datetime.date.today()
+    if today != DAILY_OFFSET_DAY:
+        DAILY_WAIT_OFFSET = random.randint(16, 188)
+        DAILY_OFFSET_DAY = today
+
+
+def time_window_enforcer(device_id: str):
+    global KEEPALIVE_ACTIVE
+    paused = False
+    paused_task_ids = set()
     while True:
-        try:
-            state = _run_adb(["-s", device_id, "get-state"], timeout=5)
-            if state.returncode == 0 and "device" in (state.stdout or ""):
-                _run_adb(["-s", device_id, "shell", "monkey", "-p", package, "-c", "android.intent.category.LAUNCHER", "1"], timeout=5)
-        except Exception:
-            pass
-        time.sleep(10)
+        refresh_daily_offset()
+        now = datetime.datetime.now()
+        if is_in_allowed_window(now):
+            if paused:
+                delay = random.randint(16, 188)
+                time.sleep(delay)
+                u2_ctrl.INPUT_BLOCKED = False
+                KEEPALIVE_ACTIVE = True
+                for tid in list(paused_task_ids):
+                    if not str(tid).startswith("CRONJOB_"):
+                        try:
+                            scheduler.reset_task(tid)
+                        except Exception:
+                            pass
+                scheduler.start()
+                paused = False
+                paused_task_ids.clear()
+        else:
+            if not paused:
+                delay = random.randint(16, 188)
+                time.sleep(delay)
+                try:
+                    running = [t.task_id for t in scheduler.get_task_list() if t.task_status == TaskStatus.TASK_STATUS_RUNNING]
+                except Exception:
+                    running = []
+                paused_task_ids = set(running)
+                scheduler.stop()
+                u2_ctrl.INPUT_BLOCKED = True
+                KEEPALIVE_ACTIVE = False
+                try:
+                    _run_adb(["-s", device_id, "shell", "am", "force-stop", "com.cygames.umamusume"], timeout=5)
+                except Exception:
+                    pass
+                paused = True
+            next_start = next_window_start(now)
+            total_sec = int((next_start - now).total_seconds()) + int(DAILY_WAIT_OFFSET)
+            if total_sec < 0:
+                total_sec = 0
+            log.info(f"time left until the bot can run again: {total_sec}s")
+        time.sleep(60)
+
 
 if __name__ == '__main__':
     if sys.version_info.minor != 10 or sys.version_info.micro != 9:
@@ -363,8 +470,10 @@ if __name__ == '__main__':
         print("❌ Failed to update config. Exiting.")
         sys.exit(1)
 
-    keepalive_thread = threading.Thread(target=app_keepalive_loop, args=(selected_device,), daemon=True)
-    keepalive_thread.start()
+    normalize_start_end()
+
+    enforcer_thread = threading.Thread(target=time_window_enforcer, args=(selected_device,), daemon=True)
+    enforcer_thread.start()
 
     # Start the bot
     register_app(UmamusumeManifest)

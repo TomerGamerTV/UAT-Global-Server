@@ -19,6 +19,8 @@ from module.umamusume.asset.template import REF_DONT_CLICK
 
 log = logger.get_logger(__name__)
 
+INPUT_BLOCKED = False
+
 
 @dataclass
 class U2AndroidConfig:
@@ -90,6 +92,8 @@ class U2AndroidController(AndroidController):
 
     # ===== ctrl =====
     def click_by_point(self, point: ClickPoint, random_offset=True, hold_duration=0):
+        if INPUT_BLOCKED:
+            return
         if self.recent_point is not None:
             if self.recent_point == point and time.time() - self.recent_operation_time < self.same_point_operation_interval:
                 log.warning("request for a same point too frequently")
@@ -106,6 +110,8 @@ class U2AndroidController(AndroidController):
         self.recent_operation_time = time.time()
 
     def click(self, x, y, name="", random_offset=True, max_x=720, max_y=1280, hold_duration=0):
+        if INPUT_BLOCKED:
+            return
         if name != "":
             log.debug("click >> " + name)
 
@@ -179,6 +185,8 @@ class U2AndroidController(AndroidController):
         time.sleep(self.config.delay)
 
     def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration=0.2, name=""):
+        if INPUT_BLOCKED:
+            return
         if name != "":
             log.debug("swipe >> " + name)
         
