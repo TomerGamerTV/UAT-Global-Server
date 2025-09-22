@@ -162,4 +162,4 @@ wait for bray to come back and contribute to the orginal. Or make your own detac
 
 DO NOT FORK THIS AND MAKE A PULL REQUEST I WONT BE HERE TO MERGE IT
 
-if you're serious about taking this further I can just transfer ownership to you
+If you ask and pinky promise you won't just nuke everything I can just give you collaborator permissions.
