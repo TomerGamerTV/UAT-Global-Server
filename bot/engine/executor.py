@@ -118,7 +118,7 @@ class Executor:
 
                 def preprocess(im):
                     try:
-                        return cv2.resize(im, (360, 640))
+                        return cv2.resize(im, (137, 244))
                     except Exception:
                         return im
 
