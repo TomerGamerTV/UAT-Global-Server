@@ -67,7 +67,7 @@ class U2AndroidController(AndroidController):
     path = "deps\\adb\\"
     recent_point = None
     recent_operation_time = None
-    same_point_operation_interval = 0.5
+    same_point_operation_interval = 0.27
     u2client = None
 
     repetitive_click_name = None

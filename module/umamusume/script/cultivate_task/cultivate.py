@@ -241,6 +241,15 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             """Helper function to run parsing in a separate thread."""
             parse_training_result(ctx, img, train_type)
             parse_training_support_card(ctx, img, train_type)
+            try:
+                from module.umamusume.asset.template import REF_TRAINING_HINT
+                import cv2 as _cv2
+                roi = img[181:769, 666:690]
+                roi_gray = _cv2.cvtColor(roi, _cv2.COLOR_BGR2GRAY)
+                til = ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1]
+                til.has_hint = image_match(roi_gray, REF_TRAINING_HINT).find_match
+            except Exception:
+                pass
 
         def _clear_training(ctx: UmamusumeContext, train_type: 'TrainingType'):
             til = ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1]
@@ -315,6 +324,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             w_lv1, w_lv2, w_rainbow = 0.03, 0.05, 0.15
 
         from module.umamusume.define import SupportCardType, SupportCardFavorLevel
+        from module.umamusume.asset.template import REF_TRAINING_HINT
         type_map = [
             SupportCardType.SUPPORT_CARD_TYPE_SPEED,
             SupportCardType.SUPPORT_CARD_TYPE_STAMINA,
@@ -369,6 +379,25 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  Rainbows: {rbc}")
             if unk:
                 log.info(f"  Unknown: {unk}")
+            hint_bonus = 0.0
+            try:
+                hint_bonus = 0.09 if bool(getattr(til, 'has_hint', False)) else 0.0
+            except Exception:
+                hint_bonus = 0.0
+            if hint_bonus > 0:
+                log.info(f"  Hint bonus: +{hint_bonus:.3f}")
+            score += hint_bonus
+            try:
+                expect_attr = ctx.cultivate_detail.expect_attribute
+                if isinstance(expect_attr, list) and len(expect_attr) == 5:
+                    uma = ctx.cultivate_detail.turn_info.uma_attribute
+                    curr_vals = [uma.speed, uma.stamina, uma.power, uma.will, uma.intelligence]
+                    if curr_vals[idx] >= expect_attr[idx]:
+                        label = names[idx]
+                        log.info(f"  {label} cap reached: -20% to score")
+                        score *= 0.8
+            except Exception:
+                pass
             log.info(f"  Total score: {score:.3f}")
             computed_scores[idx] = score
 
