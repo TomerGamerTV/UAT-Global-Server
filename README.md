@@ -7,7 +7,7 @@ Hello bray I'll be detaching this fork for now since im 99% sure ur not coming b
 
 unfortunately I too will no longer have time to work on this so hopefully he returns soon
 
-⏰ On **September 30th 2025 onwards** I will no longer have time to work on this.  
+⏰ On **September 30th 2025 onwards** I will no longer have time to work on this.(might still have time to maintain but nothing beyond bug fixes)
 I will do what I can to iron out everything before then.  
 But when a new scenario shows up (Make a new track, grand live ect ect), I need **YOUR** help to make a **fork** to deal with that.  
 
