@@ -374,6 +374,54 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                  <div>⭐ Score Value</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col">
+                    <label>Junior</label>
+                    <div class="input-group input-group-sm">
+                      <input type="number" step="0.01" v-model.number="scoreValueJunior[0]" class="form-control" placeholder="Lv1">
+                      <input type="number" step="0.01" v-model.number="scoreValueJunior[1]" class="form-control" placeholder="Lv2">
+                      <input type="number" step="0.01" v-model.number="scoreValueJunior[2]" class="form-control" placeholder="Rainbow">
+                      <input type="number" step="0.01" v-model.number="scoreValueJunior[3]" class="form-control" placeholder="Hint">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col">
+                    <label>Classic</label>
+                    <div class="input-group input-group-sm">
+                      <input type="number" step="0.01" v-model.number="scoreValueClassic[0]" class="form-control" placeholder="Lv1">
+                      <input type="number" step="0.01" v-model.number="scoreValueClassic[1]" class="form-control" placeholder="Lv2">
+                      <input type="number" step="0.01" v-model.number="scoreValueClassic[2]" class="form-control" placeholder="Rainbow">
+                      <input type="number" step="0.01" v-model.number="scoreValueClassic[3]" class="form-control" placeholder="Hint">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col">
+                    <label>Senior</label>
+                    <div class="input-group input-group-sm">
+                      <input type="number" step="0.01" v-model.number="scoreValueSenior[0]" class="form-control" placeholder="Lv1">
+                      <input type="number" step="0.01" v-model.number="scoreValueSenior[1]" class="form-control" placeholder="Lv2">
+                      <input type="number" step="0.01" v-model.number="scoreValueSenior[2]" class="form-control" placeholder="Rainbow">
+                      <input type="number" step="0.01" v-model.number="scoreValueSenior[3]" class="form-control" placeholder="Hint">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col">
+                    <label>Senior After Summer</label>
+                    <div class="input-group input-group-sm">
+                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[0]" class="form-control" placeholder="Lv1">
+                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[1]" class="form-control" placeholder="Lv2">
+                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[2]" class="form-control" placeholder="Rainbow">
+                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[3]" class="form-control" placeholder="Hint">
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -1220,7 +1268,13 @@ export default {
       availableTiers: ['', 'SS', 'S', 'A', 'B', 'C', 'D'],
       availableRarities: ['', 'Unique', 'Rare', 'Normal'],
       showSkillList: false
-      , showPresetMenu: false
+      , showPresetMenu: false,
+
+      // Score Value per period [lv1, lv2, rainbow, hint]
+      scoreValueJunior: [0.11, 0.10, 0.01, 0.09],
+      scoreValueClassic: [0.11, 0.10, 0.09, 0.09],
+      scoreValueSenior: [0.11, 0.10, 0.12, 0.09],
+      scoreValueSeniorAfterSummer: [0.03, 0.05, 0.15, 0.09]
     }
   },
   computed: {
@@ -1785,6 +1839,12 @@ export default {
           "allow_recover_tp": this.recoverTP,
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3],
+          "score_value": [
+            this.scoreValueJunior,
+            this.scoreValueClassic,
+            this.scoreValueSenior,
+            this.scoreValueSeniorAfterSummer
+          ],
           // Motivation thresholds for trip decisions
           "motivation_threshold_year1": this.motivationThresholdYear1,
           "motivation_threshold_year2": this.motivationThresholdYear2,
@@ -1841,6 +1901,13 @@ export default {
       this.motivationThresholdYear2 = parseInt(this.presetsUse.motivation_threshold_year2) || 4
       this.motivationThresholdYear3 = parseInt(this.presetsUse.motivation_threshold_year3) || 4
       this.prioritizeRecreation = this.presetsUse.prioritize_recreation || false
+
+      if ('scoreValue' in this.presetsUse && this.presetsUse.scoreValue && this.presetsUse.scoreValue.length === 4) {
+        this.scoreValueJunior = [...this.presetsUse.scoreValue[0]]
+        this.scoreValueClassic = [...this.presetsUse.scoreValue[1]]
+        this.scoreValueSenior = [...this.presetsUse.scoreValue[2]]
+        this.scoreValueSeniorAfterSummer = [...this.presetsUse.scoreValue[3]]
+      }
 
       if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != []) {
         this.extraWeight1 = this.presetsUse.extraWeight[0].map(v => Math.max(-1, Math.min(1, v)));
@@ -2006,6 +2073,12 @@ export default {
           this.extraWeight1.map(v => Math.max(-1, Math.min(1, v))),
           this.extraWeight2.map(v => Math.max(-1, Math.min(1, v))),
           this.extraWeight3.map(v => Math.max(-1, Math.min(1, v)))
+        ],
+        scoreValue: [
+          this.scoreValueJunior,
+          this.scoreValueClassic,
+          this.scoreValueSenior,
+          this.scoreValueSeniorAfterSummer
         ],
         // Motivation thresholds for trip decisions
         motivation_threshold_year1: this.motivationThresholdYear1,

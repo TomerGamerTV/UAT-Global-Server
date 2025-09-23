@@ -99,6 +99,13 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         detail.motivation_threshold_year2 = int(getattr(task.detail, 'motivation_threshold_year2', 4))
         detail.motivation_threshold_year3 = int(getattr(task.detail, 'motivation_threshold_year3', 4))
         detail.prioritize_recreation = getattr(task.detail, 'prioritize_recreation', False)
+
+        detail.score_value = getattr(task.detail, 'score_value', [
+            [0.11, 0.10, 0.01, 0.09],
+            [0.11, 0.10, 0.09, 0.09],
+            [0.11, 0.10, 0.12, 0.09],
+            [0.03, 0.05, 0.15, 0.09]
+        ])
         
         ctx.cultivate_detail = detail
     return ctx

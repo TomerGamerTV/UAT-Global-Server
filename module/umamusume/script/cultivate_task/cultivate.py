@@ -314,14 +314,20 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             thread.join()
 
         date = ctx.cultivate_detail.turn_info.date
+        sv = getattr(ctx.cultivate_detail, 'score_value', [
+            [0.11, 0.10, 0.01, 0.09],
+            [0.11, 0.10, 0.09, 0.09],
+            [0.11, 0.10, 0.12, 0.09],
+            [0.03, 0.05, 0.15, 0.09]
+        ])
         if date <= 24:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.01
+            w_lv1, w_lv2, w_rainbow, w_hint = sv[0]
         elif 24 < date <= 48:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.09
+            w_lv1, w_lv2, w_rainbow, w_hint = sv[1]
         elif 48 < date <= 60:
-            w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.12
+            w_lv1, w_lv2, w_rainbow, w_hint = sv[2]
         else:
-            w_lv1, w_lv2, w_rainbow = 0.03, 0.05, 0.15
+            w_lv1, w_lv2, w_rainbow, w_hint = sv[3]
 
         from module.umamusume.define import SupportCardType, SupportCardFavorLevel
         from module.umamusume.asset.template import REF_TRAINING_HINT
@@ -382,7 +388,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 log.info(f"  Unknown: {unk}")
             hint_bonus = 0.0
             try:
-                hint_bonus = 0.09 if bool(getattr(til, 'has_hint', False)) else 0.0
+                hint_bonus = w_hint if bool(getattr(til, 'has_hint', False)) else 0.0
             except Exception:
                 hint_bonus = 0.0
             if hint_bonus > 0:
