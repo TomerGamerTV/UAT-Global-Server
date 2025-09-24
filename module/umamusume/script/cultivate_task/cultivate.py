@@ -551,27 +551,34 @@ def script_cultivate_event(ctx: UmamusumeContext):
     except:
         tpl = None
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    x1, y1, x2, y2 = 24, 316, 696, 936
+    h, w = img_gray.shape[:2]
+    x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2)); y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
+    roi_gray = img_gray[y1:y2, x1:x2]
     clicked = False
     if tpl is not None:
         try:
             for _ in range(2):
-                res = image_match(img_gray, tpl)
+                res = image_match(roi_gray, tpl)
                 if res.find_match:
-                    ctx.ctrl.click(res.center_point[0], res.center_point[1], f"Event option-{choice_index}")
+                    ctx.ctrl.click(res.center_point[0] + x1, res.center_point[1] + y1, f"Event option-{choice_index}")
                     clicked = True
                     ctx.cultivate_detail.event_cooldown_until = time.time() + 5
                     return
                 time.sleep(0.56)
                 img = ctx.ctrl.get_screen()
                 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                h, w = img_gray.shape[:2]
+                x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2)); y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
+                roi_gray = img_gray[y1:y2, x1:x2]
         except:
             pass
     if not clicked:
         try:
             tpl1 = Template("dialogue1", UMAMUSUME_REF_TEMPLATE_PATH)
-            res1 = image_match(img_gray, tpl1)
+            res1 = image_match(roi_gray, tpl1)
             if res1.find_match:
-                ctx.ctrl.click(res1.center_point[0], res1.center_point[1], "Event option-1")
+                ctx.ctrl.click(res1.center_point[0] + x1, res1.center_point[1] + y1, "Event option-1")
                 clicked = True
                 ctx.cultivate_detail.event_cooldown_until = time.time() + 5
                 return

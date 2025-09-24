@@ -68,7 +68,7 @@ opt-einsum==3.3.0
 packaging==20.3
 paddle-bfloat==0.1.7
 paddleocr==2.7.0.2
-paddlepaddle==2.5.2
+paddlepaddle==2.6.2
 pdf2docx==0.5.6
 Pillow==10.0.0
 platformdirs==2.5.2

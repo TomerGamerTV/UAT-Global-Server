@@ -86,6 +86,7 @@ TITLE = [
     "Data Update", #40
     "Data Download", #41
     "Date Changed", #42
+    "Unmet Requirements", #43
 ]
 
 
@@ -247,6 +248,8 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[12]: #Umamusume Details
             ctx.ctrl.click_by_point(CULTIVATE_RESULT_CONFIRM)
         if title_text == TITLE[13]: #Fan Count Below Target Race Requirement
+            ctx.ctrl.click_by_point(CULTIVATE_FAN_NOT_ENOUGH_RETURN)
+        if title_text == TITLE[43]: #Fan Count Below Target Race Requirement
             ctx.ctrl.click_by_point(CULTIVATE_FAN_NOT_ENOUGH_RETURN)
         if title_text == TITLE[14]:
             ctx.ctrl.click_by_point(CULTIVATE_TRIP_WITH_FRIEND)
