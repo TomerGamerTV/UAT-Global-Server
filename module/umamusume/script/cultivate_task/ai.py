@@ -26,6 +26,10 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing medic")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
         return turn_operation
+    if energy < 50 and (mood_val is not None) and mood_val < 3:
+        log.info("Fast path recreation")
+        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+        return turn_operation
     if energy <= 48:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing rest")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST

@@ -243,6 +243,9 @@ def script_info(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN)
         if title_text == TITLE[10]: #Skills Learned
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
+            if getattr(ctx.cultivate_detail, 'final_skill_sweep_active', False) and getattr(ctx.cultivate_detail, 'learn_skill_selected', False):
+                time.sleep(1)
+                ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
         if title_text == TITLE[11]: #Complete Career
             ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM_AGAIN)
         if title_text == TITLE[12]: #Umamusume Details

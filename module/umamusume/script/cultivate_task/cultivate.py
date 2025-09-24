@@ -84,7 +84,9 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                          if race_id in available_races]) != 0
 
     # 意外情况处理
-    if not ctx.cultivate_detail.turn_info.turn_learn_skill_done and ctx.cultivate_detail.learn_skill_done:
+    if (not ctx.cultivate_detail.cultivate_finish and
+        not ctx.cultivate_detail.turn_info.turn_learn_skill_done and
+        ctx.cultivate_detail.learn_skill_done):
         ctx.cultivate_detail.reset_skill_learn()
 
     # Check if we should skip automatic skill learning
@@ -106,7 +108,8 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
         return
     else:
-        ctx.cultivate_detail.reset_skill_learn()
+        if not ctx.cultivate_detail.cultivate_finish:
+            ctx.cultivate_detail.reset_skill_learn()
 
     # Check for trip operation first (prioritize recreation)
     turn_operation = ctx.cultivate_detail.turn_info.turn_operation
