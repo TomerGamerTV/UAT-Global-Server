@@ -297,6 +297,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         if extra_weight[viewed - 1] > -1:
             thread = threading.Thread(target=_parse_training_in_thread, args=(ctx, img, train_type))
             threads.append(thread)
+            time.sleep(0.1)
             thread.start()
         else:
             _clear_training(ctx, train_type)
@@ -321,6 +322,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
                     thread = threading.Thread(target=_parse_training_in_thread, args=(ctx, img, TrainingType(i + 1)))
                     threads.append(thread)
+                    time.sleep(0.1)
                     thread.start()
                 else:
                     _clear_training(ctx, TrainingType(i + 1))
@@ -368,17 +370,20 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             lv1c = 0
             lv2c = 0
             rbc = 0
-            unk = 0
+            npc = 0
             score = 0.0
             for sc in (getattr(til, "support_card_info_list", []) or []):
                 favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
                 ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+                if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
+                    npc += 1
+                    score += 0.05
+                    continue
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
-                    unk += 1
-                    score += 0.001
+                    # Do not count or score unknowns
                     continue
                 if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
-                    unk += 1
+                    # Skip if favor cannot be determined
                     continue
                 is_rb = False
                 if hasattr(sc, "is_rainbow"):
@@ -399,8 +404,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  lv1: {lv1c}")
             log.info(f"  lv2: {lv2c}")
             log.info(f"  Rainbows: {rbc}")
-            if unk:
-                log.info(f"  Unknown: {unk}")
+            if npc:
+                log.info(f"  NPCs: {npc}")
             hint_bonus = 0.0
             try:
                 hint_bonus = w_hint if bool(getattr(til, 'has_hint', False)) else 0.0

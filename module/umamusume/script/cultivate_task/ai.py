@@ -85,8 +85,10 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         for sc in (getattr(til, "support_card_info_list", []) or []):
             favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
             ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+            if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
+                score += 0.05
+                continue
             if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
-                score += 0.001
                 continue
             if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                 continue

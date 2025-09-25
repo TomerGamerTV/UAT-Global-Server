@@ -146,6 +146,9 @@ class AoharuHaiScenario(BaseScenario):
                     match_center = r.center_point  # ROI coords
                     break
 
+            if support_card_type == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN and support_card_favor_process != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
+                support_card_type = SupportCardType.SUPPORT_CARD_TYPE_NPC
+
             h_local, w_local = support_card_icon.shape[:2]
             cx = base_x + (w_local // 2)
             cy = base_y + (h_local // 2)
