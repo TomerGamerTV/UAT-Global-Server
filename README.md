@@ -36,7 +36,7 @@
 
 ## 🚨 **Safety**
 - Question: Is this safe?  
-- Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE**
+- Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE YOU HAVE BEEN WARNED**
 
 - Answer 2: As long as there are people cheating on the steam release we are chilling (if ykyk)  
   - https://en.wikipedia.org/wiki/Sentinel_species
@@ -150,16 +150,27 @@ python main.py
 - Raise the score of hints. This way the bot will always take the training with hints in them
   ![alt text](docs/hintHunting.png)
 - If you want to bot to select a certain event option to get a skill ur going to have to diy it for now
-  > head over to UAT-Global-Server\resource\umamusume\data\event_data.json  
-  > ctrl F find your event  
-  > increase one of the stat gain to a very big number  
-  > then that choice should get picked all the time   
+  > Head over to UAT-Global-Server\resource\umamusume\data\event_data.json  
+  > Ctrl F find your event  
+  > Increase one of the stat gain to a very big number  
+  > Then that choice should get picked all the time   
   ![alt text](docs/huntHint.png)  
-  > save a backup so it doesn't get overwritten when the repo gets updated
+  > Save a backup so it doesn't get overwritten when the repo gets updated
 
 - ### **STRUGGLING WITH THE CAREER**
+- ### Early game stat gain is too low
 - Raise the classic year rainbows score to promote early game stat growth (this will hurt long term stat gain however)
   ![alt text](docs/classicRainbow.png)
+
+- ### The bot picks pics bad races when not enough fans to meet goals (Pre-op, Op, G3)
+- If a career runs has high fan goals (Top gun, Urara) you should be manually selecting the races instead of letting the bot pick for you
+  ![alt text](docs/races.png)
+
+- ### The bot is buying irelevant skills.
+- Left click on a skill to prioritize it (blue), right click to blacklist it (red)   
+  ![alt text](docs/skills.png)
+- OR set Learn when skill points ≥ to a very high number and set manual purchase to true
+  ![alt text](docs/manualBuy.png)
 
 ## 🤝 **Contributing**
 
