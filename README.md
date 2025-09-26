@@ -111,17 +111,22 @@ python main.py
 
 * **ADB connection fails**: Close accelerators, kill adb.exe, restart emulator
 
+#### **Out of memory**
+> Open main.py
+> Change cores = str(os.cpu_count() or 1) to cores = 1
+> or uh buy more ram
+
+* **ADB connection fails**: Close accelerators, kill adb.exe, restart emulator
+
 ## ⚠️ **Known issues / Won’t fix**
 
 * Bot seems to get stuck sometimes
 
   * There are failsafes in place. It should break out of it within 5 minutes. If not then yeah I'll fix it.
-* Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detecting unknown cards)
-
+* Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detecting unknown cards)  
   * Just restart both bluestacks and the bot.
   * If it works from the start then it should not break halfway (it either breaks 100% of the time since launch or it’s fine and will never break) so it’s not really an issue. I also have no idea what’s causing this.
-* Sometimes it fails to detect the hint (!)
-
+* Sometimes it fails to detect the hint (!)  
   * It’s animated, so either I kill performance and template match like 20 screenshots or we just take the L when it fails to detect like 5% of the time
   * Could also check the general area for red pixels but it led to a bunch of false positives from my testing
 
