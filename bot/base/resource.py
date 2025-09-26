@@ -1,5 +1,4 @@
 import cv2
-
 from bot.base.common import ImageMatchConfig
 
 
