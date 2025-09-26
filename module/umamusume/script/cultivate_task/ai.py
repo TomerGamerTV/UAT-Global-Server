@@ -31,15 +31,17 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         mood_threshold = ctx.cultivate_detail.motivation_threshold_year2
     else:
         mood_threshold = ctx.cultivate_detail.motivation_threshold_year3
+        
+    if ctx.cultivate_detail.turn_info.medic_room_available and energy <= 80:
+        log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing medic")
+        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
+        return turn_operation
+
     if (mood_raw is not None) and energy < 80 and mood_val < mood_threshold:
         log.info("mood fast path")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
         return turn_operation
 
-    if ctx.cultivate_detail.turn_info.medic_room_available and energy <= 80:
-        log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing medic")
-        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
-        return turn_operation
     if energy <= 48:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing rest")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
