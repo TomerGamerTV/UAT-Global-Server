@@ -1,10 +1,10 @@
+import os
 import cv2
 import numpy as np
 
 from bot.base.common import ImageMatchMode
 from bot.base.resource import Template
 import bot.base.log as logger
-from bot.recog.match_client import get_client
 
 log = logger.get_logger(__name__)
 
@@ -36,7 +36,7 @@ def image_match(target, template: Template) -> ImageMatchResult:
                 x2 = max(x1, min(w, area.x2))
                 y2 = max(y1, min(h, area.y2))
                 roi = tgt[y1:y2, x1:x2]
-                res = template_match(roi, template.template_image, template.image_match_config.match_accuracy)
+                res = template_match(roi, template, template.image_match_config.match_accuracy)
                 if res.find_match:
                     cx, cy = res.center_point
                     res.center_point = (cx + x1, cy + y1)
@@ -44,7 +44,7 @@ def image_match(target, template: Template) -> ImageMatchResult:
                     res.matched_area = ((p1[0] + x1, p1[1] + y1), (p2[0] + x1, p2[1] + y1))
                 return res
             else:
-                return template_match(tgt, template.template_image, template.image_match_config.match_accuracy)
+                return template_match(tgt, template, template.image_match_config.match_accuracy)
         else:
             log.error("unsupported match mode")
     except Exception as e:
@@ -56,16 +56,17 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
     if target is None or target.size == 0:
         return ImageMatchResult()
     try:
-        th, tw = template.shape[::]
-    except Exception:
-        return ImageMatchResult()
-    if target.shape[0] < th or target.shape[1] < tw:
-        return ImageMatchResult()
-
-    try:
-        tpl_path = getattr(template, '__template_path__', None)
-        if not tpl_path:
-            result = cv2.matchTemplate(target, template, cv2.TM_CCOEFF_NORMED)
+        arr = getattr(template, 'template_img', None)
+        if arr is None:
+            arr = getattr(template, 'template_image', None)
+        if arr is not None:
+            try:
+                th, tw = arr.shape[::]
+            except Exception:
+                return ImageMatchResult()
+            if target.shape[0] < th or target.shape[1] < tw:
+                return ImageMatchResult()
+            result = cv2.matchTemplate(target, arr, cv2.TM_CCOEFF_NORMED)
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
             match_result = ImageMatchResult()
             if max_val > accuracy:
@@ -75,30 +76,9 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
             else:
                 match_result.find_match = False
             return match_result
-        client = get_client()
-        ok, center, area = client.match_gray(target, tpl_path, threshold=accuracy)
-        match_result = ImageMatchResult()
-        if ok and center is not None and area is not None:
-            match_result.find_match = True
-            match_result.center_point = center
-            match_result.matched_area = area
-        else:
-            match_result.find_match = False
-        return match_result
+        return ImageMatchResult()
     except Exception:
-        try:
-            result = cv2.matchTemplate(target, template, cv2.TM_CCOEFF_NORMED)
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-            match_result = ImageMatchResult()
-            if max_val > accuracy:
-                match_result.find_match = True
-                match_result.center_point = (int(max_loc[0] + tw / 2), int(max_loc[1] + th / 2))
-                match_result.matched_area = ((max_loc[0], max_loc[1]), (max_loc[0] + tw, max_loc[1] + th))
-            else:
-                match_result.find_match = False
-            return match_result
-        except Exception:
-            return ImageMatchResult()
+        return ImageMatchResult()
 
 
 def compare_color_equal(p: list, target: list, tolerance: int = 10) -> bool:

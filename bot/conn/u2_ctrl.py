@@ -211,7 +211,7 @@ class U2AndroidController(AndroidController):
         if sync:
             cmd.communicate()
         else:
-            threading.Thread(target=cmd.communicate, args=())
+            threading.Thread(target=cmd.communicate, args=()).start()
         return cmd
 
     def recover_home_and_reopen(self):
@@ -290,4 +290,7 @@ class U2AndroidController(AndroidController):
 
     # destroy 销毁
     def destroy(self):
-        pass
+        try:
+            self.u2client = None
+        except Exception:
+            pass

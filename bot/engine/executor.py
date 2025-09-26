@@ -14,7 +14,7 @@ from bot.base.task import TaskStatus, Task, EndTaskReason
 from bot.conn.os import push_system_notification
 from bot.conn.u2_ctrl import U2AndroidController
 from bot.recog.image_matcher import template_match, image_match
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from bot.base.manifest import APP_MANIFEST_LIST
 from config import CONFIG
 
@@ -50,22 +50,30 @@ class Executor:
         self.active = False
 
     def detect_ui(self, ui_list: list[UI], target) -> UI:
-        # start_time = time.time()
         target = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
-        futures = []
-        for ui in ui_list:
-            future = self.executor.submit(self.detect_ui_sub, ui, target)
-            futures.append(future)
-        for future in futures:
-            future.result()
-        # end_time = time.time()
-        # log.debug("detect ui cost: " + str(end_time - start_time))
-        if len(self.detect_ui_results) > 0:
-            result = self.detect_ui_results[0]
+        futures = {self.executor.submit(self.detect_ui_sub, ui, target): ui for ui in ui_list}
+        found = None
+        for _ in as_completed(futures):
+            if len(self.detect_ui_results) > 0:
+                found = self.detect_ui_results[0]
+                break
+        if found is not None:
+            for f in futures:
+                if not f.done():
+                    try:
+                        f.cancel()
+                    except Exception:
+                        pass
             self.detect_ui_results = []
-            return result
-        else:
-            return NOT_FOUND_UI
+            return found
+        # no match; ensure all tasks complete
+        for f in futures:
+            try:
+                f.result()
+            except Exception:
+                pass
+        self.detect_ui_results = []
+        return NOT_FOUND_UI
 
     def detect_ui_sub(self, ui: UI, target) -> None:
         result = True

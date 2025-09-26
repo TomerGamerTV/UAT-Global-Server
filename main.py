@@ -17,6 +17,7 @@ try:
     os.environ.setdefault("VECLIB_MAXIMUM_THREADS", cores)
     cv2.setUseOptimized(True)
     cv2.setNumThreads(int(cores))
+    cv2.ocl.setUseOpenCL(False)
 except Exception:
     pass
 from bot.base.task import TaskStatus
