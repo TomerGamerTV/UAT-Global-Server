@@ -1,3 +1,5 @@
+memory leak lmao hold on leme find it
+
 # New user? [Read this to improve your runs](#training-settings-guide)
 
 ## **Credits**
