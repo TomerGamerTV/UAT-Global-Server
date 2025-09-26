@@ -2,6 +2,8 @@ import threading
 import time
 import traceback
 import psutil
+import os
+import gc
 
 import bot.base.log as logger
 import cv2
@@ -204,6 +206,56 @@ class Executor:
 
             watchdog_thread = threading.Thread(target=screen_watchdog, args=(), daemon=True)
             watchdog_thread.start()
+
+            def memory_watchdog():
+                try:
+                    limit_env = os.getenv("UAT_MEMORY_LIMIT_BYTES")
+                    limit_bytes = int(limit_env) if limit_env and limit_env.isdigit() else (2 * 1024 * 1024 * 1024)
+                except Exception:
+                    limit_bytes = 2 * 1024 * 1024 * 1024
+                proc = psutil.Process()
+                while self.active and task.task_status == TaskStatus.TASK_STATUS_RUNNING:
+                    time.sleep(15)
+                    try:
+                        rss = proc.memory_info().rss
+                        if rss >= limit_bytes:
+                            try:
+                                log.warning(f"Flushing cache")
+                            except Exception:
+                                pass
+                            try:
+                                from bot.recog.ocr import purge_ocr_caches
+                                purge_ocr_caches()
+                            except Exception:
+                                pass
+                            try:
+                                from bot.base.resource import purge_template_cache
+                                purge_template_cache()
+                            except Exception:
+                                pass
+                            try:
+                                import ctypes
+                                ctypes.windll.psapi.EmptyWorkingSet(ctypes.windll.kernel32.GetCurrentProcess())
+                            except Exception:
+                                pass
+                            try:
+                                gc.collect()
+                            except Exception:
+                                pass
+                            try:
+                                import ctypes
+                                ctypes.windll.psapi.EmptyWorkingSet(ctypes.windll.kernel32.GetCurrentProcess())
+                            except Exception:
+                                pass
+                            try:
+                                gc.collect()
+                            except Exception:
+                                pass
+                    except Exception:
+                        pass
+
+            mem_watchdog_thread = threading.Thread(target=memory_watchdog, args=(), daemon=True)
+            mem_watchdog_thread.start()
             while self.active:
                 if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
                     ctx.current_screen = ctx.ctrl.get_screen()

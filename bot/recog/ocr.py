@@ -11,7 +11,7 @@ from config import CONFIG
 log = logger.get_logger(__name__)
 
 
-def _cpu_threads():
+def cpu_threads():
     try:
         alloc = getattr(CONFIG.bot.auto, 'cpu_alloc', None)
         return int(alloc) if alloc else os.cpu_count()
@@ -19,12 +19,12 @@ def _cpu_threads():
         return os.cpu_count()
 
 
-OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=_cpu_threads())
-OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=_cpu_threads())
-OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=_cpu_threads())
+OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
 
 
-class _LRUCache:
+class LRUCache:
     def __init__(self, maxsize: int = 256):
         self._store = OrderedDict()
         self._maxsize = maxsize
@@ -42,11 +42,11 @@ class _LRUCache:
             self._store.popitem(last=False)
 
 
-OCR_LINE_CACHE = _LRUCache(256)
-OCR_DIGITS_CACHE = _LRUCache(256)
+OCR_LINE_CACHE = LRUCache(256)
+OCR_DIGITS_CACHE = LRUCache(256)
 
 
-def _fingerprint(img) -> str:
+def fingerprint(img) -> str:
     try:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     except Exception:
@@ -67,7 +67,7 @@ def ocr(img, lang="en"):
 # ocr_line 文字识别图片，返回所有出现的文字
 
 def ocr_line(img, lang="en"):
-    key = (lang, _fingerprint(img))
+    key = (lang, fingerprint(img))
     cached = OCR_LINE_CACHE.get(key)
     if cached is not None:
         return cached
@@ -85,7 +85,7 @@ def ocr_line(img, lang="en"):
 # ocr_digits 限制只识别数字，可以提升数字识别的准确度
 
 def ocr_digits(img):
-    key = ("digits", _fingerprint(img))
+    key = ("digits", fingerprint(img))
     cached = OCR_DIGITS_CACHE.get(key)
     if cached is not None:
         return cached
@@ -122,3 +122,8 @@ def find_similar_text(target_text, ref_text_list, threshold=0):
             result = ref_text
             threshold = s.ratio()
     return result
+
+def purge_ocr_caches():
+    global OCR_LINE_CACHE, OCR_DIGITS_CACHE
+    OCR_LINE_CACHE = LRUCache(256)
+    OCR_DIGITS_CACHE = LRUCache(256)
