@@ -1,5 +1,4 @@
-there appears to be a memory leak that i cant fix.  
-i hope you have decent ram
+there appears to be a memory leak. wont look into it for now
 
 # New user? [Read this to improve your runs](#training-settings-guide)
 
