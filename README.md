@@ -7,6 +7,9 @@
 
 ---
 
+If you're like me and is using this because you wont have access to your pc for long periods of time consider using this in tandem with   
+[https://github.com/rustdesk/rustdesk/releases/](https://github.com/rustdesk/rustdesk)
+
 ## **Features**
 
 ### **Core Automation**
