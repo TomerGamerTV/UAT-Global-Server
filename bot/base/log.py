@@ -73,13 +73,14 @@ def get_logger(name) -> Logger:
         console_handler.setLevel(logging.INFO)
         logger.addHandler(console_handler)
 
-        fmt = logging.Formatter('%(asctime)s  %(levelname)-8s [%(funcName)34s] %(filename)-20s: %(message)s') 
+        logger.addHandler(task_log_handler)
+
+        fmt = logging.Formatter('%(asctime)s  %(levelname)-8s [%(funcName)34s] %(filename)-20s: %(message)s')
         if ENABLE_FILE_LOG:
             file_handler = logging.FileHandler(log_path, encoding='utf-8')
             file_handler.setFormatter(fmt)
             file_handler.setLevel(logging.DEBUG)
             logger.addHandler(file_handler)
-
-        return logger
+    return logger
 
 
