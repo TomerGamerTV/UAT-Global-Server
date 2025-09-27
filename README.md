@@ -1,3 +1,5 @@
+### Run pip install -r requirements.txt again its updated
+
 # New user? [Read this to improve your runs](#training-settings-guide)
 
 ## **Credits**
