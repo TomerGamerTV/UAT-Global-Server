@@ -41,6 +41,7 @@ RULES_BY_MODE = {
         {"type": "title", "ref": "Items Selected", "action": lambda ctx: ctx.ctrl.click(610, 908, "tt6")},
         {"type": "title", "ref": "Daily Sale", "action": lambda ctx: ctx.ctrl.click(0, 0, "daily sale")},
         {"type": "image", "ref": REF_SEE_RESULTS, "action": lambda ctx: ctx.ctrl.click(514, 1208, "tt7")},
+        {"type": "image", "ref": REF_NEXT2, "action": lambda ctx: ctx.ctrl.click(393, 1183, "tt8")},
     ]
 }
 
