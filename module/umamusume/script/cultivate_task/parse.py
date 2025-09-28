@@ -400,7 +400,11 @@ def find_support_card(ctx: UmamusumeContext, img):
             support_card_level_text = ocr_line(support_card_level_img)
             if support_card_level_text == "":
                 continue
-            support_card_level = int(re.sub("\\D", "", support_card_level_text))
+            cleaned_level = re.sub("\\D", "", support_card_level_text)
+            if cleaned_level == "":
+                log.info("Skipping card")
+                continue
+            support_card_level = int(cleaned_level)
             if support_card_level < ctx.cultivate_detail.follow_support_card_level:
                 continue
             support_card_text = ocr_line(support_card_name_img)
