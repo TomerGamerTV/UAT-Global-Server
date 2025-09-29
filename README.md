@@ -192,6 +192,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## **Changelogs**
+- 29/9/2025   
+Soft reset after every task. Should help with memory issues.  
 - 28/9/2025   
 Team trials execution mode. not tested and held together by hopes and dreams so its probably gonna break half the time.  
 Maybe fix card selection breaking
