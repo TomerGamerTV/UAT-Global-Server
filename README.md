@@ -67,7 +67,7 @@ cd UAT-Global-Server
 
 ### **Emulator Setup**
 
-* **Only tested on bluestacks pie64**
+* **Only tested on bluestacks pie64 and mumu**  (Bluestacks tend to crash after running for long sessions)
 * **Resolution**: 720 × 1280 (Portrait mode)
 * **DPI**: 180
 * **Graphics**: Standard (not Simple)
