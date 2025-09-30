@@ -1,4 +1,5 @@
-welp getting conscripted tmr. updates will slow down greatly now.
+welp got conscripted. For 2 years+ updates will slow down greatly now.
+I get free time on Saturdays only now (updates not guaranteed on Saturdays.)
 
 ### Run pip install -r requirements.txt again its updated  
 please read the readme before opening a issue  
