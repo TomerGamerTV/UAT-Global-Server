@@ -66,7 +66,7 @@ cd UAT-Global-Server
 
 ### **Emulator Setup**
 
-* **Only tested on bluestacks pie64 and mumu**  (Bluestacks tend to crash after running for long sessions)
+* **Only tested on bluestacks pie64 (no longer testing on bluestacks its too unreliable) and mumu**
 * **Resolution**: 720 × 1280 (Portrait mode)
 * **DPI**: 180
 * **Graphics**: Standard (not Simple)
@@ -128,7 +128,7 @@ python main.py
 * Bot seems to get stuck sometimes
   * There are failsafes in place. It should break out of it within 5 minutes. If not then yeah I'll fix it.
 * Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detecting unknown cards)  
-  * Just restart both bluestacks and the bot.
+  * Just restart both the emulator and the bot.
   * If it works from the start then it should not break halfway (it either breaks 100% of the time since launch or it’s fine and will never break) so it’s not really an issue. I also have no idea what’s causing this.
 * Sometimes it fails to detect the hint (!)  
   * It’s animated, so either I kill performance and template match like 20 screenshots or we just take the L when it fails to detect like 5% of the time
@@ -191,6 +191,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## **Changelogs**
+- 18/10/2025   
+Customizable energy limit.  
 - 29/9/2025   
 Soft reset after every task. Should help with memory issues.  
 - 28/9/2025   
