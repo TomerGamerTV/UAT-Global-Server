@@ -4,6 +4,10 @@ from difflib import SequenceMatcher
 import cv2
 import numpy
 import time
+from collections import Counter
+import unicodedata
+import json
+import os
 
 from bot.base.task import TaskStatus, EndTaskReason
 from bot.recog.image_matcher import image_match, compare_color_equal
@@ -58,6 +62,121 @@ def find_similar_skill_name(target_text: str, ref_text_list: list[str], threshol
             best_ratio = best_ratio_for_this
     
     return result
+
+
+def normalize_text_for_match(text: str) -> str:
+    if not text:
+        return ""
+    t = unicodedata.normalize('NFKD', str(text))
+    t = t.lower().strip()
+    t = re.sub(r"[^a-z0-9]+", " ", t)
+    t = " ".join(t.split())
+    return t
+
+
+def build_bigrams(text: str) -> Counter:
+    return Counter(text[i:i+2] for i in range(len(text) - 1)) if len(text) >= 2 else Counter()
+
+
+def jaccard_counter_ratio(a: Counter, b: Counter) -> float:
+    if not a and not b:
+        return 1.0
+    inter = sum((a & b).values())
+    union = sum((a | b).values())
+    return inter / union if union else 0.0
+
+
+skills_database_cache = None
+
+def load_skills_database():
+    global skills_database_cache
+    if skills_database_cache is not None:
+        return skills_database_cache
+    try:
+        json_path = os.path.join('web', 'src', 'assets', 'umamusume_final_skills_fixed.json')
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        names = []
+        for item in data:
+            name = item.get('name')
+            if name:
+                names.append(str(name))
+        skills_database_cache = names
+        return names
+    except Exception:
+        skills_database_cache = []
+        return skills_database_cache
+
+
+def get_canonical_skill_name(skill_name: str) -> str:
+    names = load_skills_database()
+    if not names:
+        return ""
+    query = normalize_text_for_match(skill_name)
+    qlen = len(query)
+    qbigrams = build_bigrams(query)
+    qtokens = set(query.split())
+
+    index_cache = getattr(get_canonical_skill_name, 'cacheIndex', None)
+    source_cache = getattr(get_canonical_skill_name, 'cacheSource', None)
+    if index_cache is None or source_cache is not names:
+        cache_list = []
+        token_index = {}
+        norm_map = {}
+        for original in names:
+            normalized = normalize_text_for_match(original)
+            tokens = set(normalized.split())
+            entry = (original, normalized, len(normalized), build_bigrams(normalized), tokens)
+            cache_list.append(entry)
+            norm_map[normalized] = original
+            idx = len(cache_list) - 1
+            for tok in tokens:
+                if tok:
+                    token_index.setdefault(tok, []).append(idx)
+        setattr(get_canonical_skill_name, 'cacheIndex', cache_list)
+        setattr(get_canonical_skill_name, 'cacheSource', names)
+        setattr(get_canonical_skill_name, 'cacheTokenIndex', token_index)
+        setattr(get_canonical_skill_name, 'cacheNormMap', norm_map)
+        index_cache = cache_list
+
+    best_key = None
+    best_score = 0.0
+    best_len_ratio = 0.0
+    token_index = getattr(get_canonical_skill_name, 'cacheTokenIndex', None)
+    candidate_indices = set()
+    for tok in qtokens:
+        if token_index and tok in token_index:
+            for idx in token_index[tok]:
+                candidate_indices.add(idx)
+    iterable = candidate_indices or range(len(index_cache))
+    for idx in iterable:
+        original_key, normalized_key, normalized_length, normalized_bigrams, normalized_tokens = index_cache[idx]
+        if not query or not normalized_key:
+            continue
+        if query in normalized_key or normalized_key in query:
+            best_key = original_key
+            best_score = 1.0
+            best_len_ratio = min(qlen, normalized_length) / max(qlen, normalized_length) if max(qlen, normalized_length) else 1.0
+            break
+        token_inter = len(qtokens & normalized_tokens)
+        token_union = len(qtokens | normalized_tokens) or 1
+        token_score = token_inter / token_union
+        bigram_score = jaccard_counter_ratio(qbigrams, normalized_bigrams)
+        if normalized_length == qlen:
+            positional = sum(1 for i in range(qlen) if query[i] == normalized_key[i]) / qlen if qlen else 0.0
+            score = max(bigram_score, token_score, positional)
+            len_ratio = 1.0
+        else:
+            score = max(bigram_score, token_score)
+            len_ratio = min(qlen, normalized_length) / max(qlen, normalized_length)
+        if score > best_score or (score == best_score and len_ratio > best_len_ratio):
+            best_score = score
+            best_len_ratio = len_ratio
+            best_key = original_key
+
+    if best_key is not None and ((best_score >= 0.85 and best_len_ratio >= 0.8) or best_score >= 0.95):
+        return best_key
+    return ""
 
 
 def ocr_en(sub_img):
@@ -731,7 +850,14 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                     skill_name_img = skill_info_img[10: 47, 100: 445]
                     text = ocr_en(skill_name_img)
                     log.debug(f"🔍 find_skill - OCR detected skill: '{text}'")
-                    result = find_similar_skill_name(text, skill, 0.7)
+                    canonical = get_canonical_skill_name(text)
+                    match_name = canonical if canonical != "" else text
+                    result = find_similar_skill_name(match_name, skill, 0.7)
+                    if result == "" and canonical != "":
+                        for target in skill:
+                            if normalize_text_for_match(canonical) == normalize_text_for_match(target):
+                                result = target
+                                break
                     log.debug(f"🔍 find_skill - Similar skill match: '{text}' -> '{result}'")
                     
                     if result != "" or learn_any_skill:
@@ -822,28 +948,54 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 skill_in_priority_list = False
                 skill_name_raw = "" # Save original skill name to prevent OCR deviation
                 priority = 99
+                canonical = get_canonical_skill_name(text)
                 for i in range(len(skill)):
-                    found_similar_blacklist = find_similar_skill_name(text, skill_blacklist, 0.7)
-                    found_similar_prioritylist = find_similar_skill_name(text, skill[i], 0.7)
-                    
-                    # Debug: Log similarity matching results
-                    if found_similar_prioritylist != "":
-                        log.debug(f"✅ Skill match: '{text}' -> '{found_similar_prioritylist}' (priority {i})")
-                    elif found_similar_blacklist != "":
-                        log.debug(f"❌ Skill blacklisted: '{text}' -> '{found_similar_blacklist}'")
+                    if canonical != "":
+                        in_blacklist = (canonical in skill_blacklist) or (find_similar_skill_name(canonical, skill_blacklist, 0.7) != "")
+                        in_priority = False
+                        found_similar_prioritylist = ""
+                        if i < len(skill):
+                            if canonical in skill[i]:
+                                in_priority = True
+                                found_similar_prioritylist = canonical
+                            else:
+                                found_similar_prioritylist = find_similar_skill_name(canonical, skill[i], 0.7)
+                                in_priority = found_similar_prioritylist != ""
+                        if in_priority:
+                            log.debug(f"Skill match: '{text}' -> '{found_similar_prioritylist}' (priority {i})")
+                        elif in_blacklist:
+                            log.debug(f"Skill blacklisted: '{text}' -> '{canonical}'")
+                        else:
+                            log.debug(f"No match for skill: '{text}' (priority {i})")
+                        if in_blacklist:
+                            priority = -1
+                            skill_name_raw = canonical
+                            skill_in_priority_list = True
+                            break
+                        elif in_priority:
+                            priority = i
+                            skill_name_raw = found_similar_prioritylist if found_similar_prioritylist != "" else canonical
+                            skill_in_priority_list = True
+                            break
                     else:
-                        log.debug(f"❌ No match for skill: '{text}' (priority {i})")
-                    
-                    if found_similar_blacklist != "": # Exclude skills that appear in blacklist
-                        priority = -1
-                        skill_name_raw = found_similar_blacklist
-                        skill_in_priority_list = True
-                        break
-                    elif found_similar_prioritylist != "":
-                        priority = i
-                        skill_name_raw = found_similar_prioritylist
-                        skill_in_priority_list = True
-                        break
+                        found_similar_blacklist = find_similar_skill_name(text, skill_blacklist, 0.7)
+                        found_similar_prioritylist = find_similar_skill_name(text, skill[i], 0.7)
+                        if found_similar_prioritylist != "":
+                            log.debug(f"Skill match: '{text}' -> '{found_similar_prioritylist}' (priority {i})")
+                        elif found_similar_blacklist != "":
+                            log.debug(f"Skill blacklisted: '{text}' -> '{found_similar_blacklist}'")
+                        else:
+                            log.debug(f"No match for skill: '{text}' (priority {i})")
+                        if found_similar_blacklist != "":
+                            priority = -1
+                            skill_name_raw = found_similar_blacklist
+                            skill_in_priority_list = True
+                            break
+                        elif found_similar_prioritylist != "":
+                            priority = i
+                            skill_name_raw = found_similar_prioritylist
+                            skill_in_priority_list = True
+                            break
                 if not skill_in_priority_list:
                     priority = len(skill)
 
