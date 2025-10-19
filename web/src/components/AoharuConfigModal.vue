@@ -11,7 +11,7 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-5 section-card p-3" style="border-right: 1px solid #e0e0e0;">
+            <div class="col-5 section-card p-3">
               <h6 class="mb-3">Select Preliminary Round Participants</h6>
               <div class="form-group">
                 <label>Preliminary Round 1&nbsp;&nbsp;</label>
@@ -222,11 +222,7 @@ export default {
 }
 
 /* 修复单选框和文字对齐问题 */
-#aoharu-config-modal .section-card{
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  box-shadow:0 2px 4px rgba(0,0,0,.06);
-}
+#aoharu-config-modal .section-card{border:1px solid var(--accent);border-radius:12px;box-shadow:none}
 
 .form-check {
   display: flex;

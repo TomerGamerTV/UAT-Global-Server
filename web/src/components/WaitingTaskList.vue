@@ -2,11 +2,11 @@
   <div>
     <div class="card">
       <div class="card-body">
-        <div class="d-flex bd-highlight">
-          <h5 class="card-title">Waiting</h5>
+        <div class="d-flex align-items-center">
+          <h5 class="mb-0">Waiting</h5>
         </div>
       </div>
-      <TaskList v-bind:task-list="waitingTaskList" v-bind:no-data-label="'No waiting tasks'"></TaskList>
+      <TaskList :task-list="waitingTaskList" :no-data-label="'No waiting tasks'"></TaskList>
     </div>
   </div>
 </template>
@@ -17,16 +17,10 @@ export default {
   name: "WaitingTaskList",
   props:["waitingTaskList"],
   components: {TaskList},
-  data:function (){
-    return{
-    }
-  }
+  data(){ return{} }
 }
 </script>
 
 <style scoped>
-  .card-body{
-    border-bottom: 1px solid rgba(0,0,0,.125);
-  }
-
+.card-body{border-bottom:1px solid rgba(255,255,255,.06)}
 </style>

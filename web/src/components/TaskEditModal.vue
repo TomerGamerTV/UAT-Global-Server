@@ -5,8 +5,8 @@
         <div class="modal-header d-flex align-items-center justify-content-between">
           <h5 class="mb-0">Create New Task</h5>
           <div class="header-actions">
-            <button type="button" class="btn btn-sm btn-outline-secondary" @click="cancelTask">Cancel</button>
-            <button type="button" class="btn btn-sm btn-primary" @click="addTask">Confirm</button>
+            <button type="button" class="btn btn-sm btn--outline" @click="cancelTask">Cancel</button>
+            <button type="button" class="btn btn-sm btn--primary" @click="addTask">Confirm</button>
           </div>
         </div>
         <div class="modal-body modal-body--split" ref="scrollPane">
@@ -14,8 +14,7 @@
             <div class="side-nav-title">Sections</div>
             <ul class="side-nav-list">
               <li v-for="s in sectionList" :key="s.id">
-                <a href="#" :class="{ active: activeSection === s.id }" @click.prevent="scrollToSection(s.id)">{{
-                  s.label }}</a>
+                <a href="#" :class="{ active: activeSection === s.id }" @click.prevent="scrollToSection(s.id)">{{ s.label }}</a>
               </li>
             </ul>
           </div>
@@ -23,13 +22,13 @@
             <div class="category-card" id="category-general">
               <div class="category-title">General</div>
               <div class="form-group">
-                <label for="selectTaskType">⭐ Task Selection</label>
+                <label for="selectTaskType">Task Selection</label>
                 <select v-model="selectedUmamusumeTaskType" class="form-control" id="selectTaskType">
                   <option v-for="task in umamusumeTaskTypeList" :value="task">{{ task.name }}</option>
                 </select>
               </div>
               <div class="form-group">
-                <label for="selectExecuteMode">⭐ Execution Mode</label>
+                <label for="selectExecuteMode">Execution Mode</label>
                 <select v-model.number="selectedExecuteMode" class="form-control" id="selectExecuteMode">
                   <option :value="1">One-time</option>
                   <option :value="3">Loop until canceled</option>
@@ -39,7 +38,7 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group">
-                    <label for="selectScenario">⭐ Scenario Selection</label>
+                    <label for="selectScenario">Scenario Selection</label>
                     <select v-model="selectedScenario" class="form-control" id="selectScenario">
                       <option :value="1">URA</option>
                       <option :value="2">Aoharu Cup</option>
@@ -65,21 +64,17 @@
                   </div>
                 </div>
               </div>
-              <!-- URA Additional Configuration -->
               <div class="row" v-if="selectedScenario === 1">
                 <div class="col-4">
                   <div class="form-group">
-                    <span class="btn auto-btn ura-btn-bg" style="width: 100%; background-color:#6c757d;"
-                      v-on:click="openUraConfigModal">URA Configuration</span>
+                    <span class="btn auto-btn" style="width:100%" v-on:click="openUraConfigModal">URA Configuration</span>
                   </div>
                 </div>
               </div>
-              <!-- Youth Cup Additional Configuration -->
               <div class="row" v-if="selectedScenario === 2">
                 <div class="col-4">
                   <div class="form-group">
-                    <span class="btn auto-btn aoharu-btn-bg" style="width: 100%; background-color:#6c757d;"
-                      v-on:click="openAoharuConfigModal">Aoharu Cup Configuration</span>
+                    <span class="btn auto-btn" style="width:100%" v-on:click="openAoharuConfigModal">Aoharu Cup Configuration</span>
                   </div>
                 </div>
               </div>
@@ -109,7 +104,7 @@
               <div class="row">
                 <div class="col-8">
                   <div class="form-group">
-                    <label for="race-select">⭐ Use Preset</label>
+                    <label for="race-select">Use Preset</label>
                     <div class="input-group input-group-sm">
                       <select v-model="presetsUse" class="form-control" id="use_presets">
                         <option v-for="set in cultivatePresets" :value="set">{{ set.name }}</option>
@@ -173,7 +168,7 @@
               <div class="row">
                 <div class="col-6">
                   <div class="form-group">
-                    <label>⭐ Friend Support Card Selection</label>
+                    <label>Friend Support Card Selection</label>
                     <div class="input-group input-group-sm">
                       <input type="text" class="form-control" :value="renderSupportCardText(selectedSupportCard)"
                         readonly id="selectedSupportCard">
@@ -211,15 +206,16 @@
                 </div>
                 <div class="col-3">
                   <div class="form-group">
-                    <div class="form-check" style="margin-top: 24px;">
-                      <input type="checkbox" v-model="compensateFailure" class="form-check-input" id="compensateFailure">
-                      <label class="form-check-label" for="compensateFailure">Compensate for failure</label>
+                    <label class="d-block mb-1">Compensate for failure</label>
+                    <div class="token-toggle" role="group" aria-label="Compensate for failure">
+                      <button type="button" class="token" :class="{ active: compensateFailure }" @click="compensateFailure = true">Yes</button>
+                      <button type="button" class="token" :class="{ active: !compensateFailure }" @click="compensateFailure = false">No</button>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="form-group">
-                <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final
+                <div>Target Attributes (If unsure about specific values, manually train once and input the final
                   stats)</div>
               </div>
               <div class="form-group Cure-asap">
@@ -276,7 +272,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <div>⭐ Desire Mood (Customize the desire Mood per year)</div>
+                <div>Desire Mood (Customize the desire Mood per year)</div>
               </div>
               <div class="row">
                 <div class="col">
@@ -329,7 +325,7 @@
                       <input type="checkbox" v-model="prioritizeRecreation" class="form-check-input"
                         id="prioritizeRecreation">
                       <label class="form-check-label" for="prioritizeRecreation">
-                        ⭐ Prioritize Recreation (Pal Type Support Card)
+                        Prioritize Recreation (Pal Type Support Card)
                       </label>
                     </div>
                     <small class="form-text text-muted">(optional) only use this if you bring Pal type Support Card like
@@ -353,7 +349,7 @@
               </div>
               <div v-if="showAdvanceOption" class="advanced-options-content">
                 <div class="form-group">
-                  <div>⭐ Extra Weights (Speed, Stamina, Power, Guts, Wit)</div>
+                  <div>Extra Weights (Speed, Stamina, Power, Guts, Wit)</div>
                 </div>
                 <p>Applies a flat multiplier to the training score (-100% To +100%)</p>
                 <p>-1 would make it skip the training</p>
@@ -395,7 +391,7 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 16px;">
-                  <div>⭐ Score Value (Blue friendship, Green Friendship, Rainbows, Hints)</div>
+                  <div>Score Value (Blue friendship, Green Friendship, Rainbows, Hints)</div>
                 </div>
                 <div class="row mb-2">
                   <div class="col">
@@ -447,7 +443,7 @@
             <div class="category-card" id="category-race">
               <div class="category-title">Race Settings</div>
               <div class="form-group">
-                <div>⭐ Racing Style Selection</div>
+                <div>Racing Style Selection</div>
               </div>
               <div class="row">
                 <div class="col">
@@ -494,7 +490,7 @@
                 <div class="row">
                   <div class="col">
                     <div class="form-group">
-                      <label for="race-select">⭐ Additional Race Schedule</label>
+                      <label for="race-select">Additional Race Schedule</label>
                       <textarea type="text" disabled v-model="extraRace" class="form-control"
                         id="race-select"></textarea>
                     </div>
@@ -516,11 +512,11 @@
                   <!-- Race Filter Controls (tidy grid) -->
                   <div class="race-filters mb-3">
                     <div class="filter">
-                      <label>🔍 Search Races:</label>
+                      <label>Search Races:</label>
                       <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
                     </div>
                     <div class="filter">
-                      <label>👤 Character Filter: <i class="fas fa-info-circle text-muted"
+                      <label>Character Filter: <i class="fas fa-info-circle text-muted"
                           title="Filter races based on character's terrain/distance aptitude and training schedule"></i></label>
                       <select v-model="selectedCharacter" class="form-control" @change="onCharacterChange">
                         <option value="">All Characters</option>
@@ -535,7 +531,7 @@
                       </small>
                     </div>
                     <div class="quick">
-                      <label>🏁 Quick Selection:</label>
+                      <label>Quick Selection:</label>
                       <div class="btn-group" role="group">
                         <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All
                           GI</button>
@@ -549,82 +545,29 @@
                     </div>
 
                     <div class="filter">
-                      <label>🏆 Grade:</label>
+                      <label>Grade:</label>
                       <div class="btn-group btn-group-sm d-flex" role="group">
-                        <button type="button" class="btn"
-                          :class="{ 'btn-primary': showGI, 'btn-outline-primary': !showGI }" @click="showGI = !showGI">
-                          <span
-                            style="background-color: #3485E3; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GI</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-primary': showGII, 'btn-outline-primary': !showGII }"
-                          @click="showGII = !showGII">
-                          <span
-                            style="background-color: #F75A86; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GII</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-primary': showGIII, 'btn-outline-primary': !showGIII }"
-                          @click="showGIII = !showGIII">
-                          <span
-                            style="background-color: #58C471; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">GIII</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-primary': showOP, 'btn-outline-primary': !showOP }" @click="showOP = !showOP">
-                          <span
-                            style="background-color: #FFA500; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">OP</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP }"
-                          @click="showPREOP = !showPREOP">
-                          <span
-                            style="background-color: #9370DB; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">PRE-OP</span>
-                        </button>
+                        <button type="button" class="btn" :class="{ 'btn-primary': showGI, 'btn-outline-primary': !showGI }" @click="showGI = !showGI"><span>GI</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-primary': showGII, 'btn-outline-primary': !showGII }" @click="showGII = !showGII"><span>GII</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-primary': showGIII, 'btn-outline-primary': !showGIII }" @click="showGIII = !showGIII"><span>GIII</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-primary': showOP, 'btn-outline-primary': !showOP }" @click="showOP = !showOP"><span>OP</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-primary': showPREOP, 'btn-outline-primary': !showPREOP }" @click="showPREOP = !showPREOP"><span>PRE-OP</span></button>
                       </div>
                     </div>
                     <div class="filter">
-                      <label>🌱 Terrain:</label>
+                      <label>Terrain:</label>
                       <div class="btn-group btn-group-sm d-flex" role="group">
-                        <button type="button" class="btn"
-                          :class="{ 'btn-success': showTurf, 'btn-outline-success': !showTurf }"
-                          @click="showTurf = !showTurf">
-                          <span
-                            style="background-color: #28a745; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Turf</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-warning': showDirt, 'btn-outline-warning': !showDirt }"
-                          @click="showDirt = !showDirt">
-                          <span
-                            style="background-color: #ffc107; color: black; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Dirt</span>
-                        </button>
+                        <button type="button" class="btn" :class="{ 'btn-success': showTurf, 'btn-outline-success': !showTurf }" @click="showTurf = !showTurf"><span>Turf</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-warning': showDirt, 'btn-outline-warning': !showDirt }" @click="showDirt = !showDirt"><span>Dirt</span></button>
                       </div>
                     </div>
                     <div class="distance">
-                      <label>📏 Distance:</label>
+                      <label>Distance:</label>
                       <div class="btn-group btn-group-sm d-flex" role="group">
-                        <button type="button" class="btn"
-                          :class="{ 'btn-info': showSprint, 'btn-outline-info': !showSprint }"
-                          @click="showSprint = !showSprint">
-                          <span
-                            style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Sprint</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-info': showMile, 'btn-outline-info': !showMile }"
-                          @click="showMile = !showMile">
-                          <span
-                            style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Mile</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-info': showMedium, 'btn-outline-info': !showMedium }"
-                          @click="showMedium = !showMedium">
-                          <span
-                            style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Medium</span>
-                        </button>
-                        <button type="button" class="btn"
-                          :class="{ 'btn-info': showLong, 'btn-outline-info': !showLong }"
-                          @click="showLong = !showLong">
-                          <span
-                            style="background-color: #17a2b8; color: white; padding: 2px 4px; border-radius: 3px; font-size: 9px;">Long</span>
-                        </button>
+                        <button type="button" class="btn" :class="{ 'btn-info': showSprint, 'btn-outline-info': !showSprint }" @click="showSprint = !showSprint"><span>Sprint</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-info': showMile, 'btn-outline-info': !showMile }" @click="showMile = !showMile"><span>Mile</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-info': showMedium, 'btn-outline-info': !showMedium }" @click="showMedium = !showMedium"><span>Medium</span></button>
+                        <button type="button" class="btn" :class="{ 'btn-info': showLong, 'btn-outline-info': !showLong }" @click="showLong = !showLong"><span>Long</span></button>
                       </div>
                     </div>
                   </div>
@@ -769,7 +712,7 @@
                 <div class="row">
                   <div class="col">
                     <div class="form-group">
-                      <label for="skill-learn">⭐ Skill Learning</label>
+                      <label for="skill-learn">Skill Learning</label>
                     </div>
                   </div>
                   <div class="col-auto">
@@ -1030,7 +973,7 @@
       <div class="position-fixed" style="z-index: 5; right: 40%; width: 300px;">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
           <div class="toast-body">
-            ✔ Preset saved successfully
+            Preset saved successfully
           </div>
         </div>
       </div>
@@ -1039,7 +982,7 @@
         <div id="weightWarningToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true"
           data-delay="2000">
           <div class="toast-body" style="color: #856404;">
-            ⚠️ <b>All weights in the same year cannot be -1</b>
+            <b>All weights in the same year cannot be -1</b>
           </div>
         </div>
       </div>
@@ -2159,7 +2102,7 @@ export default {
         return;
       }
       const toastBody = document.querySelector('#liveToast .toast-body');
-      if (toastBody) toastBody.textContent = '✔ Preset saved successfully';
+      if (toastBody) toastBody.textContent = 'Preset saved successfully';
       this.addPresets();
       this.presetAction = null;
       this.presetNameEdit = "";
@@ -2169,7 +2112,7 @@ export default {
       // For overwrite we simply save with the same name
       this.presetNameEdit = this.overwritePresetName;
       const toastBody = document.querySelector('#liveToast .toast-body');
-      if (toastBody) toastBody.textContent = '✔ Preset overwritten successfully';
+      if (toastBody) toastBody.textContent = 'Preset overwritten successfully';
       this.addPresets();
       this.presetAction = null;
     },
@@ -2182,7 +2125,7 @@ export default {
         this.presetAction = null;
         this.deletePresetName = "";
         const toastBody = document.querySelector('#liveToast .toast-body');
-        if (toastBody) toastBody.textContent = '✔ Preset deleted successfully';
+        if (toastBody) toastBody.textContent = 'Preset deleted successfully';
         this.successToast.toast('show')
       });
     },
@@ -3428,4 +3371,37 @@ export default {
 .Cure-asap textarea {
   min-height: 60px;
 }
+.race-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
+.race-toggle.selected{background:transparent!important;border-color:var(--accent)!important}
+.skill-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
+.skill-toggle.selected{background:transparent!important;border-color:var(--accent)!important}
+.skill-type-header,.section-heading,.skill-list-header{background:transparent!important;color:var(--text)!important}
+.blacklist-box:hover{border-color:var(--accent)!important;background:rgba(255,45,163,.08)!important}
+.blacklisted-skill-item{background:transparent!important;color:#ffb3c1!important}
+.skill-list-container{border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important;padding:12px!important;background:transparent!important;max-height:500px}
+.skill-type-card{border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important}
+.skill-item{border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;padding:10px!important;background:transparent!important;cursor:pointer}
+.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px rgba(255,45,163,.15)!important}
+.skill-item.selected{background:rgba(52,133,227,.08)!important;border-color:#3485E3!important;box-shadow:0 0 0 2px rgba(52,133,227,.2) inset!important}
+.skill-item.blacklisted{background:rgba(255,77,109,.08)!important;border-color:#ff4d6d!important}
+.skill-item.selected .skill-tag,.skill-item.blacklisted .skill-tag{background:rgba(255,255,255,.2)!important}
+.skill-filter-section{margin-bottom:20px;border-radius:10px!important;border:1px solid rgba(255,255,255,.12)!important;background:transparent!important;color:var(--text)!important}
+.skill-filter-section ::placeholder{color:var(--muted-2)!important}
+.filter-label{color:var(--accent)!important}
+.token-toggle{background:transparent!important;border:1px solid var(--accent)!important}
+.token-toggle .token{color:var(--accent)!important}
+.token-toggle .token.active{background:var(--accent)!important;color:#fff!important}
+#create-task-list-modal .modal-content.dimmed{opacity:.6;background:transparent!important;border:0!important}
+.category-card{border:1px solid var(--accent)!important}
+.race-options-header,.skill-list-header,.section-heading,.skill-type-header{background:transparent!important;color:var(--text)!important;border-color:var(--accent)!important}
+.selected-skills-box,.blacklist-box{background:var(--surface-2)!important;border:1px solid var(--accent)!important;color:var(--text)!important}
+.skill-list-content,.skill-list-container,.skill-type-card,.skill-item{background:transparent!important;border:1px solid rgba(255,255,255,.12)!important}
+.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px rgba(255,45,163,.15)!important}
+.skill-item.selected{background:rgba(52,133,227,.08)!important;border-color:#3485E3!important;box-shadow:inset 0 0 0 2px rgba(52,133,227,.2)!important;color:var(--text)!important}
+.skill-item.blacklisted{background:rgba(255,77,109,.08)!important;border-color:#ff4d6d!important}
+.blacklisted-skill-item{background:transparent!important;color:#ffb3c1!important}
+.race-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important}
+.race-toggle.selected{background:transparent!important;border:2px solid var(--accent)!important;box-shadow:0 0 0 2px rgba(255,45,163,.35) inset,0 0 14px rgba(255,45,163,.35)!important}
+.btn-outline-primary.dropdown-toggle,.show>.btn-outline-primary.dropdown-toggle{border-color:var(--accent)!important;color:var(--accent)!important;background:transparent!important}
+
 </style>

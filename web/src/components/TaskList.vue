@@ -1,16 +1,16 @@
 <template>
   <div>
     <div v-if="taskList === undefined || taskList.length === 0">
-      <div class="card-body">
+      <div class="card-body list-empty">
         {{noDataLabel}}
       </div>
     </div>
     <div v-if="taskList !== undefined">
       <ul class="list-group list-group-flush">
         <li v-for="task in taskList" class="list-group-item">
-          <div class="part">
-            <div class="d-flex bd-highlight">
-              <h5 class="card-title">{{task['task_desc']}}</h5>
+          <div>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0">{{task['task_desc']}}</h6>
             </div>
             <task-detail-info-handler :task="task"></task-detail-info-handler>
           </div>
@@ -26,21 +26,10 @@ export default {
   name: "TaskList",
   components: {TaskDetailInfoHandler},
   props:["taskList", "noDataLabel"],
-  data:function (){
-    return {
-    }
-  }
+  data(){ return{} }
 }
 </script>
 
 <style scoped>
-.card-title{
-  margin-bottom: 0;
-}
-.start-time{
-  color: #999;
-}
-.list-group-item{
-  padding: 10px;
-}
+.list-group-item{padding:12px 14px}
 </style>

@@ -2,21 +2,16 @@
   <div>
     <div class="card">
       <div class="card-body">
-        <div class="d-flex bd-highlight mb-3">
-          <h5 class="card-title">Runtime Logs</h5>
-          <span v-on:click="toggleAutoLog" class="ml-auto btn auto-btn">
-            <span v-if="autoLog"><font-awesome-icon   icon="fa-regular fa-circle-play" /> Auto-refresh: ON</span>
-            <span v-if="!autoLog"><font-awesome-icon  icon="fa-regular fa-circle-pause" /> Auto-refresh: OFF</span>
-           </span>
-          <!-- <span v-on:click="autoScroll = !autoScroll" class="ml-auto btn auto-btn"> -->
-            <!-- <span v-if="autoScroll"><font-awesome-icon   icon="fa-regular fa-circle-play" /> 自动滚动：开</span>
-            <span v-if="!autoScroll"><font-awesome-icon  icon="fa-regular fa-circle-pause" /> 自动滚动：关</span> -->
-          <!-- </span> -->
+        <div class="d-flex align-items-center mb-3" style="gap:12px">
+          <h5 class="mb-0">Runtime Logs</h5>
+          <div class="ml-auto"></div>
+          <button @click="toggleAutoLog" class="btn btn-sm" :class="autoLog ? 'btn--primary' : 'btn--outline'">
+            <font-awesome-icon :icon="autoLog ? 'fa-regular fa-circle-play' : 'fa-regular fa-circle-pause'" />
+            <span>Auto-refresh: {{ autoLog ? 'ON' : 'OFF' }}</span>
+          </button>
         </div>
-        <div>
-          <div class="input-group">
-            <textarea id="scroll_text" disabled v-bind:placeholder="logContent" class="form-control" aria-label="With textarea">{{logContent}}</textarea>
-          </div>
+        <div class="crt-slab">
+          <textarea id="scroll_text" disabled :placeholder="logContent" class="form-control crt-text log-textarea" aria-label="With textarea">{{logContent}}</textarea>
         </div>
       </div>
     </div>
@@ -27,12 +22,10 @@
 export default {
   name: "LogPanel",
   props: ['logContent', 'autoLog', 'toggleAutoLog'],
-  data:function (){
-    return{
-      autoScroll: true
-    }
+  data(){
+    return{ autoScroll: true }
   },
-  updated:function () {
+  updated(){
     if (this.autoScroll){
       const textarea = document.getElementById('scroll_text');
       textarea.scrollTop = textarea.scrollHeight;
@@ -42,11 +35,13 @@ export default {
 </script>
 
 <style scoped>
-  textarea{
-    min-height: 600px;
-    font-size: 12px;
-  }
-  .form-control:disabled{
-    background: #fff;
-  }
+textarea{min-height:600px;font-size:12px;line-height:1.35}
+.form-control:disabled{background:#0a111b}
+.card{display:block}
+.card-body{display:block}
+.crt-slab{position:relative;border-radius:12px;overflow:hidden;padding:8px}
+.crt-slab:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0, rgba(255,255,255,.05) 1px, transparent 2px, transparent 4px);opacity:.08;pointer-events:none}
+.crt-slab:after{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0%, rgba(255,45,163,.18), transparent 60%);mix-blend-mode:screen;opacity:.3;pointer-events:none}
+.crt-text{font-family:'Share Tech Mono',ui-monospace,Consolas,Monaco,monospace;color:#E6E6E6;text-shadow:0 0 6px rgba(255,45,163,.25)}
+.log-textarea{display:block;width:100%;min-height:70vh;border:1px solid var(--accent);border-radius:var(--radius-sm);color:#ddd;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 </style>

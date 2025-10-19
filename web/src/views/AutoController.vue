@@ -1,9 +1,8 @@
 <template>
   <div>
-    <!-- Quick Stats -->
     <div class="row mb-3">
       <div class="col-12">
-        <div class="section-card p-3">
+        <div class="section-card">
           <div class="row g-3">
             <div class="col-sm-3">
               <div class="stat-card">
@@ -34,11 +33,10 @@
       </div>
     </div>
 
-    <!-- Running Task Spotlight -->
     <div v-if="runningTask" class="row mb-3">
       <div class="col-12">
-        <div class="section-card p-3 d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-3">
+        <div class="section-card d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center" style="gap:12px">
             <div class="status-pill"><span class="dot running"></span><span>Running</span></div>
             <div class="spot-text">
               <div class="spot-title">{{ runningTask.task_desc || 'Active Task' }}</div>
@@ -53,42 +51,40 @@
     </div>
 
     <div class="row">
-    <div class="col-4">
-      <div class="part">
-        <scheduler-panel v-bind:waiting-task-list="waitingTaskList"
-                         v-bind:running-task="runningTask"
-                         v-bind:history-task-list="historyTaskList"
-                         v-bind:cron-job-list="cronJobList"
-        ></scheduler-panel>
+      <div class="col-4">
+        <scheduler-panel 
+          :waiting-task-list="waitingTaskList"
+          :running-task="runningTask"
+          :history-task-list="historyTaskList"
+          :cron-job-list="cronJobList"
+        />
+      </div>
+      <div class="col-8">
+        <log-panel 
+          :log-content="logContent"
+          :auto-log="autoLog"
+          :toggle-auto-log="toggleAutoLog"
+        />
       </div>
     </div>
-    <div class="col-8">
-      <log-panel v-bind:log-content="logContent"
-                 v-bind:auto-log="autoLog"
-                 v-bind:toggle-auto-log="toggleAutoLog"
-      ></log-panel>
-      <!-- Recent Activity under logs -->
-      <!-- intentionally left blank for future content -->
-    </div>
   </div>
-</div>
 </template>
 
 <script>
 import SchedulerPanel from "../components/SchedulerPanel.vue";
-import LogPanel from "../components/base/LogPanel.vue"
+import LogPanel from "../components/base/LogPanel.vue";
 export default {
   name: "AutoController",
-  components: { LogPanel, SchedulerPanel},
+  components: { LogPanel, SchedulerPanel },
   data() {
     return {
-      taskId:'0',
+      taskId: '0',
       runningTask: undefined,
-      waitingTaskList:[],
-      historyTaskList:[],
-      cronJobList:[],
-      taskList:[],
-      logContent:"",
+      waitingTaskList: [],
+      historyTaskList: [],
+      cronJobList: [],
+      taskList: [],
+      logContent: "",
       autoLog: true,
       taskLogTimer: undefined
     }
@@ -101,82 +97,52 @@ export default {
       return Math.round((success/total)*100) + '%'
     }
   },
-  mounted:function() {
+  mounted(){
     let vue = this;
-    setInterval(function () {
-      vue.getTaskList();
-    },1000)
-
-    this.taskLogTimer = setInterval(function () {
-      vue.getTaskLog()
-    },1000)
+    setInterval(function () { vue.getTaskList(); }, 1000)
+    this.taskLogTimer = setInterval(function () { vue.getTaskLog() }, 1000)
   },
   methods:{
     scrollToLogs(){
-      // focus the log textarea if present
       const el = document.getElementById('scroll_text');
       if (el) el.focus();
     },
-    getTaskList:function (){
-      this.axios.get("/task").then(
-          res=>{
-            this.taskList = res.data;
-            let waitingTaskList = []
-            let historyTaskList = []
-            let cronJobList = []
-            let runningTask = undefined
-
-            this.taskList.forEach(
-              t=>{
-                const mode = t['task_execute_mode']
-                const status = t['task_status']
-                if (mode === 2 || mode === 'TASK_EXECUTE_MODE_CRON_JOB') {
-                  if (status === 6 || status === 7) {
-                    cronJobList.push(t)
-                  }
-                } else {
-                  if (status === 2) {
-                    runningTask = t
-                  } else if (status === 1) {
-                    waitingTaskList.push(t)
-                  } else if (status === 5 || status === 4 || status === 3) {
-                    historyTaskList.push(t)
-                  }
-                }
-              }
-            )
-            this.waitingTaskList = waitingTaskList
-            this.historyTaskList = historyTaskList
-            this.runningTask = runningTask
-            this.cronJobList = cronJobList
-            if(this.runningTask === undefined){
-              this.taskId = '0'
-            }else{
-              this.taskId = runningTask['task_id']
-            }
+    getTaskList(){
+      this.axios.get("/task").then(res=>{
+        this.taskList = res.data;
+        let waitingTaskList = []
+        let historyTaskList = []
+        let cronJobList = []
+        let runningTask = undefined
+        this.taskList.forEach(t=>{
+          const mode = t['task_execute_mode']
+          const status = t['task_status']
+          if (mode === 2 || mode === 'TASK_EXECUTE_MODE_CRON_JOB') {
+            if (status === 6 || status === 7) { cronJobList.push(t) }
+          } else {
+            if (status === 2) { runningTask = t }
+            else if (status === 1) { waitingTaskList.push(t) }
+            else if (status === 5 || status === 4 || status === 3) { historyTaskList.push(t) }
           }
-      );
+        })
+        this.waitingTaskList = waitingTaskList
+        this.historyTaskList = historyTaskList
+        this.runningTask = runningTask
+        this.cronJobList = cronJobList
+        if(this.runningTask === undefined){ this.taskId = '0' } else { this.taskId = runningTask['task_id'] }
+      });
     },
-    getTaskLog:function () {
+    getTaskLog() {
       if (this.taskId !== '0') {
-        this.axios.get("/log/" + this.taskId).then(
-            res => {
-              this.logContent = res.data.join('\n')
-            }
-        );
+        this.axios.get("/log/" + this.taskId).then(res => { this.logContent = res.data.join('\n') });
       }
     },
-    toggleAutoLog:function () {
+    toggleAutoLog(){
       this.autoLog = !this.autoLog;
       if (this.autoLog) {
-        if (this.taskLogTimer === undefined) {
-          this.taskLogTimer = setInterval(this.getTaskLog,1000)
-        }
+        if (this.taskLogTimer === undefined) { this.taskLogTimer = setInterval(this.getTaskLog,1000) }
       } else {
-        if (this.taskLogTimer) {
-          clearInterval(this.taskLogTimer)
-          this.taskLogTimer = undefined
-        }
+        if (this.taskLogTimer) { clearInterval(this.taskLogTimer); this.taskLogTimer = undefined }
       }
     }
   }
@@ -184,10 +150,8 @@ export default {
 </script>
 
 <style scoped>
-.stat-card{padding:8px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.stat-label{font-size:12px;color:#6b7280}
-.stat-value{font-size:20px;font-weight:700;color:#111827}
-.spot-title{font-weight:600}
-.spot-meta{font-size:12px;color:#6b7280}
-
+.stat-label{font-size:12px;color:var(--muted)}
+.stat-value{font-size:22px;font-weight:700;color:#fff}
+.spot-title{font-weight:700;color:#fff}
+.spot-meta{font-size:12px;color:var(--muted)}
 </style>

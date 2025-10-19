@@ -389,8 +389,8 @@ export default {
   color: white !important;
 }
 .auto-btn {
-  background-color: #0faedf !important;
-  color: white !important;
+  background-color: var(--accent) !important;
+  color: #fff !important;
   padding: 0.4rem 0.8rem !important;
   font-size: 1rem !important;
   border-radius: 0.25rem;
@@ -401,8 +401,8 @@ export default {
   font-weight: 500;
 }
 .auto-btn:hover {
-  background-color: #1ea7e1 !important;
-  color: white !important;
+  background-color: var(--accent-2) !important;
+  color: #fff !important;
 }
 /* 保证弹窗在遮罩层之上 */
 #support-card-select-modal.modal {
@@ -411,7 +411,7 @@ export default {
 #support-card-select-modal .modal-dialog {
   z-index: 1061;
 }
-.section-card{border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.06);} 
+.section-card{border:1px solid var(--accent);border-radius:12px;box-shadow:none} 
 .support-card-modal-body {
   max-height: 600px;
   overflow-y: auto;
@@ -494,7 +494,7 @@ export default {
 .support-card-label {
   margin-top: 4px;
   font-size: 0.84rem;
-  color: #333;
+  color: #fff;
   text-align: center;
   word-break: break-all;
   line-height: 1.2;
@@ -510,9 +510,9 @@ export default {
   height: 160px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #eee;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  background: #fafafa;
+  border: 1px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  background: transparent;
   margin-top: 4px;
   margin-bottom: 4px;
   display: block;
@@ -545,12 +545,12 @@ export default {
 }
 .type-btn-divider {
   border: none;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--accent);
   margin: 0 0 12px 0;
 }
 .type-btn.active {
-  border: 2px solid #3485E3;
+  border: 2px solid var(--accent);
   border-radius: 8px;
-  background: #f0f6ff;
+  background: rgba(255,64,129,.12);
 }
 </style>

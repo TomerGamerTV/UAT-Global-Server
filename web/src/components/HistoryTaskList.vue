@@ -2,11 +2,11 @@
   <div>
     <div class="card">
       <div class="card-body">
-        <div class="d-flex bd-highlight">
-          <h5 class="card-title">Completed Tasks</h5>
+        <div class="d-flex align-items-center">
+          <h5 class="mb-0">Completed Tasks</h5>
         </div>
       </div>
-      <TaskList v-bind:task-list="historyTaskList" v-bind:no-data-label="'No completed tasks'"></TaskList>
+      <TaskList :task-list="historyTaskList" :no-data-label="'No completed tasks'"></TaskList>
     </div>
   </div>
 </template>
@@ -18,21 +18,10 @@ export default {
   name: "HistoryTaskPanel",
   props:["historyTaskList"],
   components: {TaskList},
-  data:function (){
-    return{
-    }
-  }
+  data(){ return{} }
 }
 </script>
 
 <style scoped>
-.card-title{
-  margin-bottom: 0;
-}
-.start-time{
-  color: #999;
-}
-.card-body{
-  border-bottom: 1px solid rgba(0,0,0,.125);
-}
+.card-body{border-bottom:1px solid rgba(255,255,255,.06)}
 </style>

@@ -200,7 +200,7 @@ export default {
   z-index: 1061;
 }
 
-.section-card{border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.06);} 
+.section-card{border:1px solid var(--accent);border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.06);} 
 
 /* Cancel button style */
 .cancel-btn {
