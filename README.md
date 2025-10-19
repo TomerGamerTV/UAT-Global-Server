@@ -192,6 +192,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## **Changelogs**
 - 18/10/2025   
+waste time (UI changes)
+Fuzzy matching for buying skills (still sucks but should be a little better)
+- 18/10/2025   
 Customizable energy limit.  
 Option to adjust score based on training failure rate
 - 29/9/2025   
