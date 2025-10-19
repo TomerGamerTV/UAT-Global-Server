@@ -135,11 +135,5 @@ dmypy.json
 # Personal scripts and configurations
 brayscript/
 
-# Project specific
-userdata/umamusume/presets/
-userdata/log_*.txt
-userdata/*.txt
 **/__pycache__/
-userdata/instance.lock
-userdata/last_task.json
-
+/userdata

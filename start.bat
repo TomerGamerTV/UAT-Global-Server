@@ -1,11 +1,7 @@
 @echo off
 setlocal
-
-git fetch --all
-git reset --hard
-
-git pull
-python -m pip install --upgrade pip
+cd /d "%~dp0"
+git pull --autostash -X ours --no-edit
 python -m pip install -r requirements.txt
-
+set UAT_AUTORESTART=1
 python main.py
