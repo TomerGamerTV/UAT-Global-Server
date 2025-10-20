@@ -12,9 +12,10 @@ please read the readme before opening a issue
 ## New user? [Read this to improve your runs](#training-settings-guide)
 
 ## Credits
-- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer)
+- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
 
-- **This project is a detached fork of**: [UmamusumeAutoTrainer](https://github.com/BrayAlter/UAT-Global-Server) 
+- **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
+
 
 ---
 
