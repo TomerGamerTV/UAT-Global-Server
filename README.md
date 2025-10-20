@@ -191,6 +191,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## **Changelogs**
+- 20/10/2025   
+Stuck clicking something failsafe part 2
 - 19/10/2025   
 waste time (UI changes)  
 Fuzzy matching for buying skills (still sucks but should be a little better)
