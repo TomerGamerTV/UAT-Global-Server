@@ -39,7 +39,7 @@
                 <div class="col">
                   <div class="form-group">
                     <label for="selectScenario">Scenario Selection</label>
-                    <select v-model="selectedScenario" class="form-control" id="selectScenario">
+                    <select v-model.number="selectedScenario" class="form-control" id="selectScenario">
                       <option :value="1">URA</option>
                       <option :value="2">Aoharu Cup</option>
                     </select>
@@ -349,91 +349,152 @@
               </div>
               <div v-if="showAdvanceOption" class="advanced-options-content">
                 <div class="form-group">
-                  <div>Extra Weights (Speed, Stamina, Power, Guts, Wit)</div>
+                  <div style="color: var(--accent);">Extra Weights For Training</div>
                 </div>
                 <p>Applies a flat multiplier to the training score (-100% To +100%)</p>
                 <p>-1 would make it skip the training</p>
-                <div style="margin-bottom: 10px;">Year 1</div>
+                <div style="margin-bottom: 10px; color: var(--accent);">Year 1</div>
                 <div class="row">
-                  <div v-for="v, i in extraWeight1" class="col">
-                    <div class="form-group">
-                      <input type="number" v-model="extraWeight1[i]" class="form-control"
-                        @input="onExtraWeightInput(extraWeight1, i)" id="speed-value-input">
-                    </div>
+                  <div v-for="(v, i) in extraWeight1" :key="i" class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                    <input type="number" v-model="extraWeight1[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight1, i)" id="speed-value-input">
                   </div>
                 </div>
-                <div style="margin-bottom: 10px;">Year 2</div>
+                <div style="margin-bottom: 10px; color: var(--accent);">Year 2</div>
                 <div class="row">
-                  <div v-for="v, i in extraWeight2" class="col">
-                    <div class="form-group">
-                      <input type="number" v-model="extraWeight2[i]" class="form-control"
-                        @input="onExtraWeightInput(extraWeight2, i)" id="speed-value-input">
-                    </div>
+                  <div v-for="(v, i) in extraWeight2" :key="i" class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                    <input type="number" v-model="extraWeight2[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight2, i)" id="speed-value-input">
                   </div>
                 </div>
-                <div style="margin-bottom: 10px;">Year 3</div>
+                <div style="margin-bottom: 10px; color: var(--accent);">Year 3</div>
                 <div class="row">
-                  <div v-for="v, i in extraWeight3" class="col">
-                    <div class="form-group">
-                      <input type="number" v-model="extraWeight3[i]" class="form-control"
-                        @input="onExtraWeightInput(extraWeight3, i)" id="speed-value-input">
-                    </div>
+                  <div v-for="(v, i) in extraWeight3" :key="i" class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                    <input type="number" v-model="extraWeight3[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeight3, i)" id="speed-value-input">
                   </div>
                 </div>
-                <div style="margin-bottom: 10px;">Summer Weights (overrides during Summer Camps)</div>
+                <div style="margin-bottom: 10px; color: var(--accent);">Summer Weights (overrides during Summer Camps)</div>
                 <div class="row">
-                  <div v-for="v, i in extraWeightSummer" class="col">
-                    <div class="form-group">
-                      <input type="number" v-model="extraWeightSummer[i]" class="form-control"
-                        @input="onExtraWeightInput(extraWeightSummer, i)" id="speed-value-input">
-                    </div>
+                  <div v-for="(v, i) in extraWeightSummer" :key="i" class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                    <input type="number" v-model="extraWeightSummer[i]" class="form-control"
+                      @input="onExtraWeightInput(extraWeightSummer, i)" id="speed-value-input">
                   </div>
                 </div>
 
+                <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
                 <div class="form-group" style="margin-top: 16px;">
-                  <div>Score Value (Blue friendship, Green Friendship, Rainbows, Hints)</div>
+                  <div style="color: var(--accent);">Score Value</div>
                 </div>
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-12">
                     <label>Junior</label>
-                    <div class="input-group input-group-sm">
-                      <input type="number" step="0.01" v-model.number="scoreValueJunior[0]" class="form-control" placeholder="Lv1">
-                      <input type="number" step="0.01" v-model.number="scoreValueJunior[1]" class="form-control" placeholder="Lv2">
-                      <input type="number" step="0.01" v-model.number="scoreValueJunior[2]" class="form-control" placeholder="Rainbow">
-                      <input type="number" step="0.01" v-model.number="scoreValueJunior[3]" class="form-control" placeholder="Hint">
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueJunior[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueJunior[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Rainbow</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueJunior[2]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Hint</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueJunior[3]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6" v-if="selectedScenario === 2">
+                        <div class="form-group mb-1"><small>Special Training</small></div>
+                        <input type="number" step="0.01" v-model.number="specialJunior" class="form-control">
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-12">
                     <label>Classic</label>
-                    <div class="input-group input-group-sm">
-                      <input type="number" step="0.01" v-model.number="scoreValueClassic[0]" class="form-control" placeholder="Lv1">
-                      <input type="number" step="0.01" v-model.number="scoreValueClassic[1]" class="form-control" placeholder="Lv2">
-                      <input type="number" step="0.01" v-model.number="scoreValueClassic[2]" class="form-control" placeholder="Rainbow">
-                      <input type="number" step="0.01" v-model.number="scoreValueClassic[3]" class="form-control" placeholder="Hint">
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueClassic[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueClassic[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Rainbow</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueClassic[2]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Hint</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueClassic[3]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6" v-if="selectedScenario === 2">
+                        <div class="form-group mb-1"><small>Special Training</small></div>
+                        <input type="number" step="0.01" v-model.number="specialClassic" class="form-control">
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-12">
                     <label>Senior</label>
-                    <div class="input-group input-group-sm">
-                      <input type="number" step="0.01" v-model.number="scoreValueSenior[0]" class="form-control" placeholder="Lv1">
-                      <input type="number" step="0.01" v-model.number="scoreValueSenior[1]" class="form-control" placeholder="Lv2">
-                      <input type="number" step="0.01" v-model.number="scoreValueSenior[2]" class="form-control" placeholder="Rainbow">
-                      <input type="number" step="0.01" v-model.number="scoreValueSenior[3]" class="form-control" placeholder="Hint">
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSenior[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSenior[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Rainbow</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSenior[2]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Hint</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSenior[3]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6" v-if="selectedScenario === 2">
+                        <div class="form-group mb-1"><small>Special Training</small></div>
+                        <input type="number" step="0.01" v-model.number="specialSenior" class="form-control">
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-12">
                     <label>Senior After Summer</label>
-                    <div class="input-group input-group-sm">
-                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[0]" class="form-control" placeholder="Lv1">
-                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[1]" class="form-control" placeholder="Lv2">
-                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[2]" class="form-control" placeholder="Rainbow">
-                      <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[3]" class="form-control" placeholder="Hint">
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green Friendship</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Rainbow</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[2]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Hint</small></div>
+                        <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[3]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6" v-if="selectedScenario === 2">
+                        <div class="form-group mb-1"><small>Special Training</small></div>
+                        <input type="number" step="0.01" v-model.number="specialSeniorAfterSummer" class="form-control">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1235,11 +1296,16 @@ export default {
       showSkillList: false
       , showPresetMenu: false,
 
-      // Score Value per period [lv1, lv2, rainbow, hint]
+      // Score Value per period [lv1, lv2, rainbow, hint] + separate Special fields
       scoreValueJunior: [0.11, 0.10, 0.01, 0.09],
       scoreValueClassic: [0.11, 0.10, 0.09, 0.09],
       scoreValueSenior: [0.11, 0.10, 0.12, 0.09],
-      scoreValueSeniorAfterSummer: [0.03, 0.05, 0.15, 0.09]
+      scoreValueSeniorAfterSummer: [0.03, 0.05, 0.15, 0.09],
+      // Special Training weights (Aoharu only)
+      specialJunior: 0.09,
+      specialClassic: 0.09,
+      specialSenior: 0.09,
+      specialSeniorAfterSummer: 0.09
     }
   },
   computed: {
@@ -1471,9 +1537,58 @@ export default {
     this.successToast = $('#liveToast').toast({})
     this.$nextTick(() => {
       this.initScrollSpy()
+      this.normalizeScoreArrays(this.selectedScenario === 2 ? 5 : 4)
     })
   },
-  methods: {
+  watch: {
+    selectedScenario(newVal) {
+      this.normalizeScoreArrays(newVal === 2 ? 5 : 4)
+    },
+    scoreValueJunior(val) {
+      if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
+        this.scoreValueJunior = [...val, ...Array(5 - val.length).fill(0.09)]
+      }
+    },
+    scoreValueClassic(val) {
+      if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
+        this.scoreValueClassic = [...val, ...Array(5 - val.length).fill(0.09)]
+      }
+    },
+    scoreValueSenior(val) {
+      if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
+        this.scoreValueSenior = [...val, ...Array(5 - val.length).fill(0.09)]
+      }
+    },
+    scoreValueSeniorAfterSummer(val) {
+      if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
+        this.scoreValueSeniorAfterSummer = [...val, ...Array(5 - val.length).fill(0.09)]
+      }
+    }
+  },
+    methods: {
+    onScenarioChange() {
+      if (this.selectedScenario === 2) {
+        const setDefault = (arr) => {
+          if (Array.isArray(arr)) {
+            if (arr[4] === undefined || arr[4] === null || arr[4] === '') arr[4] = 0.09
+          }
+        }
+        setDefault(this.scoreValueJunior)
+        setDefault(this.scoreValueClassic)
+        setDefault(this.scoreValueSenior)
+        setDefault(this.scoreValueSeniorAfterSummer)
+      }
+    },
+        normalizeScoreArrays(targetLen) {
+      const ensureLen = (arr) => {
+        if (arr.length > targetLen) arr.splice(targetLen)
+        while (arr.length < targetLen) arr.push(0.09)
+      }
+      ensureLen(this.scoreValueJunior)
+      ensureLen(this.scoreValueClassic)
+      ensureLen(this.scoreValueSenior)
+      ensureLen(this.scoreValueSeniorAfterSummer)
+    },
     togglePresetMenu() {
       this.showPresetMenu = !this.showPresetMenu;
     },
@@ -1807,10 +1922,10 @@ export default {
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3, this.extraWeightSummer],
           "score_value": [
-            this.scoreValueJunior,
-            this.scoreValueClassic,
-            this.scoreValueSenior,
-            this.scoreValueSeniorAfterSummer
+            (this.selectedScenario === 2 ? [this.scoreValueJunior[0], this.scoreValueJunior[1], this.scoreValueJunior[2], this.scoreValueJunior[3], this.specialJunior] : [this.scoreValueJunior[0], this.scoreValueJunior[1], this.scoreValueJunior[2], this.scoreValueJunior[3]]),
+            (this.selectedScenario === 2 ? [this.scoreValueClassic[0], this.scoreValueClassic[1], this.scoreValueClassic[2], this.scoreValueClassic[3], this.specialClassic] : [this.scoreValueClassic[0], this.scoreValueClassic[1], this.scoreValueClassic[2], this.scoreValueClassic[3]]),
+            (this.selectedScenario === 2 ? [this.scoreValueSenior[0], this.scoreValueSenior[1], this.scoreValueSenior[2], this.scoreValueSenior[3], this.specialSenior] : [this.scoreValueSenior[0], this.scoreValueSenior[1], this.scoreValueSenior[2], this.scoreValueSenior[3]]),
+            (this.selectedScenario === 2 ? [this.scoreValueSeniorAfterSummer[0], this.scoreValueSeniorAfterSummer[1], this.scoreValueSeniorAfterSummer[2], this.scoreValueSeniorAfterSummer[3], this.specialSeniorAfterSummer] : [this.scoreValueSeniorAfterSummer[0], this.scoreValueSeniorAfterSummer[1], this.scoreValueSeniorAfterSummer[2], this.scoreValueSeniorAfterSummer[3]])
           ],
           // Motivation thresholds for trip decisions
           "motivation_threshold_year1": this.motivationThresholdYear1,
@@ -1871,11 +1986,16 @@ export default {
       this.motivationThresholdYear3 = parseInt(this.presetsUse.motivation_threshold_year3) || 4
       this.prioritizeRecreation = this.presetsUse.prioritize_recreation || false
 
-      if ('scoreValue' in this.presetsUse && this.presetsUse.scoreValue && this.presetsUse.scoreValue.length === 4) {
+      if ('scoreValue' in this.presetsUse && this.presetsUse.scoreValue && this.presetsUse.scoreValue.length >= 4) {
         this.scoreValueJunior = [...this.presetsUse.scoreValue[0]]
         this.scoreValueClassic = [...this.presetsUse.scoreValue[1]]
         this.scoreValueSenior = [...this.presetsUse.scoreValue[2]]
         this.scoreValueSeniorAfterSummer = [...this.presetsUse.scoreValue[3]]
+        const targetLen = (this.selectedScenario === 2) ? 5 : 4;
+        [this.scoreValueJunior, this.scoreValueClassic, this.scoreValueSenior, this.scoreValueSeniorAfterSummer].forEach(arr => {
+          if (arr.length > targetLen) arr.splice(targetLen)
+          while (arr.length < targetLen) arr.push(0.09)
+        })
       }
 
       if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != []) {

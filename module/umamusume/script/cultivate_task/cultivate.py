@@ -360,14 +360,25 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             [0.11, 0.10, 0.12, 0.09],
             [0.03, 0.05, 0.15, 0.09]
         ])
+        def resolve_weights(sv_list, idx):
+            try:
+                arr = sv_list[idx]
+            except Exception:
+                arr = [0.11, 0.10, 0.01, 0.09]
+            if not isinstance(arr, (list, tuple)):
+                arr = [0.11, 0.10, 0.01, 0.09]
+            padded = list(arr) + [0.09] * (5 - len(arr))
+            if len(padded) < 4:
+                padded += [0.09] * (4 - len(padded))
+            return padded[:5]
         if date <= 24:
-            w_lv1, w_lv2, w_rainbow, w_hint = sv[0]
+            w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 0)
         elif 24 < date <= 48:
-            w_lv1, w_lv2, w_rainbow, w_hint = sv[1]
+            w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 1)
         elif 48 < date <= 60:
-            w_lv1, w_lv2, w_rainbow, w_hint = sv[2]
+            w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 2)
         else:
-            w_lv1, w_lv2, w_rainbow, w_hint = sv[3]
+            w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 3)
 
         from module.umamusume.define import SupportCardType, SupportCardFavorLevel
         from module.umamusume.asset.template import REF_TRAINING_HINT
