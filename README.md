@@ -1,6 +1,8 @@
 # UMAMUSUME AUTO TRAINER
 ![UAT](docs/main.png)
 
+# AOHARU ISNT DONE DONT CREATE ISSUES ABOUT IT THX
+
 ---
 
 welp got conscripted. For 2 years+ updates will slow down greatly now.
