@@ -6,6 +6,10 @@
 welp got conscripted. For 2 years+ updates will slow down greatly now.
 I get free time on Saturdays only now (updates not guaranteed on Saturdays.)
 
+
+November 2nd.  
+going into the forest for about a week. Won't be here to reply to issues.Thank you for your understanding.
+
 ### please read the readme before opening a issue  
 
 ## New user? [Read this to improve your runs](#training-settings-guide)
@@ -143,7 +147,7 @@ I will only focus on fixing issues for those (which is what I use personally.) E
   - It’s animated, so either I kill performance and template match like 20 screenshots or we just take the L when it fails to detect like 5% of the time
   - Could also check the general area for red pixels but it led to a bunch of false positives from my testing
 - For most issues with outdated/wrong data  
-  - https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518
+  - https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518 (you can stop at npx vite build btw it builds directly to the right folder now).  
 
 ## Training settings guide
 - **Upon creating a new deck the first thing you should do is experiment with the values under advanced options**
