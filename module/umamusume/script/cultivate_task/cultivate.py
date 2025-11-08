@@ -51,6 +51,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 log.info(f"🎯 Set specific race ID: {target_race_id} from user's selected races")
             else:
                 log.warning("⚠️ No matching races found in available races for current date")
+            ctx.cultivate_detail.turn_info.parse_train_info_finish = True
             ctx.cultivate_detail.turn_info.parse_main_menu_finish = True
             return
         
