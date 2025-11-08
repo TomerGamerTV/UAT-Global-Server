@@ -14,7 +14,7 @@ def get_support_card_score(ctx: UmamusumeContext, info: SupportCardInfo):
         score = SCORE_DICT[info.card_type][DEFAULT](ctx, info)
 
     # 青春杯友情值提高
-    if info.can_incr_aoharu_train:
+    if getattr(info, 'can_incr_special_training', False):
         date = ctx.cultivate_detail.turn_info.date
         if date <= 24:
             score += 1

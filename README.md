@@ -6,10 +6,6 @@
 welp got conscripted. For 2 years+ updates will slow down greatly now.
 I get free time on Saturdays only now (updates not guaranteed on Saturdays.)
 
-
-November 2nd.  
-going into the forest for about a week. Won't be here to reply to issues.Thank you for your understanding.
-
 ### please read the readme before opening a issue  
 
 ## New user? [Read this to improve your runs](#training-settings-guide)

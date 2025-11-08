@@ -1378,10 +1378,10 @@ export default {
       scoreValueSenior: [0.11, 0.10, 0.12, 0.09],
       scoreValueSeniorAfterSummer: [0.03, 0.05, 0.15, 0.09],
       // Special Training weights (Aoharu only)
-      specialJunior: 0.09,
-      specialClassic: 0.09,
-      specialSenior: 0.09,
-      specialSeniorAfterSummer: 0.09
+      specialJunior: 0.095,
+      specialClassic: 0.095,
+      specialSenior: 0.095,
+      specialSeniorAfterSummer: 0.095
     }
   },
   computed: {
@@ -1623,22 +1623,22 @@ export default {
     },
     scoreValueJunior(val) {
       if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
-        this.scoreValueJunior = [...val, ...Array(5 - val.length).fill(0.09)]
+        this.scoreValueJunior = [...val, ...Array(5 - val.length).fill(0.095)]
       }
     },
     scoreValueClassic(val) {
       if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
-        this.scoreValueClassic = [...val, ...Array(5 - val.length).fill(0.09)]
+        this.scoreValueClassic = [...val, ...Array(5 - val.length).fill(0.095)]
       }
     },
     scoreValueSenior(val) {
       if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
-        this.scoreValueSenior = [...val, ...Array(5 - val.length).fill(0.09)]
+        this.scoreValueSenior = [...val, ...Array(5 - val.length).fill(0.095)]
       }
     },
     scoreValueSeniorAfterSummer(val) {
       if (this.selectedScenario === 2 && Array.isArray(val) && val.length < 5) {
-        this.scoreValueSeniorAfterSummer = [...val, ...Array(5 - val.length).fill(0.09)]
+        this.scoreValueSeniorAfterSummer = [...val, ...Array(5 - val.length).fill(0.095)]
       }
     }
   },
@@ -1704,7 +1704,7 @@ export default {
         normalizeScoreArrays(targetLen) {
       const ensureLen = (arr) => {
         if (arr.length > targetLen) arr.splice(targetLen)
-        while (arr.length < targetLen) arr.push(0.09)
+        while (arr.length < targetLen) arr.push(targetLen === 5 ? 0.095 : 0.09)
       }
       ensureLen(this.scoreValueJunior)
       ensureLen(this.scoreValueClassic)
@@ -2123,7 +2123,7 @@ export default {
         const targetLen = (this.selectedScenario === 2) ? 5 : 4;
         [this.scoreValueJunior, this.scoreValueClassic, this.scoreValueSenior, this.scoreValueSeniorAfterSummer].forEach(arr => {
           if (arr.length > targetLen) arr.splice(targetLen)
-          while (arr.length < targetLen) arr.push(0.09)
+          while (arr.length < targetLen) arr.push(targetLen === 5 ? 0.095 : 0.09)
         })
       }
 

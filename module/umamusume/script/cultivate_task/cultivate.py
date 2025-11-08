@@ -367,7 +367,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 arr = [0.11, 0.10, 0.01, 0.09]
             if not isinstance(arr, (list, tuple)):
                 arr = [0.11, 0.10, 0.01, 0.09]
-            padded = list(arr) + [0.09] * (5 - len(arr))
+            padded = list(arr) + [0.095] * (5 - len(arr))
             if len(padded) < 4:
                 padded += [0.09] * (4 - len(padded))
             return padded[:5]
@@ -392,11 +392,13 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         names = ["Speed", "Stamina", "Power", "Guts", "Wit"]
         computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
         rbc_counts = [0, 0, 0, 0, 0]
+        special_counts = [0, 0, 0, 0, 0]
 
         log.info("Score:")
         log.info(f"lv1: {w_lv1}")
         log.info(f"lv2: {w_lv2}")
         log.info(f"Rainbows: {w_rainbow}")
+        log.info(f"Special: {w_special}")
 
         for idx in range(5):
             til = ctx.cultivate_detail.turn_info.training_info_list[idx]
@@ -409,6 +411,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             for sc in (getattr(til, "support_card_info_list", []) or []):
                 favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
                 ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+                if getattr(sc, 'can_incr_special_training', False):
+                    special_counts[idx] += 1
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
                     score += 0.05
@@ -446,6 +450,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  Rainbows: {rbc}")
             if npc:
                 log.info(f"  NPCs: {npc}")
+            log.info(f"  Special: {special_counts[idx]}")
             hint_bonus = 0.0
             try:
                 hint_bonus = w_hint if bool(getattr(til, 'has_hint', False)) else 0.0
@@ -454,6 +459,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if hint_bonus > 0:
                 log.info(f"  Hint bonus: +{hint_bonus:.3f}")
             score += hint_bonus
+            stc_lane = special_counts[idx]
+            if stc_lane > 0:
+                score += float(w_special) * float(stc_lane)
             try:
                 if getattr(ctx.cultivate_detail, 'compensate_failure', True):
                     fr_val = int(getattr(til, 'failure_rate', -1))

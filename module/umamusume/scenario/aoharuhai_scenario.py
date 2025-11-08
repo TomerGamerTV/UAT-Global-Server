@@ -109,7 +109,7 @@ class AoharuHaiScenario(BaseScenario):
             support_card_icon = img[base_y:base_y + inc, base_x: base_x + 145]
 
             # Has Youth Cup training, and Youth Cup friendship not full
-            can_incr_aoharu_train = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
+            can_incr_special_training = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
 
             # Check favor level
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
@@ -168,7 +168,7 @@ class AoharuHaiScenario(BaseScenario):
                 name=name_map.get(support_card_type, "support_card"),
                 card_type=support_card_type,
                 favor=support_card_favor_process,
-                can_incr_aoharu_train=can_incr_aoharu_train
+                can_incr_special_training=can_incr_special_training
             )
             info.center = (cx, cy)
             support_card_list_info_result.append(info)
