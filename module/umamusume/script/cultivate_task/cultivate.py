@@ -677,7 +677,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 roi_gray = img_gray[y1:y2, x1:x2]
         except:
             pass
-        if not clicked:
+    if not clicked:
         return
 
 def script_aoharuhai_race(ctx: UmamusumeContext):
