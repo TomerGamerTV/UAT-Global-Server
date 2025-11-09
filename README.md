@@ -1,3 +1,5 @@
+reminder that shit will probably break if i had made a commit in the past 10 hours  
+
 # UMAMUSUME AUTO TRAINER
 
 ![UAT](docs/main.png)
