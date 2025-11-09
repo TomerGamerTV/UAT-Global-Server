@@ -1,7 +1,5 @@
 # UMAMUSUME AUTO TRAINER
 
-# JUST BROKE URA USE YESTERDAYS VERSION (NVM FIXED I THINK)
-
 ![UAT](docs/main.png)
 
 # AOHARU ISNT DONE DONT CREATE ISSUES ABOUT IT THX
@@ -76,6 +74,8 @@ cd UAT-Global-Server
 ```
 
 ### Emulator Setup
+
+# DO NOT LOWER YOUR FPS BELOW 30
 
 - **Only tested on bluestacks pie64 (no longer testing on bluestacks its too unreliable) and MuMuPlayer (what I use personally)**
 - **Resolution**: 720 × 1280 (Portrait mode)
