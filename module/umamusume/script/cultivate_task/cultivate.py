@@ -484,6 +484,28 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 se_w = float(se_weights[idx]) if isinstance(se_weights, (list, tuple)) and len(se_weights) == 5 else 0.0
             except Exception:
                 se_w = 0.0
+
+            try:
+                is_aoharu = (ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI)
+            except Exception:
+                is_aoharu = False
+            if is_aoharu and idx == 4 and se_w != 0.0 and spirit_counts[idx] > 0:
+                try:
+                    from bot.conn.fetch import read_energy
+                    energy = int(read_energy())
+                except Exception:
+                    energy = None
+                if energy is not None:
+                    if energy > 80:
+                        log.info("Energy near full ignoring wit spirit explosion")
+                        se_w = 0.0
+                    elif energy < 10:
+                        log.info("Energy near 0 ignoring wit spirit explosion")
+                        se_w = 0.0
+                    else:
+                        log.info("Energy not full prioritizing wit spirit explosion")
+                        se_w = se_w * 2.0
+
             se_lane = spirit_counts[idx]
             if se_lane > 0 and se_w != 0.0:
                 se_bonus = se_w * float(se_lane)
