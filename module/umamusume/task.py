@@ -20,6 +20,7 @@ class TaskDetail:
     allow_recover_tp: bool
     cultivate_progress_info: dict
     extra_weight: list
+    spirit_explosion: list
     manual_purchase_at_end: bool
     # Motivation thresholds for trip logic
     motivation_threshold_year1: int
@@ -74,6 +75,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.learn_skill_only_user_provided = attachment_data['learn_skill_only_user_provided']
     td.allow_recover_tp = attachment_data['allow_recover_tp']
     td.extra_weight = attachment_data['extra_weight']
+    td.spirit_explosion = attachment_data.get('spirit_explosion', [0.9, 0.9, 0.9, 0.5, 0.5])
     td.compensate_failure = attachment_data.get('compensate_failure', True)
     td.manual_purchase_at_end = attachment_data['manual_purchase_at_end']
     td.cure_asap_conditions = attachment_data.get("cure_asap_conditions", "")

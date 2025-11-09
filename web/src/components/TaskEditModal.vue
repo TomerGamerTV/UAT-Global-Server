@@ -379,7 +379,7 @@
                       @input="onExtraWeightInput(extraWeightSummer, i)" id="speed-value-input">
                   </div>
                 </div>
-                <div v-if="selectedScenario === 2" style="margin-bottom: 10px; color: var(--accent);">Spirit Explosion</div>
+                <div v-if="selectedScenario === 2" style="margin: 12px 0 10px; color: var(--accent); border-top: 1px solid var(--accent); padding-top: 8px;">Spirit Explosion Score</div>
                 <div v-if="selectedScenario === 2" class="row">
                   <div v-for="(v, i) in extraSpiritExplosion" :key="i" class="col-md-2 col-6">
                     <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
@@ -1329,7 +1329,7 @@ export default {
       extraWeight2: [0, 0, 0, 0, 0],
       extraWeight3: [0, 0, 0, 0, 0],
       extraWeightSummer: [0, 0, 0, 0, 0],
-      extraSpiritExplosion: [0, 0, 0, 0, 0],
+      extraSpiritExplosion: [0.9, 0.9, 0.9, 0.5, 0.5],
 
       // Motivation thresholds for trip decisions
       motivationThresholdYear1: 3,
@@ -2142,14 +2142,14 @@ export default {
         this.extraWeight2 = this.presetsUse.extraWeight[1].map(v => Math.max(-1, Math.min(1, v)));
         this.extraWeight3 = this.presetsUse.extraWeight[2].map(v => Math.max(-1, Math.min(1, v)));
         this.extraWeightSummer = (this.presetsUse.extraWeight.length >= 4 ? this.presetsUse.extraWeight[3] : [0, 0, 0, 0, 0]).map(v => Math.max(-1, Math.min(1, v)));
-        this.extraSpiritExplosion = (this.presetsUse.spirit_explosion || this.presetsUse.spiritExplosion || [0, 0, 0, 0, 0]).map(v => Math.max(-1, Math.min(1, v)));
+        this.extraSpiritExplosion = (this.presetsUse.spirit_explosion || this.presetsUse.spiritExplosion || [0.9, 0.9, 0.9, 0.5, 0.5]).map(v => Math.max(-1, Math.min(1, v)));
       }
       else {
         this.extraWeight1 = [0, 0, 0, 0, 0]
         this.extraWeight2 = [0, 0, 0, 0, 0]
         this.extraWeight3 = [0, 0, 0, 0, 0]
         this.extraWeightSummer = [0, 0, 0, 0, 0]
-        this.extraSpiritExplosion = [0, 0, 0, 0, 0]
+        this.extraSpiritExplosion = [0.9, 0.9, 0.9, 0.5, 0.5]
       }
 
       // Load new skill system data if available

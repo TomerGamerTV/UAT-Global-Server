@@ -373,6 +373,13 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 2)
         else:
             w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 3)
+        try:
+            se_weights = getattr(getattr(ctx, 'task', None), 'detail', None)
+            se_weights = getattr(se_weights, 'spirit_explosion', None)
+            if not isinstance(se_weights, (list, tuple)) or len(se_weights) != 5:
+                se_weights = [0.9, 0.9, 0.9, 0.5, 0.5]
+        except Exception:
+            se_weights = [0.9, 0.9, 0.9, 0.5, 0.5]
 
         from module.umamusume.define import SupportCardType, SupportCardFavorLevel
         from module.umamusume.asset.template import REF_TRAINING_HINT
@@ -473,6 +480,15 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             stc_lane = special_counts[idx]
             if stc_lane > 0:
                 score += float(w_special) * float(stc_lane)
+            try:
+                se_w = float(se_weights[idx]) if isinstance(se_weights, (list, tuple)) and len(se_weights) == 5 else 0.0
+            except Exception:
+                se_w = 0.0
+            se_lane = spirit_counts[idx]
+            if se_lane > 0 and se_w != 0.0:
+                se_bonus = se_w * float(se_lane)
+                log.info(f"  Spirit explosion bonus: +{se_bonus:.3f}")
+                score += se_bonus
             try:
                 if getattr(ctx.cultivate_detail, 'compensate_failure', True):
                     fr_val = int(getattr(til, 'failure_rate', -1))
