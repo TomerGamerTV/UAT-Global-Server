@@ -29,6 +29,33 @@
               </div>
             </div>
           </div>
+          <div class="row g-3 mt-2">
+            <div class="col-sm-6">
+              <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <div class="stat-label">Repetitive-click recovery</div>
+                    <div class="stat-value" style="font-size:18px">
+                      {{ runtimeState.repetitive_count }} / {{ runtimeState.repetitive_threshold }}
+                      <span class="small text-muted" style="margin-left:8px">(other: {{ runtimeState.repetitive_other_clicks }})</span>
+                    </div>
+                  </div>
+                  <input type="number" min="1" class="form-control form-control-sm" style="width:80px" v-model.number="editRepetitive" @change="saveThresholds">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <div class="stat-label">Screen Watchdog</div>
+                    <div class="stat-value" style="font-size:18px">{{ runtimeState.watchdog_unchanged }} / {{ runtimeState.watchdog_threshold }}</div>
+                  </div>
+                  <input type="number" min="1" class="form-control form-control-sm" style="width:80px" v-model.number="editWatchdog" @change="saveThresholds">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -86,7 +113,11 @@ export default {
       taskList: [],
       logContent: "",
       autoLog: true,
-      taskLogTimer: undefined
+      taskLogTimer: undefined,
+      runtimeState: { repetitive_count: 0, repetitive_other_clicks: 0, repetitive_threshold: 11, watchdog_unchanged: 0, watchdog_threshold: 3 },
+      runtimePollTimer: undefined,
+      editRepetitive: 11,
+      editWatchdog: 3
     }
   },
   computed: {
@@ -101,6 +132,8 @@ export default {
     let vue = this;
     setInterval(function () { vue.getTaskList(); }, 1000)
     this.taskLogTimer = setInterval(function () { vue.getTaskLog() }, 1000)
+    this.runtimePollTimer = setInterval(this.pollRuntimeState, 1000)
+    this.pollRuntimeState()
   },
   methods:{
     scrollToLogs(){
@@ -144,6 +177,24 @@ export default {
       } else {
         if (this.taskLogTimer) { clearInterval(this.taskLogTimer); this.taskLogTimer = undefined }
       }
+    },
+    pollRuntimeState(){
+      this.axios.get('/api/runtime-state').then(res=>{
+        if (res && res.data){
+          this.runtimeState = res.data
+          this.editRepetitive = Number(this.runtimeState.repetitive_threshold || 11)
+          this.editWatchdog = Number(this.runtimeState.watchdog_threshold || 3)
+        }
+      }).catch(()=>{})
+    },
+    saveThresholds(){
+      const payload = {
+        repetitive_threshold: Number(this.editRepetitive)||1,
+        watchdog_threshold: Number(this.editWatchdog)||1
+      }
+      this.axios.post('/api/runtime-thresholds', payload).then(()=>{
+        // reflected next poll
+      }).catch(()=>{})
     }
   }
 }

@@ -10,6 +10,8 @@ from bot.base.log import task_log_handler
 from bot.engine import ctrl as bot_ctrl
 from bot.server.protocol.task import *
 from starlette.responses import FileResponse
+from pydantic import BaseModel
+from typing import Optional
 
 server = FastAPI()
 
@@ -86,6 +88,37 @@ def delete_task(req: DeleteTaskRequest):
 @server.get("/task")
 def get_task():
     return bot_ctrl.get_task_list()
+
+
+class RuntimeThresholds(BaseModel):
+    repetitive_threshold: Optional[int] = None
+    watchdog_threshold: Optional[int] = None
+
+
+@server.get("/api/runtime-state")
+def get_runtime_state():
+    try:
+        from bot.base.runtime_state import get_state
+        return get_state()
+    except Exception:
+        return {
+            "repetitive_count": 0,
+            "repetitive_other_clicks": 0,
+            "repetitive_threshold": 11,
+            "watchdog_unchanged": 0,
+            "watchdog_threshold": 3,
+        }
+
+
+@server.post("/api/runtime-thresholds")
+def set_runtime_thresholds(req: RuntimeThresholds):
+    try:
+        from bot.base.runtime_state import set_thresholds, save_persisted
+        set_thresholds(req.repetitive_threshold, req.watchdog_threshold)
+        save_persisted()
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @server.get("/log/{task_id}")
 def get_task_log(task_id):
