@@ -212,6 +212,7 @@ Bare minimum aoharu implementation. (60%)
   - able to reach the end assuming you already beat team zenith
   - customizable special training parameters
   - customizable spirit explosion parameters
+  - ignore wit spirit explosions when energy high bonus score to wit spirit explosion if energy low
 
   Customizable and more intuitive "Stuck" handling 
 - **26/10/2025**   
