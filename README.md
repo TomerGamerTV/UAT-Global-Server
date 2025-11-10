@@ -208,7 +208,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **10/11/2025**   
-Enemy team selection for races 1 2 3 4 (aoharu)
+Enemy team selection for races 1 2 3 4 (aoharu)  
+Fixed "Auto select team" taking forever (aoharu)
 - **10/10/2025**   
 Bare minimum aoharu implementation. (60%)
   - able to reach the end assuming you already beat team zenith
