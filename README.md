@@ -209,7 +209,7 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
-- **10/11/2025**   
+- **10/11/2025**   (forgot to push lol)
 Enemy team selection for races 1 2 3 4 (aoharu)  
 Fixed "Auto select team" taking forever (aoharu)
 - **10/10/2025**   
