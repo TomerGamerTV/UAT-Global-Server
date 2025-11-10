@@ -1,4 +1,4 @@
-reminder that shit will probably break if i had made a commit in the past 10 hours  
+I am very ill with influenza I'll be taking a break for today and minimal updates tmr 
 
 # UMAMUSUME AUTO TRAINER
 
@@ -207,6 +207,14 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **10/11/2025**   
+Bare minimum aoharu implementation. (60%)
+  - able to reach the end assuming you already beat team zenith
+  - customizable special training parameters
+  - customizable spirit explosion parameters
+  - ignore wit spirit explosions when energy high bonus score to wit spirit explosion if energy low
+
+  Customizable and more intuitive "Stuck" handling 
 - **26/10/2025**   
 Made it easier to customize event choices
 - **25/10/2025**   
