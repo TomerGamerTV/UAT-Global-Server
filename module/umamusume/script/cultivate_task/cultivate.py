@@ -780,23 +780,13 @@ def script_aoharuhai_race(ctx: UmamusumeContext):
         return
     
     ctx.cultivate_detail.turn_info.aoharu_race_index = race_index
-    ctx.ctrl.click(360, 1080, "Start Youth Cup battle")
+    return
 
 def script_aoharuhai_race_final_start(ctx: UmamusumeContext):
     ctx.ctrl.click(360, 980, "Confirm final opponent")
 
 def script_aoharuhai_race_select_oponent(ctx: UmamusumeContext):
-    def select_opponent (race_index: int):
-        match race_index:
-            case 1:
-                ctx.ctrl.click(360, 290, "Select first opponent")
-            case 2:
-                ctx.ctrl.click(360, 560, "Select second opponent")
-            case 3:
-                ctx.ctrl.click(360, 830, "Select third opponent")
-        time.sleep(2)
-        ctx.ctrl.click(360, 1080, "Start battle")
-    select_opponent(ctx.task.detail.scenario_config.aoharu_config.get_opponent(ctx.cultivate_detail.turn_info.aoharu_race_index))
+    return
 
 def script_aoharuhai_race_confirm(ctx: UmamusumeContext):
     ctx.ctrl.click(520, 920, "Confirm battle")

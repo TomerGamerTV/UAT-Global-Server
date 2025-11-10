@@ -87,7 +87,8 @@ TITLE = [
     "Data Download", #41
     "Date Changed", #42
     "Unmet Requirements", #43 (Fail maiden race lmao just glue)
-    "Items Selected",
+    "Items Selected", #44
+    "Auto Select", #45
 ]
 
 
@@ -617,4 +618,6 @@ def script_info(ctx: UmamusumeContext):
 
         if title_text in (TITLE[37], TITLE[38]):
             ctx.ctrl.click_by_point(STORY_REWARDS_COLLECTED_CLOSE)
+        if title_text == TITLE[45]:  # Auto Select
+            ctx.ctrl.click(214, 832, "Auto Select")
         time.sleep(1)

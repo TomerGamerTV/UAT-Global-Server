@@ -152,11 +152,44 @@ def after_hook(ctx: UmamusumeContext):
         scv = getattr(ctx.task.detail.scenario, 'value', ctx.task.detail.scenario)
         if scv == ScenarioType.SCENARIO_TYPE_AOHARUHAI.value:
             if image_match(img[984:1025, 297:365], REF_AOHARU_RACE).find_match:
+                try:
+                    ti = getattr(getattr(ctx, 'cultivate_detail', None), 'turn_info', None)
+                    roi = img[343:389, 443:485]
+                    refs = [REF_ROUND_1, REF_ROUND_2, REF_ROUND_3, REF_ROUND_4]
+                    for i, tpl in enumerate(refs):
+                        try:
+                            if image_match(roi, tpl).find_match:
+                                if ti is not None:
+                                    ti.aoharu_race_index = i
+                                break
+                        except Exception:
+                            continue
+                except Exception:
+                    pass
                 ctx.ctrl.click(344, 1091, 'Aoharu race')
                 return
             if image_match(img[1089:1113, 318:376], REF_SELECT_OPP2).find_match:
+                try:
+                    sc = getattr(ctx.task.detail, 'scenario_config', None)
+                    aoharu_cfg = getattr(sc, 'aoharu_config', None)
+                    ti = getattr(getattr(ctx, 'cultivate_detail', None), 'turn_info', None)
+                    idx = getattr(ti, 'aoharu_race_index', None)
+                    prs = getattr(aoharu_cfg, 'preliminary_round_selections', None)
+                    if isinstance(idx, int) and isinstance(prs, (list, tuple)) and 0 <= idx < len(prs):
+                        sel = prs[idx]
+                        if sel == 1:
+                            ctx.ctrl.click(339, 278, 'select opp')
+                            time.sleep(0.5)
+                        elif sel == 2:
+                            ctx.ctrl.click(335, 574, 'select opp')
+                            time.sleep(0.5)
+                        elif sel == 3:
+                            ctx.ctrl.click(339, 830, 'select opp')
+                            time.sleep(0.5)
+                except Exception:
+                    pass
                 ctx.ctrl.click(355, 1082, 'select opp2')
-                time.sleep(1)
+                time.sleep(0.5)
                 ctx.ctrl.click(522, 930, 'select opp2 cont')
                 return
             if image_match(img[1204:1219, 476:597], REF_ALL_RES).find_match:
