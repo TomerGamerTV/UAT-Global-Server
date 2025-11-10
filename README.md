@@ -1,6 +1,6 @@
 reminder that shit will probably break if i had made a commit in the past 10 hours  
 
-for safety of myself this repo will also be archived and ("temporarily discontinued") for the public if it exceeds 100 unique views a day  
+for safety of my uma account this repo will also be archived and ("temporarily discontinued") for the public if it exceeds 100 unique views a day. so uh if you're trying to get a hit tweet with this maybe dont.  
 
 # UMAMUSUME AUTO TRAINER
 
