@@ -207,6 +207,12 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **10/11/2025**   
+Bare minimum aoharu implementation. (60%)
+  - able to reach the end assuming you already beat team zenith
+  - customizable special training parameters
+  - customizable spirit explosion parameters
+Customizable and more intuitive "Stuck" handling 
 - **26/10/2025**   
 Made it easier to customize event choices
 - **25/10/2025**   
