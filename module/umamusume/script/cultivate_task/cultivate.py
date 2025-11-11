@@ -361,15 +361,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 arr = [0.11, 0.10, 0.01, 0.09]
             if not isinstance(arr, (list, tuple)):
                 arr = [0.11, 0.10, 0.01, 0.09]
-            base = list(arr[:4])
-            if len(base) < 4:
-                base += [0.09] * (4 - len(base))
-            special_defaults = [0.15, 0.12, 0.09, 0.07]
-            try:
-                special = arr[4]
-            except Exception:
-                special = special_defaults[idx if 0 <= idx < len(special_defaults) else 0]
-            return base + [special]
+            padded = list(arr) + [0.095] * (5 - len(arr))
+            if len(padded) < 4:
+                padded += [0.09] * (4 - len(padded))
+            return padded[:5]
         if date <= 24:
             w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 0)
         elif 24 < date <= 48:
@@ -471,15 +466,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
                     log.info(f"  special training: {special_counts[idx]}")
                     if spirit_counts[idx] > 0:
-                        try:
-                            d = int(ctx.cultivate_detail.turn_info.date)
-                        except Exception:
-                            d = -1
-                        if isinstance(d, int) and d >= 46:
-                            pct = min(30, d - 45)
-                            log.info(f"  spirit explosion {spirit_counts[idx]}: (-{pct}% score: date penalty)")
-                        else:
-                            log.info(f"  Spirit explosions: {spirit_counts[idx]}")
+                        log.info(f"  Spirit explosions: {spirit_counts[idx]}")
             except Exception:
                 pass
             hint_bonus = 0.0
@@ -521,16 +508,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
             se_lane = spirit_counts[idx]
             if se_lane > 0 and se_w != 0.0:
-                try:
-                    d = int(ctx.cultivate_detail.turn_info.date)
-                except Exception:
-                    d = -1
-                if isinstance(d, int) and d >= 46:
-                    pct = min(30, d - 45)
-                else:
-                    pct = 0
-                mult = 1.0 - (float(pct) / 100.0)
-                se_bonus = se_w * float(se_lane) * mult
+                se_bonus = se_w * float(se_lane)
                 log.info(f"  Spirit explosion bonus: +{se_bonus:.3f}")
                 score += se_bonus
             try:
