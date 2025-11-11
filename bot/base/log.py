@@ -56,21 +56,21 @@ class TaskLogHandler(logging.Handler):
 task_log_handler = TaskLogHandler()
 fmt = logging.Formatter('%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M')
 task_log_handler.setFormatter(fmt)
-task_log_handler.setLevel(logging.INFO)
+task_log_handler.setLevel(logging.DEBUG)
 
 
 def get_logger(name) -> Logger:
     logger = logging.getLogger(name)
     logger.propagate = False
     if not logger.handlers:
-        logger.setLevel(logging.INFO)
+        logger.setLevel(logging.DEBUG)
         fmt = colorlog.ColoredFormatter(
             fmt='%(log_color)s%(asctime)s  %(levelname)-8s [%(funcName)34s] %(filename)-20s: %(message)s',
             log_colors=log_colors_config
         )
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setFormatter(fmt)
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(logging.DEBUG)
         logger.addHandler(console_handler)
 
         logger.addHandler(task_log_handler)
