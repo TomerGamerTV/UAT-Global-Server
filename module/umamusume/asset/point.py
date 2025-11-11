@@ -22,7 +22,7 @@ CULTIVATE_RACE = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Co
 CULTIVATE_RACE_SUMMER = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(460, 1125), "Race - Summer Camp", None)
 
 RETURN_TO_CULTIVATE_MAIN_MENU = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(90, 1230), "Return to Training Main Menu", None)
-CULTIVATE_GOAL_RACE_INTER_1 = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(508, 1081), "Enter Career Race Detail Interface", None)
+CULTIVATE_GOAL_RACE_INTER_1 = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(391, 1081), "Enter Career Race Detail Interface", None)
 CULTIVATE_GOAL_RACE_INTER_2 = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(360,1082), "Start Career Race", None)
 CULTIVATE_GOAL_RACE_INTER_3 = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(520,920), "Start Career Race - Confirm", None)
 

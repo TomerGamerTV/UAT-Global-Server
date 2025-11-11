@@ -852,6 +852,7 @@ def script_cultivate_goal_race(ctx: UmamusumeContext):
 
 
 def script_cultivate_race_list(ctx: UmamusumeContext):
+    log.info("➡️ Entered Race List menu (CULTIVATE_RACE_LIST)")
     time.sleep(1.0)
     if ctx.cultivate_detail.turn_info is None:
         log.warning("Turn information not initialized")
@@ -1454,6 +1455,24 @@ def script_not_found_ui(ctx: UmamusumeContext):
     # Debug: Log current screen info
     if ctx.current_screen is not None:
         log.debug(f"🔍 NOT_FOUND_UI - Screen shape: {ctx.current_screen.shape}")
+        
+
+        try:
+            import cv2
+            from bot.recog.image_matcher import image_match
+            from module.umamusume.asset.template import UI_CULTIVATE_RACE_LIST_2
+            img_gray_full = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+            x1, y1, x2, y2 = 238, 525, 300, 588
+            h, w = img_gray_full.shape[:2]
+            x1c = max(0, min(w, x1)); x2c = max(0, min(w, x2))
+            y1c = max(0, min(h, y1)); y2c = max(0, min(h, y2))
+            roi = img_gray_full[y1c:y2c, x1c:x2c]
+            res = image_match(roi, UI_CULTIVATE_RACE_LIST_2)
+            if res.find_match:
+                script_cultivate_race_list(ctx)
+                return
+        except Exception as e:
+            log.debug(f"Race List ROI check failed: {e}")
                 
         # Try direct template matching for cultivate_result_1.png first
         try:
