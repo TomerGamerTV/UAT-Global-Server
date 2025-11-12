@@ -22,6 +22,7 @@ class TaskDetail:
     extra_weight: list
     spirit_explosion: list
     manual_purchase_at_end: bool
+    use_last_parents: bool
     # Motivation thresholds for trip logic
     motivation_threshold_year1: int
     motivation_threshold_year2: int
@@ -78,6 +79,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.spirit_explosion = attachment_data.get('spirit_explosion', [0.9, 0.9, 0.9, 0.5, 0.5])
     td.compensate_failure = attachment_data.get('compensate_failure', True)
     td.manual_purchase_at_end = attachment_data['manual_purchase_at_end']
+    td.use_last_parents = attachment_data.get('use_last_parents', False)
     td.cure_asap_conditions = attachment_data.get("cure_asap_conditions", "")
     td.rest_treshold = attachment_data.get('rest_treshold', attachment_data.get('fast_path_energy_limit', 48))
     # Load motivation thresholds (with defaults)

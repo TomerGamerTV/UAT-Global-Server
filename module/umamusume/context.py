@@ -32,6 +32,7 @@ class CultivateContextDetail:
     manual_purchase_completed: bool
     final_skill_sweep_active: bool
     user_provided_priority: bool
+    use_last_parents: bool
 
     def __init__(self):
         self.expect_attribute = None
@@ -54,6 +55,7 @@ class CultivateContextDetail:
         self.final_skill_sweep_active = False
         self.user_provided_priority = False
         self.event_overrides = {}
+        self.use_last_parents = False
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
@@ -119,6 +121,7 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
             [0.03, 0.05, 0.15, 0.09]
         ])
         detail.compensate_failure = getattr(task.detail, 'compensate_failure', True)
+        detail.use_last_parents = getattr(task.detail, 'use_last_parents', False)
         # Event overrides
         try:
             eo = getattr(task.detail, 'event_overrides', {})

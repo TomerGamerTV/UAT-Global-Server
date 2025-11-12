@@ -670,6 +670,12 @@ def script_umamusume_select(ctx: UmamusumeContext):
 
 
 def script_extend_umamusume_select(ctx: UmamusumeContext):
+    try:
+        if getattr(ctx.cultivate_detail, 'use_last_parents', False):
+            ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
+            return
+    except Exception:
+        pass
     ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_AUTO_SELECT)
     time.sleep(1)
     ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_INCLUDE_GUEST)

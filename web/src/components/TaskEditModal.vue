@@ -57,8 +57,19 @@
                     </select>
                   </div>
                 </div>
-              </div>
-              <div class="row" v-if="selectedScenario === 1">
+                </div>
+                <div class="row">
+                <div class="col-3">
+                <div class="form-group">
+                <label class="d-block mb-1">Use Last Parents</label>
+                <div class="token-toggle" role="group" aria-label="Use Last Parents">
+                <button type="button" class="token" :class="{ active: useLastParents }" @click="useLastParents = true">Yes</button>
+                <button type="button" class="token" :class="{ active: !useLastParents }" @click="useLastParents = false">No</button>
+                </div>
+                </div>
+                </div>
+                </div>
+                <div class="row" v-if="selectedScenario === 1">
                 <div class="col-4">
                   <div class="form-group">
                     <span class="btn auto-btn" style="width:100%" v-on:click="openUraConfigModal">URA Configuration</span>
@@ -1320,6 +1331,7 @@ export default {
       learnSkillThreshold: 9999,
       cureAsapConditions: 'Migraine,Night Owl,Skin Outbreak,Slacker,Slow Metabolism,(Practice poor isn\'t worth a turn to cure)',
       recoverTP: 0,
+      useLastParents: false,
       presetNameEdit: "",
       presetAction: null,
       overwritePresetName: "",
@@ -2049,6 +2061,7 @@ export default {
           "allow_recover_tp": this.recoverTP,
           "rest_treshold": this.restTreshold,
           "compensate_failure": this.compensateFailure,
+          "use_last_parents": this.useLastParents,
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3, this.extraWeightSummer],
           "spirit_explosion": this.extraSpiritExplosion.map(v => Math.max(-1, Math.min(1, v))),
@@ -2107,6 +2120,7 @@ export default {
         this.clockUseLimit = this.presetsUse.clock_use_limit,
         this.restTreshold = (this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
       this.compensateFailure = (this.presetsUse.compensate_failure !== false)
+      this.useLastParents = (this.presetsUse.use_last_parents === true)
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
         this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
         this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
@@ -2291,6 +2305,7 @@ export default {
         name: this.presetNameEdit,
         event_overrides: this.buildEventChoices(),
         compensate_failure: this.compensateFailure,
+        use_last_parents: this.useLastParents,
         scenario: this.selectedScenario,
         race_list: this.extraRace,
         skill_priority_list: skill_priority_list,
