@@ -209,9 +209,13 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
-- **10/11/2025**   (forgot to push lol)
+- **10/12/2025**   
+"Use last selected parents" Option added in webui.
+- **10/11/2025 (Game Updated)**  
+Fixed bot breaking
+- **10/11/2025**   (forgot to push lol)  
 Enemy team selection for races 1 2 3 4 (aoharu)  
-Fixed "Auto select team" taking forever (aoharu)
+Fixed "Auto select team" taking forever (aoharu)  
 - **10/10/2025**   
 Bare minimum aoharu implementation. (60%)
   - able to reach the end assuming you already beat team zenith
