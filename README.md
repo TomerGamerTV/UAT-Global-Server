@@ -1,10 +1,8 @@
-# bot mostly fixed but race images are outdated so custom races might fail
+yeah i think im done with aoharu/unity cup, its like 90% complete but ehh diminishing returns. I'm just gonna not deal with team names
 
 # UMAMUSUME AUTO TRAINER
 
 ![UAT](docs/main.png)
-
-# AOHARU ISNT DONE DONT CREATE ISSUES ABOUT IT THX
 
 ---
 
