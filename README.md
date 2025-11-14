@@ -164,10 +164,10 @@ I will only focus on fixing issues for those (which is what I use personally.) E
   ![alt text](docs/capSpeed.png)
 - Stat caps work like this
  - Soft cap  
-  When at least 80% of the desired stat that training gets a 20% score nerf during training selection
+  When at 70,80,90% to stat goal -10 20 and 30% to score respectively  
  - Hard cap  
-  After exceeding the stat cap the training will now recieve a 40% score nerf during training selection
- - HOWEVER IT IS ENCOURAGE THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING
+  95% or higher will now have 0 score (IF YOU SEE THIS THERE IS A ISSUE WITH YOUR DECK AND THE BOT WILL PERFORM POORLY)
+ - HOWEVER IT IS ENCOURAGED THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING AND CLICKING A WORSE OPTION 
 
 ### STRUGGLING WITH A CERTAIN STAT
 - If you are struggling with a certain stat (Guts) you can raise the summer weight of that stat (while reducing others) to encourage the bot totake advantage of the LV5 summer facilities
@@ -209,7 +209,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 ## Changelogs
 - **10/14/2025**  
 updated skill list  
-Fixed getting stuck in support card selection  
+Fixed getting stuck in support card selection
+Stat cap score calc hard cap  
 
 - **10/12/2025**   
 "Use last selected parents" Option added in webui.  
