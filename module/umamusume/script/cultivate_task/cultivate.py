@@ -700,12 +700,36 @@ def script_follow_support_card_select(ctx: UmamusumeContext):
         for __ in range(3):
             if find_support_card(ctx, img):
                 return
+            try:
+                img_gray_chk = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                x1, y1, x2, y2 = 279, 48, 326, 76
+                h, w = img_gray_chk.shape[:2]
+                x1c = max(0, min(w, x1)); x2c = max(x1c, min(w, x2))
+                y1c = max(0, min(h, y1)); y2c = max(y1c, min(h, y2))
+                roi = img_gray_chk[y1c:y2c, x1c:x2c]
+                if not image_match(roi, REF_BORROW_CARD).find_match:
+                    log.info("Incorrect ui stopping card search")
+                    return
+            except Exception:
+                pass
             ctx.ctrl.swipe(x1=350, y1=1000, x2=350, y2=400, duration=600, name="scroll down list")
             time.sleep(0.5)
             img = ctx.ctrl.get_screen()
         for __ in range(3):
             if find_support_card(ctx, img):
                 return
+            try:
+                img_gray_chk = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                x1, y1, x2, y2 = 279, 48, 326, 76
+                h, w = img_gray_chk.shape[:2]
+                x1c = max(0, min(w, x1)); x2c = max(x1c, min(w, x2))
+                y1c = max(0, min(h, y1)); y2c = max(y1c, min(h, y2))
+                roi = img_gray_chk[y1c:y2c, x1c:x2c]
+                if not image_match(roi, REF_BORROW_CARD).find_match:
+                    log.info("Incorrect ui stopping card search")
+                    return
+            except Exception:
+                pass
             ctx.ctrl.swipe(x1=350, y1=400, x2=350, y2=1000, duration=600, name="scroll up list")
             time.sleep(0.5)
             img = ctx.ctrl.get_screen()
