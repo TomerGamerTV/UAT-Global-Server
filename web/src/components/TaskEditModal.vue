@@ -219,14 +219,13 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <div>Target Attributes (If unsure about specific values, manually train once and input the final
-                  stats)</div>
-              </div>
-              <div class="form-group Cure-asap">
+                            <div class="form-group Cure-asap">
                 <label for="cure-asap-input">Cure These Conditions As Soon As Possible (Separate by comma)</label>
                 <textarea v-model="cureAsapConditions" class="form-control" id="cure-asap-input"
                   spellcheck="false"></textarea>
+              </div>
+              <div class="form-group">
+                <div>Target Attributes (Try adjust your deck/slightly tweaking training weight [0.1 to -0.1] instead of adjusting this)</div>
               </div>
               <div class="row">
                 <div class="col">
@@ -1279,11 +1278,11 @@ export default {
       umamusumeRaceList_2: [],
       umamusumeRaceList_3: [],
       cultivatePresets: [],
-      expectSpeedValue: 650,
-      expectStaminaValue: 600,
-      expectPowerValue: 650,
-      expectWillValue: 300,
-      expectIntelligenceValue: 300,
+      expectSpeedValue: 9999,
+      expectStaminaValue: 9999,
+      expectPowerValue: 9999,
+      expectWillValue: 9999,
+      expectIntelligenceValue: 9999,
 
       supportCardLevel: 50,
 
@@ -1293,7 +1292,7 @@ export default {
         skill: "",
         skill_priority_list: [],
         skill_blacklist: "",
-        expect_attribute: [650, 800, 650, 400, 400],
+        expect_attribute: [9999, 9999, 9999, 9999, 9999],
         follow_support_card: { id: 10001, name: 'Beyond This Shining Moment', desc: 'Silence Suzuka' },
         follow_support_card_level: 50,
         clock_use_limit: 99,
