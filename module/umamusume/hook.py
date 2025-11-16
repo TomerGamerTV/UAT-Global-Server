@@ -31,6 +31,14 @@ def double_click(ctx: UmamusumeContext, first: tuple[int, int, str], second: tup
         except Exception:
             pass
 
+def tt_next_sequence(ctx: UmamusumeContext):
+    try:
+        ctx.ctrl.click(354, 1077, "team trials next 1")
+        time.sleep(0.7)
+        ctx.ctrl.click(508, 896, "team trials next 2")
+    except Exception:
+        pass
+
 RULES_BY_MODE = {
     "TASK_EXECUTE_MODE_TEAM_TRIALS": [
         {"type": "image", "ref": REF_HOME_GIFT, "action": lambda ctx: ctx.ctrl.click(522, 1228, "team trials resume")},
@@ -38,7 +46,7 @@ RULES_BY_MODE = {
         {"type": "image", "ref": REF_TEAM_RACE, "action": lambda ctx: ctx.ctrl.click(351, 839, "team trials resume3")},
         {"type": "image", "ref": REF_SELECT_OPP, "action": lambda ctx: ctx.ctrl.click(73, 278, "team trials resume4")},
         {"type": "image", "ref": REF_TT_SEE_ALL, "action": lambda ctx: ctx.ctrl.click(359, 1200, "team trials resume5")},
-        {"type": "image", "ref": REF_NEXT, "action": lambda ctx: double_click(ctx, (354, 1077, "team trials next 1"), (365, 1142, "team trials next 1"), key="next")},
+        {"type": "image", "ref": REF_NEXT, "action": tt_next_sequence},
         {"type": "title", "ref": "Items Selected", "action": lambda ctx: ctx.ctrl.click(610, 908, "tt6")},
         {"type": "title", "ref": "Daily Sale", "action": lambda ctx: ctx.ctrl.click(0, 0, "daily sale")},
         {"type": "image", "ref": REF_SEE_RESULTS, "action": lambda ctx: ctx.ctrl.click(514, 1208, "tt7")},
