@@ -493,7 +493,19 @@ def parse_training_support_card(ctx: UmamusumeContext, img, train_type: Training
     til.relevant_count = relevant_count
         
 def parse_train_type(ctx: UmamusumeContext, img) -> TrainingType:
-    train_label = cv2.cvtColor(img[210:275, 0:210], cv2.COLOR_RGB2GRAY)
+    try:
+        if img is None or getattr(img, 'size', 0) == 0:
+            return TrainingType.TRAINING_TYPE_UNKNOWN
+        h, w = img.shape[:2]
+        y1, y2, x1, x2 = 210, 275, 0, 210
+        y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
+        x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2))
+        roi = img[y1:y2, x1:x2]
+        if roi is None or getattr(roi, 'size', 0) == 0:
+            return TrainingType.TRAINING_TYPE_UNKNOWN
+        train_label = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    except Exception:
+        return TrainingType.TRAINING_TYPE_UNKNOWN
     train_type = TrainingType.TRAINING_TYPE_UNKNOWN
     if image_match(train_label, REF_TRAINING_TYPE_SPEED).find_match:
         train_type = TrainingType.TRAINING_TYPE_SPEED
