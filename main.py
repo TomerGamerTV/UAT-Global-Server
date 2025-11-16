@@ -18,6 +18,15 @@ try:
     cv2.setUseOptimized(True)
     cv2.setNumThreads(int(cores))
     cv2.ocl.setUseOpenCL(False)
+   
+    try:
+        cv2.utils.logging.setLogLevel(cv2.utils.logging.LOG_LEVEL_SILENT)
+    except Exception:
+        pass
+    try:
+        os.environ.setdefault("OPENCV_LOG_LEVEL", "ERROR")
+    except Exception:
+        pass
 except Exception:
     pass
 from bot.base.task import TaskStatus

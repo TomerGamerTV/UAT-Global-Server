@@ -201,10 +201,25 @@ class U2AndroidController(AndroidController):
 
     # get_screen 获取图片
     def get_screen(self, to_gray=False):
-        cur_screen = self.u2client.screenshot(format='opencv')
-        if to_gray:
-            return cv2.cvtColor(cur_screen, cv2.COLOR_BGR2GRAY)
-        return cur_screen
+        try:
+            cur_screen = self.u2client.screenshot(format='opencv')
+        except Exception:
+            time.sleep(0.05)
+            try:
+                cur_screen = self.u2client.screenshot(format='opencv')
+            except Exception:
+                return None
+        try:
+            if cur_screen is None or getattr(cur_screen, 'size', 0) == 0:
+                return None
+            h, w = cur_screen.shape[:2]
+            if h < 100 or w < 100:
+                return None
+            if to_gray:
+                return cv2.cvtColor(cur_screen, cv2.COLOR_BGR2GRAY)
+            return cur_screen
+        except Exception:
+            return None
 
     # ===== ctrl =====
     def click_by_point(self, point: ClickPoint, random_offset=True, hold_duration=0):
