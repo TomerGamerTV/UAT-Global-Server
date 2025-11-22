@@ -808,13 +808,22 @@
                     <i class="fas fa-trophy"></i>
                     Priority 0
                   </label>
-                  <div class="selected-skills-box">
+                  <div class="selected-skills-box"
+                       @dragover.prevent
+                       @dragenter.prevent="onDragEnterPriority(0)"
+                       @dragleave.prevent="onDragLeavePriority(0)"
+                       @drop.prevent="onDropToPriority(0)"
+                       :class="{ 'drop-hover': dropHoverTarget && dropHoverTarget.type === 'priority' && dropHoverTarget.priority === 0 }">
                     <div v-if="getSelectedSkillsForPriority(0).length === 0" class="empty-state">
                       The skill that user already select listed in here
                     </div>
                     <div v-else class="selected-skills-list">
                       <div v-for="skillName in getSelectedSkillsForPriority(0)" :key="skillName"
-                        class="selected-skill-item">
+                        class="selected-skill-item"
+                        draggable="true"
+                        @dragstart="onDragStartSkill(skillName, 'priority', 0)"
+                        @dragend="onDragEndSkill"
+                        :class="{ dragging: draggingSkillName === skillName }">
                         {{ skillName }}
                       </div>
                     </div>
@@ -827,13 +836,22 @@
                     <i class="fas fa-medal"></i>
                     Priority {{ priority }}
                   </label>
-                  <div class="selected-skills-box">
+                  <div class="selected-skills-box"
+                       @dragover.prevent
+                       @dragenter.prevent="onDragEnterPriority(priority)"
+                       @dragleave.prevent="onDragLeavePriority(priority)"
+                       @drop.prevent="onDropToPriority(priority)"
+                       :class="{ 'drop-hover': dropHoverTarget && dropHoverTarget.type === 'priority' && dropHoverTarget.priority === priority }">
                     <div v-if="getSelectedSkillsForPriority(priority).length === 0" class="empty-state">
                       The skill that user already select listed in here
                     </div>
                     <div v-else class="selected-skills-list">
                       <div v-for="skillName in getSelectedSkillsForPriority(priority)" :key="skillName"
-                        class="selected-skill-item">
+                        class="selected-skill-item"
+                        draggable="true"
+                        @dragstart="onDragStartSkill(skillName, 'priority', priority)"
+                        @dragend="onDragEndSkill"
+                        :class="{ dragging: draggingSkillName === skillName }">
                         {{ skillName }}
                       </div>
                     </div>
@@ -860,12 +878,21 @@
                   <i class="fas fa-ban"></i>
                   Blacklist
                 </label>
-                <div class="blacklist-box">
+                <div class="blacklist-box"
+                     @dragover.prevent
+                     @dragenter.prevent="onDragEnterBlacklist"
+                     @dragleave.prevent="onDragLeaveBlacklist"
+                     @drop.prevent="onDropToBlacklist"
+                     :class="{ 'drop-hover': dropHoverTarget && dropHoverTarget.type === 'blacklist' }">
                   <div v-if="blacklistedSkills.length === 0" class="empty-state">
                     The skill that user already select blacklisted in here
                   </div>
                   <div v-else class="blacklisted-skills-list">
-                    <div v-for="skillName in blacklistedSkills" :key="skillName" class="blacklisted-skill-item">
+                    <div v-for="skillName in blacklistedSkills" :key="skillName" class="blacklisted-skill-item"
+                         draggable="true"
+                         @dragstart="onDragStartSkill(skillName, 'blacklist')"
+                         @dragend="onDragEndSkill"
+                         :class="{ dragging: draggingSkillName === skillName }">
                       {{ skillName }}
                     </div>
                   </div>
@@ -1168,7 +1195,22 @@
   background: rgba(255,45,163,0.04) !important;
 }
 
-
+.selected-skill-item,
+.blacklisted-skill-item {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+.selected-skill-item.dragging,
+.blacklisted-skill-item.dragging {
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  opacity: 0.8;
+  cursor: grabbing;
+}
+.selected-skills-box.drop-hover,
+.blacklist-box.drop-hover {
+  outline: 2px dashed var(--accent);
+  background: rgba(255,45,163,0.06);
+}
 
 </style>
 
@@ -1386,6 +1428,11 @@ export default {
       showSkillList: false
       , showPresetMenu: false,
 
+            draggingSkillName: null,
+      dragOrigin: null,
+      dropHoverTarget: null,
+      didValidDrop: false,
+
       // Event list UI
       showEventList: false,
       eventQuery: '',
@@ -1402,6 +1449,14 @@ export default {
       specialSenior: 0.095,
       specialSeniorAfterSummer: 0.095,
           }
+  },
+  mounted() {
+        window.addEventListener('dragend', this.onGlobalDragEnd, false);
+    window.addEventListener('drop', this.onGlobalDrop, false);
+  },
+  beforeUnmount() {
+    window.removeEventListener('dragend', this.onGlobalDragEnd, false);
+    window.removeEventListener('drop', this.onGlobalDrop, false);
   },
   computed: {
     filteredRaces_1() {
@@ -1662,6 +1717,89 @@ export default {
     }
   },
     methods: {
+            getSelectedSkillsForPriority(priority) {
+        return this.selectedSkills.filter(name => (this.skillAssignments[name] ?? 0) === priority);
+      },
+      getActivePriorities() {
+                return [...this.activePriorities].sort((a,b) => a-b);
+      },
+      onDragStartSkill(skillName, origin, originPriority = null) {
+        this.draggingSkillName = skillName;
+        this.dragOrigin = { type: origin, priority: originPriority };
+        this.didValidDrop = false;
+      },
+      onDragEndSkill() {
+                if (this.draggingSkillName) {
+          if (!this.didValidDrop) {
+            this.deselectSkill(this.draggingSkillName);
+          }
+          this.draggingSkillName = null;
+          this.dropHoverTarget = null;
+          this.didValidDrop = false;
+          this.dragOrigin = null;
+        }
+      },
+      onDragEnterPriority(priority) {
+        this.dropHoverTarget = { type: 'priority', priority };
+      },
+      onDragLeavePriority(priority) {
+        if (this.dropHoverTarget && this.dropHoverTarget.type === 'priority' && this.dropHoverTarget.priority === priority) {
+          this.dropHoverTarget = null;
+        }
+      },
+      onDropToPriority(priority) {
+        if (!this.draggingSkillName) return;
+        this.moveSkillToPriority(this.draggingSkillName, priority);
+        this.didValidDrop = true;
+        this.dropHoverTarget = null;
+        this.draggingSkillName = null;
+      },
+      onDragEnterBlacklist() {
+        this.dropHoverTarget = { type: 'blacklist' };
+      },
+      onDragLeaveBlacklist() {
+        if (this.dropHoverTarget && this.dropHoverTarget.type === 'blacklist') {
+          this.dropHoverTarget = null;
+        }
+      },
+      onDropToBlacklist() {
+        if (!this.draggingSkillName) return;
+        this.moveSkillToBlacklist(this.draggingSkillName);
+        this.didValidDrop = true;
+        this.dropHoverTarget = null;
+        this.draggingSkillName = null;
+      },
+      onGlobalDrop(e) {
+                if (this.draggingSkillName && !this.didValidDrop) {
+          this.deselectSkill(this.draggingSkillName);
+          this.draggingSkillName = null;
+        }
+      },
+      onGlobalDragEnd(e) {
+        if (this.draggingSkillName && !this.didValidDrop) {
+          this.deselectSkill(this.draggingSkillName);
+          this.draggingSkillName = null;
+        }
+      },
+      moveSkillToPriority(skillName, priority) {
+                const bi = this.blacklistedSkills.indexOf(skillName);
+        if (bi > -1) this.blacklistedSkills.splice(bi, 1);
+                if (!this.selectedSkills.includes(skillName)) this.selectedSkills.push(skillName);
+                this.$set ? this.$set(this.skillAssignments, skillName, priority) : (this.skillAssignments[skillName] = priority);
+      },
+      moveSkillToBlacklist(skillName) {
+                const si = this.selectedSkills.indexOf(skillName);
+        if (si > -1) this.selectedSkills.splice(si, 1);
+        if (this.skillAssignments[skillName] !== undefined) delete this.skillAssignments[skillName];
+        if (!this.blacklistedSkills.includes(skillName)) this.blacklistedSkills.push(skillName);
+      },
+      deselectSkill(skillName) {
+        const si = this.selectedSkills.indexOf(skillName);
+        if (si > -1) this.selectedSkills.splice(si, 1);
+        if (this.skillAssignments[skillName] !== undefined) delete this.skillAssignments[skillName];
+        const bi = this.blacklistedSkills.indexOf(skillName);
+        if (bi > -1) this.blacklistedSkills.splice(bi, 1);
+      },
       // Event Settings
       toggleEventList() {
         this.showEventList = !this.showEventList;
