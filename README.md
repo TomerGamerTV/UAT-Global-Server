@@ -212,7 +212,7 @@ Something Something this is for educational purposes only. Please do not misuse 
 ## Changelogs
 - **28/11/2025**  
 Maybe fixed bot getting stuck sometimes after ending a career.    
-Maybe fixed bot restarting sometimes when detecting a event.  
+Maybe fixed bot restarting and wasting time sometimes when detecting a event.  
 Skill hint level detection; Will now purchase the highest skill hint level of each priority before moving on to the next priority.  
 
 - **22/11/2025**  
