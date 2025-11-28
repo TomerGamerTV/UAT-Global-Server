@@ -210,21 +210,24 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
-- **10/16/2025**  
+- **22/11/2025**  
+Added drag and drop of skills between priorities and blacklist (Drag them outside into nothing to deselect completely)  
+
+- **16/11/2025**  
 Attempted to fix some crashes   
 patched up team trials execution mode  
 
-- **10/15/2025**  
+- **15/11/2025**  
 updated some support card names  
 aoharu (unity cup) team name selection works now
 
-- **10/14/2025**  
+- **14/11/2025**  
 updated skill list  
 Fixed getting stuck in support card selection
 Stat cap score calc hard cap
 default target attributes changed  
 
-- **10/12/2025**   
+- **12/11/2025**   
 "Use last selected parents" Option added in webui.  
 support for team trials quick mode
 
