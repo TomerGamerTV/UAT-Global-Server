@@ -53,7 +53,7 @@ If you're like me and is using this because you wont have access to your pc for 
 
 ### Demo Run
 - I'd say its about 80% as competent as a actual player. This makes the bot not just a fan/parent farmer but it's more than capable of producing ACES  
-[Showcase of 3 runs in a row]([https://youtu.be/J07n4wvLSCw](https://www.youtube.com/watch?v=vboSuUZyeU0))
+  ## [Showcase of 3 runs in a row](https://www.youtube.com/watch?v=vboSuUZyeU0)
 
 ## 🚨 Safety
 Question: Is this safe?  
@@ -66,7 +66,7 @@ Running this 24/7 looks sus as hell so I would suggest turning it off for a few 
 you can also edit the start and end time in `main.py` (24 hours format) to dictate when the bot can run)
 
 ## 📦 Installation & Setup
-Tutorial someone made: https://youtu.be/v1m9Plw7M3Y  
+Tutorial someone made (I didn't actually watch it lol): https://youtu.be/v1m9Plw7M3Y  
 
 #### Clone Repository
 ```bash
