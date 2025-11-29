@@ -587,6 +587,25 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 
+        try:
+            d = int(ctx.cultivate_detail.turn_info.date)
+        except Exception:
+            d = -1
+        if isinstance(d, int) and d > 48 and d <= 72:
+            try:
+                uma = ctx.cultivate_detail.turn_info.uma_attribute
+                stats = [uma.speed, uma.stamina, uma.power, uma.will, uma.intelligence]
+                names = ["Speed", "Stamina", "Power", "Guts", "Wit"]
+                max_idx = int(np.argmax(stats)) if len(stats) == 5 else None
+                if max_idx is not None:
+                    computed_scores[max_idx] *= 0.9
+                    try:
+                        log.info(f"-10% to {names[max_idx]}, the current highest stat")
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
         max_score = max(computed_scores) if len(computed_scores) == 5 else 0.0
         eps = 1e-9
         relevant_counts = [getattr(ctx.cultivate_detail.turn_info.training_info_list[i], 'relevant_count', 0) for i in range(5)]
