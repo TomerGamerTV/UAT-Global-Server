@@ -53,7 +53,7 @@ If you're like me and is using this because you wont have access to your pc for 
 
 ### Demo Run
 - I'd say its about 80% as competent as a actual player. This makes the bot not just a fan/parent farmer but it's more than capable of producing ACES  
-[Demo run with a older build (im too lazy to record a new one)](https://youtu.be/J07n4wvLSCw)
+[Showcase of 3 runs in a row]([https://youtu.be/J07n4wvLSCw](https://www.youtube.com/watch?v=vboSuUZyeU0))
 
 ## 🚨 Safety
 Question: Is this safe?  
