@@ -641,10 +641,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         elif date >= 61 and sum(rbc_counts) == 0:
             chosen_idx = 4
         else:
-            if date in (59, 60):
+            if date in (35, 36, 59, 60):
                 best_idx_tmp = int(np.argmax(computed_scores))
-                if rbc_counts[best_idx_tmp] < 2:
-                    log.info("Low rainbow count conserving energy for summer")
+                best_score_tmp = computed_scores[best_idx_tmp]
+                if best_score_tmp < 0.37:
+                    log.info("Low training score before summer, conserving energy (score < 0.37)")
                     chosen_idx = 4
                 else:
                     ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]

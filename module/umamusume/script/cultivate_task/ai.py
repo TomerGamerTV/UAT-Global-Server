@@ -18,7 +18,7 @@ ENERGY_TRIP_GENERAL = 90
 ENERGY_REST_EXTRA_DAY = 65
 MIN_SUPPORT_GOOD_TRAINING_URA = 2
 MIN_SUPPORT_GOOD_TRAINING = 3
-SUMMER_CONSERVE_DATES = (59, 60)
+SUMMER_CONSERVE_DATES = (35, 36, 59, 60)
 SUMMER_CONSERVE_ENERGY = 60
 URA_RACE_WINDOWS = [
     ((73, 75), 2381, UI_CULTIVATE_URA_RACE_1),
@@ -269,25 +269,13 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     if expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         date_num = ctx.cultivate_detail.turn_info.date
         if date_num in SUMMER_CONSERVE_DATES:
-            rainbow = 0
             try:
                 best_idx = max(range(5), key=lambda i: training_score[i]) if len(training_score) == 5 else 0
-                til = ctx.cultivate_detail.turn_info.training_info_list[best_idx]
-                target_type = type_map[best_idx]
-                for sc in (getattr(til, "support_card_info_list", []) or []):
-                    ctype = getattr(sc, "card_type", None)
-                    favor = getattr(sc, "favor", None)
-                    is_rb = False
-                    if hasattr(sc, "is_rainbow") and bool(getattr(sc, "is_rainbow")) and (ctype == target_type):
-                        is_rb = True
-                    if not is_rb and (ctype == target_type and favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4)):
-                        is_rb = True
-                    if is_rb:
-                        rainbow += 1
+                best_score = training_score[best_idx] if len(training_score) == 5 else 0.0
             except Exception:
-                rainbow = 0
-            if rainbow < 2:
-                log.info("Low rainbow count conserving energy for summer")
+                best_score = 0.0
+            if best_score < 0.37:
+                log.info("Low training score before summer, conserving energy (score < 0.37)")
                 if energy < SUMMER_CONSERVE_ENERGY:
                     expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
                 else:
