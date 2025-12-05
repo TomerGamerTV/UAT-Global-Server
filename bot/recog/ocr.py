@@ -49,11 +49,11 @@ def init_ocr_if_needed():
     ensure_paddleocr()
     try:
         if OCR_EN is None:
-            OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=False, cpu_threads=cpu_threads())
+            OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
         if OCR_JP is None:
-            OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=False, cpu_threads=cpu_threads())
+            OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
         if OCR_CH is None:
-            OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=False, cpu_threads=cpu_threads())
+            OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
     except Exception as e:
         log.error(f"Failed to initialize PaddleOCR: {e}")
         raise
