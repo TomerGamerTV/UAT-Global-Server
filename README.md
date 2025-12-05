@@ -211,6 +211,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **28/12/2025**   
+added -10% score penalty to the highest stat in senior year to hopefully balance stats out (experimental might remove).  
+
+- **28/12/2025**   
 Fixed getting stuck at aoharu tutorial event sometimes  
 Updated event list    
 Added Select/Deselect all skills blacklist/priority based on whats being searched  
