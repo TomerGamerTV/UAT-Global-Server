@@ -280,3 +280,9 @@ Soft reset after every task. Should help with memory issues.
 - **28/9/2025**   
 Team trials execution mode. not tested and held together by hopes and dreams so its probably gonna break half the time.  
 Maybe fix card selection breaking
+
+## Planned/In progress (In order from top to bottom)
+
+Customizable trigger criteria for every stage of Pal card outing events; Max mood, energy and training score.  
+
+Customizable minimum training score to dictate conservation of energy 2 turns before summer.  
