@@ -28,6 +28,8 @@ class TaskDetail:
     motivation_threshold_year2: int
     motivation_threshold_year3: int
     prioritize_recreation: bool
+    pal_name: str
+    pal_thresholds: list
     score_value: list
     compensate_failure: bool
     # 剧本相关配置
@@ -87,6 +89,8 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.motivation_threshold_year2 = attachment_data.get('motivation_threshold_year2', 4)
     td.motivation_threshold_year3 = attachment_data.get('motivation_threshold_year3', 4)
     td.prioritize_recreation = attachment_data.get('prioritize_recreation', False)
+    td.pal_name = attachment_data.get('pal_name', "")
+    td.pal_thresholds = attachment_data.get('pal_thresholds', [])
 
     td.score_value = attachment_data.get('score_value', [
         [0.11, 0.10, 0.01, 0.09],

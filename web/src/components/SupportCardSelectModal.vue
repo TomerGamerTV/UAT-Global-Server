@@ -6,7 +6,7 @@
           <h5 class="mb-0">Borrowing Support Card</h5>
           <div>
             <button class="btn btn-sm btn-outline-secondary me-2" @click="handleCancel">Cancel</button>
-            <button class="btn btn-sm btn--primary" @click="handleConfirm">Confirm</button>
+            <button class="btn btn-sm btn--primary" @click="handleConfirm" :disabled="isConfirmDisabled">Confirm</button>
           </div>
         </div>
         <div class="modal-body support-card-modal-body">
@@ -17,15 +17,20 @@
               :key="type.name"
               type="button"
               class="type-btn"
-              :class="{ active: activeType === type.name }"
+              :class="[ { active: activeType === type.name }, type.name === 'custom' ? 'custom-btn' : '' ]"
               @click="setActiveType(type.name)"
-            >
-              <img :src="type.img" :alt="type.name" class="type-btn-img" />
+              >
+              <template v-if="type.name !== 'custom'">
+                <img v-if="type.img" :src="type.img" :alt="type.name" class="type-btn-img" />
+              </template>
+              <template v-else>
+                <span class="type-btn-text">Custom</span>
+              </template>
             </button>
           </div>
           <hr class="type-btn-divider"/>
           <!-- 支援卡图片展示区域 -->
-          <div class="support-card-img-grid mt-3">
+          <div v-if="activeType !== 'custom'" class="support-card-img-grid mt-3">
             <div v-for="row in filteredCardImageRows" :key="row[0].id" class="img-row">
               <div
                 v-for="card in row"
@@ -73,6 +78,9 @@
                 :style="{ flex: '0 0 12.5%' }"
               ></div>
             </div>
+          </div>
+          <div v-if="activeType === 'custom'" class="mt-3">
+            <input type="text" class="form-control" placeholder="Enter card name here example 'Planned Perfection' or 'Fire at My Heels'" v-model="customCardName">
           </div>
           </div>
         </div>
@@ -166,17 +174,22 @@ export default {
           {id:50010, name:"饱含心意的纸杯蛋糕", desc:"Nishino Flower"},
         ],
       selectedCard: null,
+      customCardName: '',
       supportCardTypes: [
         { name: 'speed', img: new URL('../assets/img/support_cards/types/speed.png', import.meta.url).href },
         { name: 'stamina', img: new URL('../assets/img/support_cards/types/stamina.png', import.meta.url).href },
         { name: 'power', img: new URL('../assets/img/support_cards/types/power.png', import.meta.url).href },
         { name: 'will', img: new URL('../assets/img/support_cards/types/will.png', import.meta.url).href },
-        { name: 'intelligence', img: new URL('../assets/img/support_cards/types/intelligence.png', import.meta.url).href }
+        { name: 'intelligence', img: new URL('../assets/img/support_cards/types/intelligence.png', import.meta.url).href },
+        { name: 'custom', text: 'Custom' }
       ],
       activeType: 'speed', // 默认速度
     }
   },
   computed: {
+    isConfirmDisabled() {
+      return this.activeType === 'custom' && !this.customCardName.trim();
+    },
     filteredSupportCardList() {
       // 根据activeType筛选支援卡
       if (this.activeType === 'speed') {
@@ -189,6 +202,8 @@ export default {
         return this.umamusumeSupportCardList.filter(card => card.id >= 40000 && card.id < 50000);
       } else if (this.activeType === 'intelligence') {
         return this.umamusumeSupportCardList.filter(card => card.id >= 50000 && card.id < 60000);
+      } else if (this.activeType === 'custom') {
+        return [];
       }
       return [];
     },
@@ -240,7 +255,11 @@ export default {
       });
     },
     handleConfirm() {
-      this.$emit('confirm', this.selectedCard);
+      if (this.activeType === 'custom') {
+        this.$emit('confirm', { name: this.customCardName, id: 'custom' });
+      } else {
+        this.$emit('confirm', this.selectedCard);
+      }
       this.$emit('update:show', false);
       // 恢复父modal滚动
       this.$nextTick(() => {
@@ -343,6 +362,9 @@ export default {
     },
     setActiveType(type) {
       this.activeType = type;
+      if (type !== 'custom') {
+        this.selectCard(this.filteredSupportCardList[0]);
+      }
     },
     getTypeIcon(id) {
       if (id >= 10000 && id < 20000) return new URL('../assets/img/support_cards/types/speed.png', import.meta.url).href;
@@ -533,11 +555,41 @@ export default {
   align-items: center;
   justify-content: center;
 }
+/* Allow custom button to size to its text to avoid overlap with neighbors */
+.type-btn.custom-btn {
+  width: auto;
+  height: 40px;
+}
 .type-btn-img {
   width: 32px;
   height: 32px;
   object-fit: contain;
   display: block;
+}
+/* remove data-text pseudo label to avoid duplicate text */
+/* Custom tab text appearance */
+.type-btn-text {
+  color: hotpink;
+  font-size: 14px;
+  line-height: 32px;
+  padding: 0 10px;
+  border: 2px solid hotpink;
+  border-radius: 8px;
+}
+/* When inactive, keep transparent background with pink border and pink text */
+.type-btn.custom-btn:not(.active) .type-btn-text {
+  background: transparent;
+  color: hotpink;
+}
+/* When active, solid pink with black text */
+.type-btn.custom-btn.active .type-btn-text {
+  background: hotpink;
+  color: #000;
+}
+/* Remove default active background/border for the custom container to avoid double borders */
+.type-btn.custom-btn.active {
+  background: transparent;
+  border-color: transparent;
 }
 .type-btn-divider {
   border: none;
@@ -548,5 +600,9 @@ export default {
   border: 2px solid var(--accent);
   border-radius: 8px;
   background: rgba(255,64,129,.12);
+}
+/* Keep custom inactive button container without default border so only text pill shows border */
+.type-btn.custom-btn:not(.active) {
+  border: none;
 }
 </style>

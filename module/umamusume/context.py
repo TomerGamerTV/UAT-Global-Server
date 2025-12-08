@@ -33,6 +33,8 @@ class CultivateContextDetail:
     final_skill_sweep_active: bool
     user_provided_priority: bool
     use_last_parents: bool
+    pal_event_stage: int
+    pal_name: str
 
     def __init__(self):
         self.expect_attribute = None
@@ -56,6 +58,8 @@ class CultivateContextDetail:
         self.user_provided_priority = False
         self.event_overrides = {}
         self.use_last_parents = False
+        self.pal_event_stage = 0
+        self.pal_name = ""
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
@@ -113,6 +117,8 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         detail.motivation_threshold_year2 = int(getattr(task.detail, 'motivation_threshold_year2', 4))
         detail.motivation_threshold_year3 = int(getattr(task.detail, 'motivation_threshold_year3', 4))
         detail.prioritize_recreation = getattr(task.detail, 'prioritize_recreation', False)
+        detail.pal_name = getattr(task.detail, 'pal_name', "")
+        detail.pal_thresholds = list(getattr(task.detail, 'pal_thresholds', []))
 
         detail.score_value = getattr(task.detail, 'score_value', [
             [0.11, 0.10, 0.01, 0.09],

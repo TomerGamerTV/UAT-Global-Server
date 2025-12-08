@@ -219,6 +219,12 @@ def stop_bot():
     bot_ctrl.stop()
 
 
+@server.get("/api/pal-defaults")
+def get_pal_defaults():
+    from module.umamusume.user_data import read_pal_defaults
+    return read_pal_defaults()
+
+
 
 @server.get("/")
 async def get_index():

@@ -323,17 +323,56 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col">
+                <div class="col-6">
                   <div class="form-group">
-                    <div class="form-check">
-                      <input type="checkbox" v-model="prioritizeRecreation" class="form-check-input"
-                        id="prioritizeRecreation">
-                      <label class="form-check-label" for="prioritizeRecreation">
-                        Prioritize Recreation (Pal Type Support Card)
-                      </label>
+                    <label class="d-block mb-1">I am using a pal support card (Limit of 1)</label>
+                    <div class="token-toggle" role="group" aria-label="Prioritize Recreation">
+                      <button type="button" class="token" :class="{ active: prioritizeRecreation }" @click="prioritizeRecreation = true">Yes</button>
+                      <button type="button" class="token" :class="{ active: !prioritizeRecreation }" @click="prioritizeRecreation = false">No</button>
                     </div>
-                    <small class="form-text text-muted">(optional) only use this if you bring Pal type Support Card like
-                      Tazuna in Career</small>
+                  </div>
+                </div>
+              </div>
+              <div v-if="prioritizeRecreation" class="pal-config-section mt-3 mb-3">
+                <div class="pal-config-header" @click="togglePalConfigPanel">
+                  <div class="pal-config-title">
+                    <i class="fas fa-users"></i>
+                    Pal outing upper threshold (will go outing when all values are below what is set) btw great mood is 5 and awful is 1 (normal is 3)
+                  </div>
+                  <div class="pal-config-toggle">
+                    <span class="toggle-text">{{ showPalConfigPanel ? 'Hide' : 'Show' }}</span>
+                    <i class="fas" :class="showPalConfigPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                  </div>
+                </div>
+                <div v-if="showPalConfigPanel" class="pal-config-content">
+                  <div v-for="(palData, palName) in palCardStore" :key="palName" class="pal-card-item">
+                    <div class="pal-card-header">
+                      <div class="pal-card-checkbox">
+                        <button type="button" class="pal-checkbox" :class="{ checked: palSelected === palName }" @click="togglePalCardSelection(palName)">
+                          <i class="fas fa-check" v-if="palSelected === palName"></i>
+                        </button>
+                      </div>
+                      <div class="pal-card-name">{{ palName }}</div>
+                    </div>
+                    <div v-if="palSelected === palName" class="pal-stages-list">
+                      <div v-for="(stageData, stageIdx) in palData" :key="stageIdx" class="pal-stage-row">
+                        <div class="stage-label">Stage {{ stageIdx + 1 }}</div>
+                        <div class="stage-inputs">
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text">Mood</span>
+                            <input type="number" class="form-control" v-model.number="palCardStore[palName][stageIdx][0]" min="0" max="5">
+                          </div>
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text">Energy</span>
+                            <input type="number" class="form-control" v-model.number="palCardStore[palName][stageIdx][1]" min="0" max="100">
+                          </div>
+                          <div class="input-group input-group-sm">
+                            <span class="input-group-text">Score</span>
+                            <input type="number" step="0.01" class="form-control" v-model.number="palCardStore[palName][stageIdx][2]" min="0" max="1">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1225,6 +1264,165 @@
   white-space: nowrap;
 }
 
+.pal-config-section {
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: rgba(255, 45, 163, 0.04);
+  overflow: hidden;
+}
+
+.pal-config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #000;
+  border-bottom: 1px solid var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pal-config-header:hover {
+  background: rgba(255, 45, 163, 0.12);
+}
+
+.pal-config-title {
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  color: var(--text);
+}
+
+.pal-config-title i {
+  margin-right: 8px;
+  color: var(--accent);
+}
+
+.pal-config-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.pal-config-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pal-card-item {
+  border: 1px solid rgba(255, 45, 163, 0.3);
+  border-radius: 6px;
+  background: #000;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.pal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 45, 163, 0.2);
+}
+
+.pal-card-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.pal-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.pal-checkbox:hover {
+  background: rgba(255, 45, 163, 0.1);
+}
+
+.pal-checkbox.checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.pal-checkbox i {
+  font-size: 14px;
+}
+
+.pal-card-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  flex: 1;
+}
+
+.pal-stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pal-stage-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stage-label {
+  color: var(--accent-pink);
+  font-weight: 700;
+  text-transform: uppercase;
+  flex: 0 0 80px;
+}
+
+.stage-inputs {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+}
+
+.stage-inputs .input-group {
+  flex: 1;
+  border: 1px solid var(--accent-pink);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.stage-inputs .input-group .form-control {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  min-width: 0;
+}
+
+.stage-inputs .input-group .input-group-text {
+  color: var(--accent-pink);
+  background-color: transparent;
+  border: none;
+}
+
+.input-group-text {
+  background-color: var(--b-surface-bright);
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+}
+
 </style>
 
 <script>
@@ -1402,6 +1600,9 @@ export default {
       motivationThresholdYear2: 4,
       motivationThresholdYear3: 4,
       prioritizeRecreation: false,
+      showPalConfigPanel: true,
+      palCardStore: {},
+      palSelected: "",
 
       // URA配置
       skillEventWeight: [0, 0, 0],
@@ -1698,6 +1899,7 @@ export default {
     this.loadSkillData()
     this.initSelect()
     this.getPresets()
+    this.loadPalCardStore()
     this.successToast = $('#liveToast').toast({})
     this.$nextTick(() => {
       this.initScrollSpy()
@@ -1730,7 +1932,32 @@ export default {
     }
   },
     methods: {
-      getFilteredNames() {
+    loadPalCardStore() {
+      this.axios.get('/api/pal-defaults', null, false)
+        .then(res => {
+          if (res && res.data) {
+            this.palCardStore = res.data;
+            const palNames = Object.keys(this.palCardStore);
+            if (palNames.length > 0 && !this.palSelected) {
+              this.palSelected = palNames[0];
+            }
+          }
+        })
+        .catch(() => {});
+    },
+    togglePalConfigPanel() {
+    this.showPalConfigPanel = !this.showPalConfigPanel;
+    },
+    togglePalCardSelection(palName) {
+    if (this.palSelected === palName) {
+    if (!this.prioritizeRecreation) {
+      this.palSelected = null;
+    }
+    } else {
+    this.palSelected = palName;
+    }
+    },
+    getFilteredNames() {
         const names = [];
         Object.keys(this.filteredSkillsByType).forEach(type => {
           (this.filteredSkillsByType[type] || []).forEach(s => names.push(s.name));
@@ -2323,6 +2550,17 @@ export default {
       console.log('POST /task', payload)
       payload.attachment_data = payload.attachment_data || {};
       payload.attachment_data.event_choices = this.buildEventChoices();
+
+      if (this.prioritizeRecreation && this.palSelected) {
+        payload.attachment_data.prioritize_recreation = true;
+        payload.attachment_data.pal_name = this.palSelected;
+        payload.attachment_data.pal_thresholds = this.palCardStore[this.palSelected];
+      } else {
+        payload.attachment_data.prioritize_recreation = false;
+        payload.attachment_data.pal_name = "";
+        payload.attachment_data.pal_thresholds = [];
+      }
+
       this.axios.post("/task", payload).then(
         () => {
           $('#create-task-list-modal').modal('hide');
@@ -2356,6 +2594,12 @@ export default {
       this.motivationThresholdYear2 = parseInt(this.presetsUse.motivation_threshold_year2) || 4
       this.motivationThresholdYear3 = parseInt(this.presetsUse.motivation_threshold_year3) || 4
       this.prioritizeRecreation = this.presetsUse.prioritize_recreation || false
+      if ('pal_selected' in this.presetsUse) {
+        this.palSelected = this.presetsUse.pal_selected || ""
+      }
+      if ('pal_card_store' in this.presetsUse && this.presetsUse.pal_card_store) {
+        Object.assign(this.palCardStore, this.presetsUse.pal_card_store)
+      }
       if ('event_overrides' in this.presetsUse && this.presetsUse.event_overrides) {
         this.eventChoicesSelected = { ...this.presetsUse.event_overrides }
       } else {
@@ -2561,6 +2805,9 @@ export default {
         motivation_threshold_year2: this.motivationThresholdYear2,
         motivation_threshold_year3: this.motivationThresholdYear3,
         prioritize_recreation: this.prioritizeRecreation,
+
+        pal_selected: this.palSelected,
+        pal_card_store: JSON.parse(JSON.stringify(this.palCardStore)),
         // New skill system data
         selectedSkills: [...this.selectedSkills],
         blacklistedSkills: [...this.blacklistedSkills],

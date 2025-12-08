@@ -219,31 +219,27 @@ def script_info(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(SCENARIO_SHORTEN_SET_2)
             time.sleep(0.5)
             ctx.ctrl.click_by_point(SCENARIO_SHORTEN_CONFIRM)
-        if title_text == TITLE[8]: #Recreation
-            # Check for different types of recreation by detecting templates
+        if title_text == TITLE[8]:
             img = ctx.current_screen
             img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             from module.umamusume.asset.template import UI_FRIEND_RECREATION, UI_FRIEND_RECREATION_COMPLETE
             
-            # Check for friend recreation complete first (most specific)
             result_complete = image_match(img_gray, UI_FRIEND_RECREATION_COMPLETE)
             log.info(f"🔍 Recreation - Friend recreation complete template match: {result_complete.find_match}")
             
             if result_complete.find_match:
-                # This is friend recreation complete - use CULTIVATE_TRIP_WITH_FRIEND_COMPLETE
                 log.info("🏖️ Friend recreation complete detected - using CULTIVATE_TRIP_WITH_FRIEND_COMPLETE")
                 ctx.ctrl.click_by_point(CULTIVATE_TRIP_WITH_FRIEND_COMPLETE)
+                
+                pass
             else:
-                # Check for regular friend recreation
                 result = image_match(img_gray, UI_FRIEND_RECREATION)
                 log.info(f"🔍 Recreation - Friend recreation template match: {result.find_match}")
                 
                 if result.find_match:
-                    # This is friend recreation - use CULTIVATE_TRIP_WITH_FRIEND
                     log.info("🏖️ Friend recreation detected - using CULTIVATE_TRIP_WITH_FRIEND")
                     ctx.ctrl.click_by_point(CULTIVATE_TRIP_WITH_FRIEND)
                 else:
-                    # This is regular recreation - use CULTIVATE_OPERATION_COMMON_CONFIRM
                     log.info("🏖️ Regular recreation detected - using CULTIVATE_OPERATION_COMMON_CONFIRM")
                     ctx.ctrl.click_by_point(CULTIVATE_OPERATION_COMMON_CONFIRM)
         if title_text == TITLE[9]: #Confirmation
