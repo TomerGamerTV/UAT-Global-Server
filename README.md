@@ -1,4 +1,3 @@
-Due to recent ui changes please report any races that fails to get detected so i can update their images
 
 # UMAMUSUME AUTO TRAINER
 
@@ -210,6 +209,14 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **8/12/2025**  
+Updated event list  
+Added custom card names  
+<img width="1210" height="376" alt="image" src="https://github.com/user-attachments/assets/f97186c2-6dc0-4c9c-a583-0b134d1dfa69" />
+
+Added custom thresholds to go outing for pal event chains (DO NOT USE PAL CARDS YET FEEL FREE TO HELP TEST AND DEBUG BUT PAL CARDS STILL SUCK IM NOT DONE WITH THEIR TRAINING FACILITY SCORING)  
+<img width="1036" height="363" alt="{E79E2232-EFF0-4976-8FD8-1278503DFFBB}" src="https://github.com/user-attachments/assets/f0901600-3fb4-49d4-87a5-00ab36efda0e" />
+
 - **5/12/2025**   
 Added a overwrite for event "Training" to click the 5th choice if 5 choices are detected (apparently people are still getting stuck there somehow)
 Training tweaks. Energy management should be more effecient now  
