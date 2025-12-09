@@ -251,9 +251,15 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         else:
             trip = True
 
+    if trip and limit < 90 and energy > 30:
+        log.info("Checking if outing is better than rest")
+
     rest = False
     if energy <= limit:
-        rest = True
+        if trip and limit < 90 and energy > 30:
+            rest = False
+        else:
+            rest = True
     elif (ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and energy < ENERGY_REST_EXTRA_DAY:
         rest = True
 
