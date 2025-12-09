@@ -214,7 +214,7 @@ Something Something this is for educational purposes only. Please do not misuse 
 - **8/13/2025**  
 Pal Cards are good to go  
 Fixed yesterday's infinite loop fuck up
-Custom scoring for Finale dates
+Custom scoring for Finale dates   
 Made pal outing override rest if all conditions are met and max energy threshold < 90.  
 
 - **8/12/2025**  
