@@ -251,12 +251,12 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         else:
             trip = True
 
-    if trip and limit < 90 and energy > 30:
+    if trip and limit < 90 and energy > 26:
         log.info("Checking if outing is better than rest")
 
     rest = False
     if energy <= limit:
-        if trip and limit < 90 and energy > 30:
+        if trip and limit < 90 and energy > 26:
             rest = False
         else:
             rest = True
