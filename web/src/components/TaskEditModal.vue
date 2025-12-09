@@ -2726,6 +2726,7 @@ export default {
         this.restTreshold = (this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
       this.compensateFailure = (this.presetsUse.compensate_failure !== false)
       this.useLastParents = (this.presetsUse.use_last_parents === true)
+      this.overrideInsufficientFansForcedRaces = (this.presetsUse.override_insufficient_fans_forced_races === true)
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
         this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
         this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
@@ -2931,6 +2932,7 @@ export default {
         event_overrides: this.buildEventChoices(),
         compensate_failure: this.compensateFailure,
         use_last_parents: this.useLastParents,
+        override_insufficient_fans_forced_races: this.overrideInsufficientFansForcedRaces,
         scenario: this.selectedScenario,
         race_list: this.extraRace,
         skill_priority_list: skill_priority_list,
