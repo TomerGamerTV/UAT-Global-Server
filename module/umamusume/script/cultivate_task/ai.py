@@ -267,9 +267,9 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
 
     if medic and expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
-    if trip and expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
+    elif trip and expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
-    if rest and expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
+    elif rest and expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
         expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
 
     if expect_operation_type is TurnOperationType.TURN_OPERATION_TYPE_UNKNOWN:
