@@ -28,6 +28,12 @@ If you're like me and is using this because you wont have access to your pc for 
 ## Features
 
 ### Core Automation
+- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card
+  - **Everything is 100% automated you can just afk for **DAYS** until legacy umas are full**
+  - **Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)**
+  - **Supports background play via emulators. (You can play another game while this runs)**
+  - **If Auto tp recovery is set to false it will wait until you have enough tp to start the career run**
+    
 - ✅ **Automatic Training**: Complete training scenarios for ALL Umas
   - This includes the handling of:  
     - **Custom races** 
@@ -39,12 +45,6 @@ If you're like me and is using this because you wont have access to your pc for 
     - **Optimal event choices (Knows when to build friendship/recover energy and mood) [is also customizable for skill hunting]**
     - **Skipping bad turns with wit training**
     - **I'm not gonna list everything. Just search for keywords in the repo if you are wondering if a feature exist**
-
-- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card
-  - **Everything is 100% automated you can just afk for **DAYS** until legacy umas are full**
-  - **Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)**
-  - **Supports background play via emulators. (You can play another game while this runs)**
-  - **If Auto tp recovery is set to false it will wait until you have enough tp to start the career run**
 
 - ✅ **Saving of presets**: Save training parameters for easy access in future runs
 
@@ -211,6 +211,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **8/13/2025**  
+Fixed outing not having priority over rest  
+
 - **8/13/2025**  
 Pal Cards are good to go  
 Fixed yesterday's infinite loop fuck up
