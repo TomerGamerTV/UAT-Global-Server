@@ -1,4 +1,5 @@
 import cv2
+import time
 from typing import Dict, Any, Optional
 from bot.conn.u2_ctrl import U2AndroidController
 from bot.recog.image_matcher import image_match, compare_color_equal
@@ -35,7 +36,10 @@ def read_energy(img: Optional[any] = None) -> int:
     else:
         top = img
     if top is None or top.size == 0:
-        return 0
+        time.sleep(0.37)
+        top = ensure_top_img(None)
+        if top is None or top.size == 0:
+            return 0
     sub = top[160:161, 229:505]
     if sub.size == 0:
         return 0

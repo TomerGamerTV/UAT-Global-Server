@@ -230,6 +230,9 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         from bot.conn.fetch import read_energy
         energy = read_energy()
+        if energy == 0:
+            time.sleep(0.37)
+            energy = read_energy()
         limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
         if has_extra_race:
             ctx.cultivate_detail.turn_info.parse_train_info_finish = True
@@ -363,6 +366,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
     from bot.conn.fetch import read_energy
     energy = read_energy()
+    if energy == 0:
+        time.sleep(0.37)
+        energy = read_energy()
     limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
     if energy <= limit:
         op = TurnOperation()
@@ -535,6 +541,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         from bot.conn.fetch import read_energy
         try:
             current_energy = int(read_energy())
+            if current_energy == 0:
+                time.sleep(0.37)
+                current_energy = int(read_energy())
         except Exception:
             current_energy = None
         try:
@@ -652,6 +661,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if is_aoharu and idx == 4 and se_w != 0.0 and spirit_counts[idx] > 0:
                 try:
                     energy = int(read_energy())
+                    if energy == 0:
+                        time.sleep(0.37)
+                        energy = int(read_energy())
                 except Exception:
                     energy = None
                 if energy is not None:
