@@ -16,6 +16,55 @@ from module.umamusume.asset.template import *
 log = logger.get_logger(__name__)
 
 
+def should_use_pal_outing_simple(ctx: UmamusumeContext):
+    if not getattr(ctx.cultivate_detail, 'prioritize_recreation', False):
+        return False
+    if ctx.cultivate_detail.pal_event_stage <= 0:
+        return False
+    
+    img = ctx.current_screen
+    if img is None:
+        return False
+    
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    from module.umamusume.asset.template import UI_RECREATION_FRIEND_NOTIFICATION
+    result = image_match(img_gray, UI_RECREATION_FRIEND_NOTIFICATION)
+    if not result.find_match:
+        return False
+    
+    pal_thresholds = ctx.cultivate_detail.pal_thresholds
+    if not pal_thresholds:
+        return False
+    
+    stage = ctx.cultivate_detail.pal_event_stage
+    if stage > len(pal_thresholds):
+        return False
+    
+    thresholds = pal_thresholds[stage - 1]
+    mood_threshold = thresholds[0]
+    energy_threshold = thresholds[1]
+    
+    from bot.conn.fetch import fetch_state
+    state = fetch_state()
+    current_energy = state.get("energy", 0)
+    current_mood_raw = state.get("mood")
+    current_mood = current_mood_raw if current_mood_raw is not None else 4
+    
+    mood_below = current_mood <= mood_threshold
+    energy_below = current_energy <= energy_threshold
+    
+    log.info(f"PAL outing check - Stage {stage}:")
+    log.info(f"Mood: {current_mood} vs {mood_threshold} - {'<=' if mood_below else '>'}")
+    log.info(f"Energy: {current_energy} vs {energy_threshold} - {'<=' if energy_below else '>'}")
+    
+    if mood_below and energy_below:
+        log.info("Both conditions met - using pal outing instead of rest")
+        return True
+    else:
+        log.info("Conditions not met - using rest")
+        return False
+
+
 def script_cultivate_main_menu(ctx: UmamusumeContext):
     img = ctx.current_screen
     current_date = parse_date(img, ctx)
@@ -158,7 +207,10 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
 
 
     if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
-        ctx.ctrl.click_by_point(CULTIVATE_REST)
+        if should_use_pal_outing_simple(ctx):
+            ctx.ctrl.click_by_point(CULTIVATE_TRIP)
+        else:
+            ctx.ctrl.click_by_point(CULTIVATE_REST)
         return
     
     if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRIP:
@@ -183,7 +235,10 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             ctx.cultivate_detail.turn_info.parse_train_info_finish = True
             return
         if energy <= limit:
-            ctx.ctrl.click_by_point(CULTIVATE_REST)
+            if should_use_pal_outing_simple(ctx):
+                ctx.ctrl.click_by_point(CULTIVATE_TRIP)
+            else:
+                ctx.ctrl.click_by_point(CULTIVATE_REST)
             return
         else:
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
@@ -194,7 +249,10 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         if turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
-            ctx.ctrl.click_by_point(CULTIVATE_REST)
+            if should_use_pal_outing_simple(ctx):
+                ctx.ctrl.click_by_point(CULTIVATE_TRIP)
+            else:
+                ctx.ctrl.click_by_point(CULTIVATE_REST)
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_MEDIC:
             if 36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64:
                 ctx.ctrl.click_by_point(CULTIVATE_MEDIC_SUMMER)
@@ -307,9 +365,12 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     energy = read_energy()
     limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
     if energy <= limit:
-        log.info(f"rest threshold: energy={energy}, threshold={limit} - prioritizing rest")
         op = TurnOperation()
-        op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+        if should_use_pal_outing_simple(ctx):
+            op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+        else:
+            log.info(f"rest threshold: energy={energy}, threshold={limit} - prioritizing rest")
+            op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
         ctx.cultivate_detail.turn_info.turn_operation = op
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
         return
