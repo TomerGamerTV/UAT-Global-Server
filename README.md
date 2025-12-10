@@ -1,4 +1,4 @@
-
+![uma musume](docs/umabike.gif)
 # UMAMUSUME AUTO TRAINER
 [![Discord](https://img.shields.io/badge/Discord-join-green?logo=discord&logoColor=white)](https://discord.gg/8nwNZdxd72)  
 **Discord that im not in I dont own and will never look at (you guys can go hang out ig but dont try contacting me there)**
