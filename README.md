@@ -1,7 +1,8 @@
 
 # UMAMUSUME AUTO TRAINER
-## sorry about causing a inf loop yesterday should be fixed now
-## PAL CARDS ARE DONE 
+[![Discord](https://img.shields.io/badge/Discord-join-green?logo=discord&logoColor=white)](https://discord.gg/8nwNZdxd72)  
+*discord that im not in I dont own and will never look at (you guys can go hang out ig)*
+
 
 ![UAT](docs/main.png)
 
