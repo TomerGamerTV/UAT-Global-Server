@@ -208,6 +208,7 @@ If you ask and pinky promise you won't just nuke everything I can just give you 
 
 ## Disclosure
 Something Something this is for educational purposes only. Please do not misuse to break umamusume or cygames terms of service.   
+![uma](docs/flower.gif)  
 *cough cough*
 
 
