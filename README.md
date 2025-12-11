@@ -22,7 +22,8 @@
 - ✅ **Supports every single uma and deckType**:
  -Every Aspect of training is customizable, If you're willing to spend time in the settings any playstyle becomes possible. For a quick overview please watch the video below as to what you can edit.
 
-<video src="docs/demo.mp4" controls width="700"></video>
+[demo.webm](https://github.com/user-attachments/assets/40a5c402-d154-4b02-8a61-96ba07e29319)
+
 
 - I'd say its about 80% as competent as a actual player. This makes the bot not just a fan/parent farmer but it's more than capable of producing ACES  
   ## [Showcase of 3 runs in a row (loop until canceled)](https://www.youtube.com/watch?v=vboSuUZyeU0)
