@@ -1,3 +1,4 @@
+oops broke unity tutorial event just now mb
 ![uma musume](docs/umabike.gif)
 # UMAMUSUME AUTO TRAINER
 [![Discord](https://img.shields.io/badge/Discord-join-green?logo=discord&logoColor=white)](https://discord.gg/8nwNZdxd72)  
