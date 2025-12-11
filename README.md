@@ -8,54 +8,24 @@
 
 ---
 
-welp got conscripted. For 2 years+ updates will slow down greatly now.
-I get free time on Saturdays only now (updates not guaranteed on Saturdays.)
+# **A automation tool for Uma Musume: Pretty Derby**
 
-### please read the readme before opening a issue  
-
-## New user? [Read this to improve your runs](#training-settings-guide)
-
-## Credits
-- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
-
-- **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
-
-
----
-
-If you're like me and is using this because you wont have access to your pc for long periods of time consider using this in tandem with   
-[https://github.com/rustdesk/rustdesk/releases/](https://github.com/rustdesk/rustdesk)
-
-## Features
-
-### Core Automation
-- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card
+### Things this bot can do
+- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card are all automated.
   - **Everything is 100% automated you can just afk for **DAYS** until legacy umas are full**
   - **Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)**
   - **Supports background play via emulators. (You can play another game while this runs)**
-  - **If Auto tp recovery is set to false it will wait until you have enough tp to start the career run**
-    
-- ✅ **Automatic Training**: Complete training scenarios for ALL Umas
-  - This includes the handling of:  
-    - **Custom races** 
-    - **Skill acquisition**
-    - **Claw machine**
-    - **Running styles** 
-    - **Alarm clock usage** 
-    - **Almost every part of training is customizable (How much to focus on friendship, rainbows, hints ect ect and when)** 
-    - **Optimal event choices (Knows when to build friendship/recover energy and mood) [is also customizable for skill hunting]**
-    - **Skipping bad turns with wit training**
-    - **I'm not gonna list everything. Just search for keywords in the repo if you are wondering if a feature exist**
 
-- ✅ **Saving of presets**: Save training parameters for easy access in future runs
+- ✅ **Able to play every part of every Senario (As of writing this; URA and Unity)**
+  - Is able to perform every action a human would take. From comparing skill hint levels to playing the claw machine and even deciding whether to conserve energy before summer or not. Everything you normally do this bot probably does it.
 
-- ✅ **Team trials execution mode**: its under Execution Mode not Task Selection.
+- ✅ **Supports every single uma and deckType**:
+ -Every Aspect of training is customizable, If you're willing to spend time in the settings any playstyle becomes possible. For a quick overview please watch the video below as to what you can edit.
 
-- ✅ **Human Behaviour**: Bot will Automatically shut down and restart based on configured timing (Runs 24 hours by default but not recommended), Inputs are also humanized.
+<video src="docs/demo.mp4" controls width="700"></video>
 
-### Demo Run
 - I'd say its about 80% as competent as a actual player. This makes the bot not just a fan/parent farmer but it's more than capable of producing ACES  
-  ## [Showcase of 3 runs in a row](https://www.youtube.com/watch?v=vboSuUZyeU0)
+  ## [Showcase of 3 runs in a row (loop until canceled)](https://www.youtube.com/watch?v=vboSuUZyeU0)
 
 ## 🚨 Safety
 Question: Is this safe?  
@@ -65,18 +35,7 @@ Answer 2: As long as there are people cheating on the steam release we are chill
 https://en.wikipedia.org/wiki/Sentinel_species    
 
 Running this 24/7 looks sus as hell so I would suggest turning it off for a few hours every day.  
-you can also edit the start and end time in `main.py` (24 hours format) to dictate when the bot can run)
-
-## 📦 Installation & Setup
-Tutorial someone made (I didn't actually watch it lol): https://youtu.be/v1m9Plw7M3Y  
-
-#### Clone Repository
-```bash
-git clone https://github.com/oofmatoes/UAT-Global-Server
-cd UAT-Global-Server
-```
-  
-
+you can edit the start and end time in `main.py` (24 hours format) to dictate when the bot can run)
 
 ### Emulator Setup
 
@@ -88,9 +47,14 @@ cd UAT-Global-Server
 - **Graphics**: Standard (not Simple)
 - **ADB**: Must be enabled in emulator settings
 
-### Launch
+## 📦 Installation & Setup
+Just cd into any folder and run 
 
-Ensure python 3.10 is installed:
+```bash
+git clone https://github.com/oofmatoes/UAT-Global-Server
+```
+
+Then ensure python 3.10 is installed:
 
 ```bash
 uninstall whatever python version you have
@@ -109,6 +73,8 @@ Or just run start.bat
 
 ---
 
+if u can follow then heres a tutorial someone made (I didn't actually watch it lol): https://youtu.be/v1m9Plw7M3Y  
+
 ## ⚠️ Important Notes
 
 As single run mode is deprecated if you wish to emulated it you can enable "Manual skill purchase at the end" to achieve the same thing 
@@ -121,7 +87,6 @@ As single run mode is deprecated if you wish to emulated it you can enable "Manu
 
 ## 🔧 Troubleshooting
 
-### Common Issues
 
 #### Fan Goals Fail
 
@@ -157,12 +122,7 @@ I will only focus on fixing issues for those (which is what I use personally.) E
 - For most issues with outdated/wrong data  
   - https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518 (you can stop at npx vite build btw it builds directly to the right folder now).  
 
-## Training settings guide
-- **Upon creating a new deck the first thing you should do is experiment with the values under advanced options**
-- These values are made for 3/3 split decks THEY ARE NOT 1 SIZE FITS ALL  
-  ![alt text](docs/default.png)
-
-### STAT CAPS
+### STAT CAPS (People keep messing this up)
 - Under normal circumstances you want to just put a large number into all of them like so this way it will always pick the best training option
   ![alt text](docs/statCaps.png)
 - HOWEVER if you keep maxxing out a stat too early for example 1000+ speed before the 2nd summer you would want to do this
@@ -173,34 +133,6 @@ I will only focus on fixing issues for those (which is what I use personally.) E
  - Hard cap  
   95% or higher will now have 0 score (IF YOU SEE THIS THERE IS A ISSUE WITH YOUR DECK AND THE BOT WILL PERFORM POORLY)
  - IT IS ENCOURAGED THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING AND CLICKING A WORSE OPTION 
-
-### STRUGGLING WITH A CERTAIN STAT
-- If you are struggling with a certain stat (Guts) you can raise the summer weight of that stat (while reducing others) to encourage the bot totake advantage of the LV5 summer facilities
-  ![alt text](docs/summerWeight.png)
-
-### Hint/Skills hunting
-- Raise the score of hints. This way the bot will always take the training with hints in them
-  ![alt text](docs/hintHunting.png)
-- If you want to bot to select a certain event option scroll to the bottom of task creation
-  > Expand Skill List  
-  > Search For Your Event  
-  > Select Event Choice  
-  ![alt text](docs/huntHint.png)  
-
-### STRUGGLING WITH THE CAREER
-#### Early game stat gain is too low
-- Raise the classic year rainbows score to promote early game stat growth (this will hurt long term stat gain however)
-  ![alt text](docs/classicRainbow.png)
-
-### The bot picks bad races when not enough fans to meet goals (Pre-op, Op, G3)
-- If a career runs has high fan goals (Top gun, Urara) you should be manually selecting the races instead of letting the bot pick for you
-  ![alt text](docs/races.png)
-
-### The bot is buying irelevant skills.
-- Left click on a skill to prioritize it (blue), right click to blacklist it (red)   
-  ![alt text](docs/skills.png)
-- OR set Learn when skill points ≥ to a very high number and set manual purchase to true
-  ![alt text](docs/manualBuy.png)
 
 ## 🤝 Contributing
 
@@ -306,3 +238,9 @@ Maybe fix card selection breaking
 ## Planned/In progress (In order from top to bottom)
 
 - im going to uma my musumes 
+
+
+## Credits
+- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
+
+- **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
