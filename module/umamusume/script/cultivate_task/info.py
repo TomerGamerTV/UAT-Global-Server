@@ -206,9 +206,20 @@ def script_info(ctx: UmamusumeContext):
                     ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
                     log.info("🔋 Reached Clock limit, cancel race")
             else:
-                # Not a race fail screen, just confirm
-                ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
-                log.info("🔋 Not a race fail screen - canceling")
+                time.sleep(0.17)
+                img_retry = ctx.ctrl.get_screen(to_gray=True)
+                retry_result = image_match(img_retry, UI_RACE_FAIL)
+                if retry_result.find_match:
+                    if ctx.cultivate_detail.clock_used < ctx.cultivate_detail.clock_use_limit:
+                        ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_USE_CLOCK)
+                        ctx.cultivate_detail.clock_used += 1
+                        log.info("(retry) Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit), str(ctx.cultivate_detail.clock_used))
+                    else:
+                        ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
+                        log.info("(retry) Reached Clock limit, cancel race")
+                else:
+                    ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
+                    log.info("🔋 Not a race fail screen - canceling")
             log.debug("Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit),
                         str(ctx.cultivate_detail.clock_used))
         if title_text == TITLE[5]: #Earned Title
