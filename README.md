@@ -146,10 +146,14 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
-- **8/13/2025**  
+- **11/12/2025**  
+bug fixes I'm not gonna bother listing.   
+
+
+- **9/12/2025**  
 Fixed outing not having priority over rest  
 
-- **8/13/2025**  
+- **9/12/2025**  
 Pal Cards are good to go  
 Fixed yesterday's infinite loop fuck up
 Custom scoring for Finale dates   
