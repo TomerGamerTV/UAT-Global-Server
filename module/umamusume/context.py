@@ -68,6 +68,9 @@ class CultivateContextDetail:
     def reset_skill_learn(self):
         self.learn_skill_done = False
         self.learn_skill_selected = False
+        self.manual_purchase_completed = False
+        if hasattr(self, 'manual_purchase_initiated'):
+            delattr(self, 'manual_purchase_initiated')
 
 
 class UmamusumeContext(BotContext):

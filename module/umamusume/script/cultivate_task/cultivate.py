@@ -77,6 +77,12 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             ctx.cultivate_detail.turn_info_history.append(ctx.cultivate_detail.turn_info)
         ctx.cultivate_detail.turn_info = TurnInfo()
         ctx.cultivate_detail.turn_info.date = current_date
+        
+        if current_date == 1:
+            log.info("new run detected resetting manual purchase state")
+            ctx.cultivate_detail.manual_purchase_completed = False
+            if hasattr(ctx.cultivate_detail, 'manual_purchase_initiated'):
+                delattr(ctx.cultivate_detail, 'manual_purchase_initiated')
 
     if not ctx.cultivate_detail.turn_info.parse_main_menu_finish:
         parse_cultivate_main_menu(ctx, img)
