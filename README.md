@@ -147,7 +147,7 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **12/12/2025**  
-Fixed recreation breaking training (forcing wit) when pal outing is configured with no pal notification  
+Fixed recreation breaking training (forcing wit) when pal outing is configured with no pal notification. (OH I DIDNT FUCKING PUSH)  
 
 - **11/12/2025**  
 bug fixes I'm not gonna bother listing.   
