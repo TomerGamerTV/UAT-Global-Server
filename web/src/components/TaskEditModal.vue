@@ -475,15 +475,6 @@
                       @input="onExtraWeightInput(extraWeightSummer, i)" id="speed-value-input">
                   </div>
                 </div>
-                <div v-if="selectedScenario === 2" style="margin: 12px 0 10px; color: var(--accent); border-top: 1px solid var(--accent); padding-top: 8px;">Spirit Explosion Score</div>
-                <div v-if="selectedScenario === 2" class="row">
-                  <div v-for="(v, i) in extraSpiritExplosion" :key="i" class="col-md-2 col-6">
-                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
-                    <input type="number" v-model="extraSpiritExplosion[i]" class="form-control"
-                      @input="onExtraWeightInput(extraSpiritExplosion, i)" id="speed-value-input">
-                  </div>
-                </div>
-
                 <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
                 <div class="form-group" style="margin-top: 16px;">
                   <div style="color: var(--accent);">Score Value</div>
@@ -619,6 +610,20 @@
                       <div class="col-md-2 col-6" v-if="selectedScenario === 2">
                         <div class="form-group mb-1"><small>Special Training</small></div>
                         <input type="number" step="0.01" v-model.number="specialFinale" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="selectedScenario === 2" class="row mb-2" style="margin-top: 16px; border-top: 1px solid var(--accent); padding-top: 12px;">
+                  <div class="col-12">
+                    <label style="color: var(--accent);">Spirit Explosion Score</label>
+                    <p style="font-size: 0.9em; margin-bottom: 8px;">Score bonus for spirit explosion training (applies to all training types)</p>
+                    <div class="row">
+                      <div v-for="(v, i) in extraSpiritExplosion" :key="i" class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                        <input type="number" step="0.01" v-model.number="extraSpiritExplosion[i]" class="form-control"
+                          @input="onExtraWeightInput(extraSpiritExplosion, i)">
                       </div>
                     </div>
                   </div>
@@ -2678,11 +2683,11 @@ export default {
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3, this.extraWeightSummer],
           "spirit_explosion": this.extraSpiritExplosion.map(v => Math.max(-1, Math.min(1, v))),
           "score_value": [
-            (this.selectedScenario === 2 ? this.scoreValueJunior.slice(0,5) : this.scoreValueJunior.slice(0,4)),
-            (this.selectedScenario === 2 ? this.scoreValueClassic.slice(0,5) : this.scoreValueClassic.slice(0,4)),
-            (this.selectedScenario === 2 ? this.scoreValueSenior.slice(0,5) : this.scoreValueSenior.slice(0,4)),
-            (this.selectedScenario === 2 ? this.scoreValueSeniorAfterSummer.slice(0,5) : this.scoreValueSeniorAfterSummer.slice(0,4)),
-            (this.selectedScenario === 2 ? this.scoreValueFinale.slice(0,5) : this.scoreValueFinale.slice(0,4))
+            (this.selectedScenario === 2 ? [...this.scoreValueJunior.slice(0,4), this.specialJunior] : this.scoreValueJunior.slice(0,4)),
+            (this.selectedScenario === 2 ? [...this.scoreValueClassic.slice(0,4), this.specialClassic] : this.scoreValueClassic.slice(0,4)),
+            (this.selectedScenario === 2 ? [...this.scoreValueSenior.slice(0,4), this.specialSenior] : this.scoreValueSenior.slice(0,4)),
+            (this.selectedScenario === 2 ? [...this.scoreValueSeniorAfterSummer.slice(0,4), this.specialSeniorAfterSummer] : this.scoreValueSeniorAfterSummer.slice(0,4)),
+            (this.selectedScenario === 2 ? [...this.scoreValueFinale.slice(0,4), this.specialFinale] : this.scoreValueFinale.slice(0,4))
           ],
           // Motivation thresholds for trip decisions
           "motivation_threshold_year1": this.motivationThresholdYear1,
@@ -2794,12 +2799,36 @@ export default {
         if (this.presetsUse.scoreValue.length >= 5) {
           this.scoreValueFinale = [...this.presetsUse.scoreValue[4]]
         }
-        const targetLen = (this.selectedScenario === 2) ? 5 : 4;
-        const specials = [0.15, 0.12, 0.09, 0.07, 0]
+        
+        // Extract special training values if present (5th element in each array)
+        if (this.selectedScenario === 2) {
+          if (this.scoreValueJunior.length >= 5) {
+            this.specialJunior = this.scoreValueJunior[4]
+            this.scoreValueJunior = this.scoreValueJunior.slice(0, 4)
+          }
+          if (this.scoreValueClassic.length >= 5) {
+            this.specialClassic = this.scoreValueClassic[4]
+            this.scoreValueClassic = this.scoreValueClassic.slice(0, 4)
+          }
+          if (this.scoreValueSenior.length >= 5) {
+            this.specialSenior = this.scoreValueSenior[4]
+            this.scoreValueSenior = this.scoreValueSenior.slice(0, 4)
+          }
+          if (this.scoreValueSeniorAfterSummer.length >= 5) {
+            this.specialSeniorAfterSummer = this.scoreValueSeniorAfterSummer[4]
+            this.scoreValueSeniorAfterSummer = this.scoreValueSeniorAfterSummer.slice(0, 4)
+          }
+          if (this.scoreValueFinale.length >= 5) {
+            this.specialFinale = this.scoreValueFinale[4]
+            this.scoreValueFinale = this.scoreValueFinale.slice(0, 4)
+          }
+        }
+        
+        const targetLen = 4; // Always 4 for the base score values (lv1, lv2, rainbow, hint)
         const arrs = [this.scoreValueJunior, this.scoreValueClassic, this.scoreValueSenior, this.scoreValueSeniorAfterSummer, this.scoreValueFinale]
         arrs.forEach((arr, i) => {
           if (arr.length > targetLen) arr.splice(targetLen)
-          while (arr.length < targetLen) arr.push(targetLen === 5 ? specials[i] : 0.09)
+          while (arr.length < targetLen) arr.push(0.09)
         })
       }
 
@@ -2818,7 +2847,14 @@ export default {
         this.extraSpiritExplosion = [0.16, 0.16, 0.16, 0.06, 0.11]
       }
 
-      // Load new skill system data if available
+      if ('specialTraining' in this.presetsUse && Array.isArray(this.presetsUse.specialTraining)) {
+        if (this.specialJunior === 0.095) this.specialJunior = this.presetsUse.specialTraining[0] !== undefined ? this.presetsUse.specialTraining[0] : 0.095
+        if (this.specialClassic === 0.095) this.specialClassic = this.presetsUse.specialTraining[1] !== undefined ? this.presetsUse.specialTraining[1] : 0.095
+        if (this.specialSenior === 0.095) this.specialSenior = this.presetsUse.specialTraining[2] !== undefined ? this.presetsUse.specialTraining[2] : 0.095
+        this.specialSeniorAfterSummer = 0.095
+        this.specialFinale = 0
+      }
+
       if ('selectedSkills' in this.presetsUse && 'blacklistedSkills' in this.presetsUse && 'skillAssignments' in this.presetsUse && 'activePriorities' in this.presetsUse) {
         // New format - load directly
         this.selectedSkills = [...this.presetsUse.selectedSkills];
@@ -2979,6 +3015,14 @@ export default {
           this.extraWeight2.map(v => Math.max(-1, Math.min(1, v))),
           this.extraWeight3.map(v => Math.max(-1, Math.min(1, v))),
           this.extraWeightSummer.map(v => Math.max(-1, Math.min(1, v)))
+        ],
+        spirit_explosion: this.extraSpiritExplosion.map(v => Math.max(-1, Math.min(1, v))),
+        specialTraining: [
+          this.specialJunior,
+          this.specialClassic,
+          this.specialSenior,
+          this.specialSeniorAfterSummer,
+          this.specialFinale
         ],
         scoreValue: [
           this.scoreValueJunior,

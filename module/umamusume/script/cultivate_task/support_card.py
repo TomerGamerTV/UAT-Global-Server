@@ -13,15 +13,35 @@ def get_support_card_score(ctx: UmamusumeContext, info: SupportCardInfo):
     else:
         score = SCORE_DICT[info.card_type][DEFAULT](ctx, info)
 
-    # 青春杯友情值提高
     if getattr(info, 'can_incr_special_training', False):
         date = ctx.cultivate_detail.turn_info.date
-        if date <= 24:
-            score += 1
-        elif date <= 48:
-            score += 0.5
-        else:
-            score += 0.1
+        sv = getattr(ctx.cultivate_detail, 'score_value', [
+            [0.11, 0.10, 0.01, 0.09],
+            [0.11, 0.10, 0.09, 0.09],
+            [0.11, 0.10, 0.12, 0.09],
+            [0.03, 0.05, 0.15, 0.09],
+            [0, 0, 0.27, 0, 0]
+        ])
+        special_defaults = [0.095, 0.095, 0.095, 0.095, 0]
+        try:
+            if date <= 24:
+                period_idx = 0
+            elif date <= 48:
+                period_idx = 1
+            elif date <= 60:
+                period_idx = 2
+            elif date <= 72:
+                period_idx = 3
+            else:
+                period_idx = 4
+            arr = sv[period_idx]
+            if isinstance(arr, (list, tuple)) and len(arr) > 4:
+                special_score = arr[4]
+            else:
+                special_score = special_defaults[period_idx]
+        except Exception:
+            special_score = special_defaults[0]
+        score += special_score
     return score
 
 

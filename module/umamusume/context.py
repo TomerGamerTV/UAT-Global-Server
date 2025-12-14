@@ -29,6 +29,7 @@ class CultivateContextDetail:
     allow_recover_tp: bool
     parse_factor_done: bool
     extra_weight: list
+    spirit_explosion: list
     manual_purchase_completed: bool
     final_skill_sweep_active: bool
     user_provided_priority: bool
@@ -57,6 +58,7 @@ class CultivateContextDetail:
         self.allow_recover_tp = False
         self.parse_factor_done = False
         self.extra_weight = []
+        self.spirit_explosion = [0.16, 0.16, 0.16, 0.06, 0.11]
         self.manual_purchase_completed = False
         self.final_skill_sweep_active = False
         self.user_provided_priority = False
@@ -121,6 +123,11 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
             detail.extra_weight = list(task.detail.extra_weight or [])
         except Exception:
             detail.extra_weight = []
+        
+        try:
+            detail.spirit_explosion = list(getattr(task.detail, 'spirit_explosion', [0.16, 0.16, 0.16, 0.06, 0.11]))
+        except Exception:
+            detail.spirit_explosion = [0.16, 0.16, 0.16, 0.06, 0.11]
         
         detail.rest_treshold = getattr(task.detail, 'rest_treshold', getattr(task.detail, 'fast_path_energy_limit', 48))
         # Load motivation thresholds from preset (with defaults) - ensure they are integers

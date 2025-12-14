@@ -480,6 +480,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             [0.03, 0.05, 0.15, 0.09],
             [0, 0, 0.15, 0, 0]
         ])
+        # log.info(f"DEBUG: Loaded score_value configuration: {sv}")
         def resolve_weights(sv_list, idx):
             try:
                 arr = sv_list[idx]
@@ -507,12 +508,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         else:
             w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, 4)
         try:
-            se_weights = getattr(getattr(ctx, 'task', None), 'detail', None)
-            se_weights = getattr(se_weights, 'spirit_explosion', None)
+            se_weights = getattr(ctx.cultivate_detail, 'spirit_explosion', [0.16, 0.16, 0.16, 0.06, 0.11])
             if not isinstance(se_weights, (list, tuple)) or len(se_weights) != 5:
-                se_weights = [0.9, 0.9, 0.9, 0.5, 0.5]
+                se_weights = [0.16, 0.16, 0.16, 0.06, 0.11]
         except Exception:
-            se_weights = [0.9, 0.9, 0.9, 0.5, 0.5]
+            se_weights = [0.16, 0.16, 0.16, 0.06, 0.11]
 
         from module.umamusume.define import SupportCardType, SupportCardFavorLevel
         from module.umamusume.asset.template import REF_TRAINING_HINT
@@ -533,9 +533,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         log.info(f"lv1: {w_lv1}")
         log.info(f"lv2: {w_lv2}")
         log.info(f"Rainbows: {w_rainbow}")
+        log.info(f"Hint: {w_hint}")
         try:
             if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
-                log.info(f"Special Training weight: {w_special}")
+                log.info(f"Special Training score: {w_special}")
+                log.info(f"Spirit Explosion scores: {se_weights}")
         except Exception:
             pass
 
@@ -620,13 +622,21 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  lv1: {lv1c}")
             log.info(f"  lv2: {lv2c}")
             log.info(f"  Rainbows: {rbc}")
+            
+            if rbc >= 2:
+                rainbow_multiplier = 1.0 + (rbc - 1) * 0.075
+                base_score = score
+                score *= rainbow_multiplier
+                log.info(f"  Multiple rainbows bonus multiplier: x{rainbow_multiplier:.2f} ({rbc} cards) (Base: {base_score:.3f} -> {score:.3f})")
+            
             if npc:
                 log.info(f"  NPCs: {npc}")
             if pal_count:
                 log.info(f"  Pal cards: {pal_count}")
             try:
                 if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
-                    log.info(f"  special training: {special_counts[idx]}")
+                    if special_counts[idx] > 0:
+                        log.info(f"  Special training available: {special_counts[idx]} cards")
                     if spirit_counts[idx] > 0:
                         try:
                             d = int(ctx.cultivate_detail.turn_info.date)
@@ -634,9 +644,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                             d = -1
                         if isinstance(d, int) and d >= 46:
                             pct = min(30, d - 45)
-                            log.info(f"  spirit explosion {spirit_counts[idx]}: (-{pct}% score: date penalty)")
+                            log.info(f"  Spirit explosion available: {spirit_counts[idx]} cards (-{pct}% score: date penalty)")
                         else:
-                            log.info(f"  Spirit explosions: {spirit_counts[idx]}")
+                            log.info(f"  Spirit explosion available: {spirit_counts[idx]} cards")
             except Exception:
                 pass
             hint_bonus = 0.0
@@ -649,7 +659,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             score += hint_bonus
             stc_lane = special_counts[idx]
             if stc_lane > 0:
-                score += float(w_special) * float(stc_lane)
+                log.info(f"  Special training bonus: +{w_special:.3f}")
+                score += float(w_special)
             try:
                 se_w = float(se_weights[idx]) if isinstance(se_weights, (list, tuple)) and len(se_weights) == 5 else 0.0
             except Exception:
@@ -689,7 +700,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 else:
                     pct = 0
                 mult = 1.0 - (float(pct) / 100.0)
-                se_bonus = se_w * float(se_lane) * mult
+                se_bonus = se_w * mult
                 log.info(f"  Spirit explosion bonus: +{se_bonus:.3f}")
                 score += se_bonus
 
