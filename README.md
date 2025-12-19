@@ -20,7 +20,8 @@
   - Is able to perform every action a human would take. From comparing skill hint levels to playing the claw machine and even deciding whether to conserve energy before summer or not. Everything you normally do this bot probably does it.
 
 - ✅ **Supports every single uma and deckType**:
- -Every Aspect of training is customizable, If you're willing to spend time in the settings any playstyle becomes possible. For a quick overview please watch the video below as to what you can edit. (Video is outdated look at changelog or use the github search feature too check if something u want is there)
+ -Every Aspect of training is customizable, If you're willing to spend time in the settings any playstyle becomes possible. For a quick overview please watch the video below as to what you can edit.
+(Video is outdated look at changelog or use the github search feature too check if something u want is there)
 
 [demo.webm](https://github.com/user-attachments/assets/40a5c402-d154-4b02-8a61-96ba07e29319)
 
