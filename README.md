@@ -146,6 +146,11 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
+- **19/12/2025**  
+Exposed event weight configs to the user.     
+<img width="904" height="705" alt="{63DC8091-9B58-4229-B56C-5C8B3A74CA56}" src="https://github.com/user-attachments/assets/69f749bc-e8bb-4edf-b707-52538e64cb6b" />   
+
+
 - **16/12/2025**  
 Event list updated.   
 
