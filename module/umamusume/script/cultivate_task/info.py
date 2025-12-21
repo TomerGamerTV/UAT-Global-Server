@@ -89,6 +89,7 @@ TITLE = [
     "Unmet Requirements", #43 (Fail maiden race lmao just glue)
     "Items Selected", #44
     "Auto Select", #45
+    "Session Error", #46
 ]
 
 
@@ -640,4 +641,8 @@ def script_info(ctx: UmamusumeContext):
                     ctx.ctrl.click(214, 832, "Auto Select")
             except Exception:
                 ctx.ctrl.click(214, 832, "Auto Select")
+        if title_text == TITLE[46]:  # Session Error
+            log.info("User login from somewhere else")
+            reset_task(ctx.task.task_id)
+            return
         time.sleep(1)
