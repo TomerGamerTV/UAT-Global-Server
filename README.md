@@ -149,7 +149,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **21/12/2025**  
-Logging in from your phone/another device now causes the current task to pause.     
+Logging in from your phone/another device now causes the current task to pause.
+Forced brightness check again everytime infirmary is pressed.
 
 - **19/12/2025**  
 Exposed event weight to webui for user to configure.     
