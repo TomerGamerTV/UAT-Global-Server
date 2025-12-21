@@ -148,6 +148,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
+- **21/12/2025**  
+Logging in from your phone/another device now causes the current task to pause.     
+
 - **19/12/2025**  
 Exposed event weight to webui for user to configure.     
 <img width="904" height="705" alt="{63DC8091-9B58-4229-B56C-5C8B3A74CA56}" src="https://github.com/user-attachments/assets/69f749bc-e8bb-4edf-b707-52538e64cb6b" />   
