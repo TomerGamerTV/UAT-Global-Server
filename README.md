@@ -264,7 +264,7 @@ Team trials execution mode. not tested and held together by hopes and dreams so 
 Maybe fix card selection breaking
 
 ## Planned/In progress (In order from top to bottom)
-
+- starting work on full auto mode gonna have no other updates for a while   
 - im going to uma my musumes 
 
 
