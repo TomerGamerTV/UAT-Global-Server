@@ -489,8 +489,12 @@ if __name__ == '__main__':
     
     # Run health checks
     if not run_health_checks():
-        print("❌ Health checks failed. Please check your setup and try again.")
-        sys.exit(1)
+        print("⚠️ Health checks failed. Attempting auto-recovery...")
+        _soft_recover_device(selected_device)
+        print("🔄 Retrying health checks...")
+        if not run_health_checks():
+            print("❌ Health checks failed again after recovery. Please check your setup.")
+            sys.exit(1)
     
     # Final stabilization pass before starting services
     print("🔧 Finalizing device services…")
