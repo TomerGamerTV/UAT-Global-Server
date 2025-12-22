@@ -488,7 +488,6 @@ if __name__ == '__main__':
         sys.exit(1)
     
     # Run health checks
-    # Run health checks
     if not run_health_checks():
         print("⚠️ Health checks failed. Attempting auto-recovery...")
         _soft_recover_device(selected_device)
