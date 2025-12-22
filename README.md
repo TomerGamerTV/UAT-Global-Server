@@ -272,3 +272,7 @@ Maybe fix card selection breaking
 - **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
 
 - **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
+
+Stop shilling this shit on /vg/ and using the retarded forced meme ur making me look bad
+
+
