@@ -1203,9 +1203,21 @@ def script_cultivate_goal_race(ctx: UmamusumeContext):
     log.info("Entering goal race function")
     img = ctx.current_screen
     current_date = parse_date(img, ctx)
+    
     if current_date == -1:
-        log.warning("Failed to parse date")
+        if not hasattr(ctx.cultivate_detail, 'goal_race_parse_failures'):
+            ctx.cultivate_detail.goal_race_parse_failures = 0
+        
+        ctx.cultivate_detail.goal_race_parse_failures += 1
+        log.warning(f"Failed to parse date (attempt {ctx.cultivate_detail.goal_race_parse_failures})")
+        
+        if ctx.cultivate_detail.goal_race_parse_failures >= 3:
+            ctx.ctrl.trigger_decision_reset = True
+            ctx.cultivate_detail.goal_race_parse_failures = 0
         return
+    
+    ctx.cultivate_detail.goal_race_parse_failures = 0
+    
     # 如果进入新的一回合，记录旧的回合信息并创建新的
     if ctx.cultivate_detail.turn_info is None or current_date != ctx.cultivate_detail.turn_info.date:
         if ctx.cultivate_detail.turn_info is not None:
