@@ -211,11 +211,19 @@ def load_scheduler_state():
 def save_scheduler_tasks():
     try:
         from bot.engine.scheduler import scheduler
+        from bot.base.task import TaskExecuteMode as TEM, TaskStatus as TS
         tasks = []
         for t in scheduler.get_task_list() or []:
             try:
                 app = getattr(t, 'app_name', None)
-                mode = getattr(getattr(t, 'task_execute_mode', None), 'value', None)
+                mode_enum = getattr(t, 'task_execute_mode', None)
+                mode = getattr(mode_enum, 'value', None)
+                status = getattr(t, 'task_status', None)
+                
+                if mode_enum in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_TEAM_TRIALS):
+                    if status in (TS.TASK_STATUS_SUCCESS, TS.TASK_STATUS_FAILED):
+                        continue
+                
                 ttype = getattr(getattr(t, 'task_type', None), 'value', None)
                 desc = getattr(t, 'task_desc', '')
                 cron = getattr(t, 'cron_job_config', None)
@@ -284,7 +292,7 @@ def load_saved_tasks():
                     tid = it.get('task_id')
                     if tid:
                         t.task_id = tid
-                    if mode in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_LOOP, TEM.TASK_EXECUTE_MODE_TEAM_TRIALS):
+                    if mode in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_LOOP):
                         from bot.base.task import TaskStatus as TS
                         t.task_status = TS.TASK_STATUS_PENDING
                 except Exception:

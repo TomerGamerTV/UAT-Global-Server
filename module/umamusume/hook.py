@@ -51,15 +51,22 @@ def tt_next_sequence(ctx: UmamusumeContext):
         pass
 
 def complete_team_trials(ctx: UmamusumeContext):
-    log.info("TT tally - ending task")
+    log.info("tt done - ending task")
+    ctx.ctrl.click(355, 1200, "tt2")
+    time.sleep(1)
+    ctx.ctrl.click(355, 1200, "tt1")
     ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
 
 REF_CANT_TT_REGION = Template("cant_tt", UMAMUSUME_REF_TEMPLATE_PATH, 
-                               ImageMatchConfig(match_area=Area(369, 584, 720, 1280)))
+                               ImageMatchConfig(match_area=Area(369, 586, 439, 609)))
+
+REF_CANT_TT2_REGION = Template("cant_tt2", UMAMUSUME_REF_TEMPLATE_PATH, 
+                                ImageMatchConfig(match_area=Area(391, 43, 433, 81)))
 
 RULES_BY_MODE = {
     "TASK_EXECUTE_MODE_TEAM_TRIALS": [
         {"type": "image", "ref": REF_CANT_TT_REGION, "action": complete_team_trials},
+        {"type": "image", "ref": REF_CANT_TT2_REGION, "action": complete_team_trials},
         {"type": "image", "ref": REF_HOME_GIFT, "action": lambda ctx: ctx.ctrl.click(522, 1228, "team trials resume")},
         {"type": "image", "ref": REF_TEAM_TRIALS, "action": lambda ctx: ctx.ctrl.click(106, 812, "team trials resume2")},
         {"type": "image", "ref": REF_TEAM_RACE, "action": lambda ctx: ctx.ctrl.click(351, 839, "team trials resume3")},
