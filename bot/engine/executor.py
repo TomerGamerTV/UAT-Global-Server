@@ -15,6 +15,7 @@ from bot.conn.os import push_system_notification
 from bot.conn.u2_ctrl import U2AndroidController
 from bot.recog.image_matcher import template_match, image_match
 from bot.recog.ocr import reset_ocr
+from bot.recog.timeout_tracker import check_and_reset_timeout
 from bot.base.purge import save_task_data, save_scheduler_tasks, save_scheduler_state, soft_process_restart
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from bot.base.manifest import APP_MANIFEST_LIST
@@ -292,6 +293,15 @@ class Executor:
 
             while self.active:
                 if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
+                    if check_and_reset_timeout():
+                        log.warning("Recognition timeout detected - restarting decision making")
+                        try:
+                            ctx.current_screen = None
+                        except Exception:
+                            pass
+                        time.sleep(0.5)
+                        continue
+                        
                     ctx.current_screen = ctx.ctrl.get_screen()
                     if ctx.current_screen is None:
                         log.debug("No image detected")

@@ -6,6 +6,7 @@ import bot.base.log as logger
 import os
 from config import CONFIG
 import bot.base.gpu_utils as gpu_utils
+from bot.recog.timeout_tracker import reset_timeout
 
 log = logger.get_logger(__name__)
 _paddleocr_import_lock = threading.RLock()
@@ -182,6 +183,7 @@ def reset_ocr():
 
 
 def ocr(img, lang="en"):
+    reset_timeout()
     o = get_ocr(lang)
     return o.ocr(img, cls=False)
 
@@ -231,6 +233,7 @@ def parse_text_items(result):
 # ocr_line 文字识别图片，返回所有出现的文字
 
 def ocr_line(img, lang="en"):
+    reset_timeout()
     raw = ocr(img, lang)
     items = parse_text_items(raw)
     text = ""
@@ -240,6 +243,7 @@ def ocr_line(img, lang="en"):
 
 
 def ocr_digits(img):
+    reset_timeout()
     raw = get_ocr("en").ocr(img, cls=False)
     items = parse_text_items(raw)
     if not items:

@@ -5,6 +5,7 @@ import numpy as np
 from bot.base.common import ImageMatchMode
 from bot.base.resource import Template
 import bot.base.log as logger
+from bot.recog.timeout_tracker import reset_timeout
 
 log = logger.get_logger(__name__)
 
@@ -38,6 +39,7 @@ def clip_roi(img, area):
 
 
 def image_match(target, template: Template) -> ImageMatchResult:
+    reset_timeout()
     try:
         if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
             tgt = to_gray(target)
@@ -61,6 +63,7 @@ def image_match(target, template: Template) -> ImageMatchResult:
 
 
 def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult:
+    reset_timeout()
     if target is None or target.size == 0:
         return ImageMatchResult()
     try:
