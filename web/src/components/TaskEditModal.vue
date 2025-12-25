@@ -27,6 +27,7 @@
                   <option :value="1">Single Execution (Depricated)</option>
                   <option :value="3">Loop until canceled</option>
                   <option :value="4">Team Trials</option>
+                  <option :value="5">Full Auto (Career + Team Trials Loop)</option>
                 </select>
               </div>
               <div class="row">

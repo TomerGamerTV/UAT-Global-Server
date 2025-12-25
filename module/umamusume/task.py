@@ -37,9 +37,9 @@ class TaskDetail:
     compensate_failure: bool
     event_weights: dict
     scenario_config: ScenarioConfig
-    # 限时: 富士奇石的表演秀
     fujikiseki_show_mode: bool
     fujikiseki_show_difficulty: int
+    do_tt_next: bool
 
 
 class EndTaskReason(Enum):
@@ -54,6 +54,8 @@ class UmamusumeTask(Task):
         super().end_task(status, reason)
 
     def start_task(self) -> None:
+        if self.task_execute_mode == TaskExecuteMode.TASK_EXECUTE_MODE_FULL_AUTO:
+            self.detail.do_tt_next = False
         super().start_task()
 
 
@@ -129,6 +131,8 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
         td.event_weights = None
 
     td.fujikiseki_show_difficulty = attachment_data['fujikiseki_show_difficulty']
+    td.do_tt_next = attachment_data.get('do_tt_next', False)
+    
     ut.detail = td
     return ut
 

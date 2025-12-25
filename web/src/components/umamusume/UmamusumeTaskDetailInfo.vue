@@ -22,13 +22,8 @@ export default {
       } else if (this.task.detail?.scenario === 2) {
         return 'Aoharu Cup';
       }
-      // Add more scenarios here as needed
       return 'Unknown Scenario';
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>
