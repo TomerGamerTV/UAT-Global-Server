@@ -8,6 +8,7 @@ import cv2
 import random
 import datetime
 import bot.base.log as logger
+import bot.base.gpu_utils as gpu_utils
 import os
 
 try:
@@ -17,7 +18,6 @@ try:
     os.environ.setdefault("VECLIB_MAXIMUM_THREADS", cores)
     cv2.setUseOptimized(True)
     cv2.setNumThreads(int(cores))
-    cv2.ocl.setUseOpenCL(False)
    
     try:
         cv2.utils.logging.setLogLevel(cv2.utils.logging.LOG_LEVEL_SILENT)
@@ -38,6 +38,13 @@ from module.umamusume.manifest import UmamusumeManifest
 from uvicorn import run
 
 log = logger.get_logger(__name__)
+
+_gpu_available = gpu_utils.detect_gpu_capabilities()
+_opencv_gpu = gpu_utils.configure_opencv_gpu()
+if _gpu_available:
+    log.info(f"GPU acceleration enabled: PaddleOCR=Yes, OpenCV={'Yes' if _opencv_gpu else 'No'}")
+else:
+    log.info("GPU acceleration disabled: using CPU mode")
 
 start_time = 0
 end_time = 24
