@@ -18,6 +18,8 @@
 
 # **A automation tool for Uma Musume: Pretty Derby**
 
+# [GPU acceleration guide (click me later)](#gpu-setup)
+
 ### Things this bot can do
 - ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card are all automated.
   - **Everything is 100% automated you can just afk for **DAYS** until legacy umas are full**
@@ -288,6 +290,51 @@ Maybe fix card selection breaking
 - **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
 
 - **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
+
+
+
+## GPU Setup
+
+This bot can optionally use an NVIDIA GPU to accelerate certain operations. Follow these steps:
+
+1. Install drivers for your NVIDIA GPU.
+2. Install **CUDA Toolkit 11.8**: [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda-11-8-0-download-archive)
+3. Install **cuDNN v8.6.0 (October 3rd, 2022) for CUDA 11.x**
+
+   * Download the ZIP folder from [NVIDIA cuDNN](https://developer.nvidia.com/rdp/cudnn-archive)
+4. Extract the ZIP and move its contents to the respective CUDA folders:
+
+   ```
+   cudnn-windows-x86_64-8.6.0.163_cuda11-archive\cudnn-windows-x86_64-8.6.0.163_cuda11-archive\bin
+   → C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin
+   ```
+
+   ```
+   Move the lib and include folders similarly to:
+   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8
+   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\libnvvp
+   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin
+   ```
+5. Add the following three folders to your system **PATH**:
+
+   * `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin`
+   * `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\libnvvp`
+   * `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8`
+6. Copy this file:
+
+   ```
+   C:\Program Files\NVIDIA Corporation\Nsight Systems 2022.4.2\host-windows-x64\zlib.dll
+   ```
+
+   and paste it into:
+
+   ```
+   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin
+   ```
+
+   Rename it to `zlibwapi.dll`.
+
+   Thats it
 
 
 Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
