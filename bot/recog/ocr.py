@@ -5,12 +5,12 @@ from difflib import SequenceMatcher
 import bot.base.log as logger
 import os
 from config import CONFIG
-os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
-os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.27'
-
+import bot.base.gpu_utils as gpu_utils
 
 log = logger.get_logger(__name__)
 _paddleocr_import_lock = threading.RLock()
+_USE_GPU = False
+_GPU_INITIALIZED = False
 
 
 
@@ -27,16 +27,50 @@ OCR_CH = None
 OCR_EN = None
 
 
+def initialize_gpu_mode():
+    global _USE_GPU, _GPU_INITIALIZED
+    
+    if _GPU_INITIALIZED:
+        return
+    
+    _GPU_INITIALIZED = True
+    
+    try:
+        gpu_config = getattr(CONFIG.bot, 'gpu', None)
+        if gpu_config is None:
+            _USE_GPU = False
+            return
+        
+        gpu_enabled = getattr(gpu_config, 'enabled', 'auto')
+        
+        if gpu_enabled == 'false' or gpu_enabled is False:
+            _USE_GPU = False
+            return
+        
+        if gpu_enabled == 'auto' or gpu_enabled == 'true' or gpu_enabled is True:
+            if gpu_utils.is_gpu_available():
+                memory_fraction = float(getattr(gpu_config, 'memory_fraction', 0.5))
+                device_id = int(getattr(gpu_config, 'device_id', 0))
+                
+                gpu_utils.set_gpu_config(memory_fraction, device_id)
+                gpu_utils.configure_paddle_gpu()
+                
+                _USE_GPU = True
+            else:
+                _USE_GPU = False
+        else:
+            _USE_GPU = False
+    
+    except Exception as e:
+        _USE_GPU = False
+
 def ensure_paddleocr():
     global paddleocr
     try:
-        # If already imported, nothing to do
         if paddleocr is not None and 'paddleocr' in sys.modules:
             return
-        # Avoid importing during interpreter shutdown to prevent atexit registration errors
         if hasattr(sys, "is_finalizing") and sys.is_finalizing():
             raise RuntimeError("Interpreter finalizing; skip paddleocr import")
-        # Prevent concurrent imports from multiple threads
         with _paddleocr_import_lock:
             if paddleocr is None or 'paddleocr' not in sys.modules:
                 paddleocr = importlib.import_module('paddleocr')
@@ -46,14 +80,28 @@ def ensure_paddleocr():
 
 def init_ocr_if_needed():
     global OCR_JP, OCR_CH, OCR_EN
+    
+    initialize_gpu_mode()
     ensure_paddleocr()
+    
     try:
-        if OCR_EN is None:
-            OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-        if OCR_JP is None:
-            OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-        if OCR_CH is None:
-            OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+        if _USE_GPU:
+            if OCR_EN is None:
+                OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=True, gpu_mem=int(gpu_utils.get_gpu_memory_fraction() * 1000))
+            if OCR_JP is None:
+                OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=True, gpu_mem=int(gpu_utils.get_gpu_memory_fraction() * 1000))
+            if OCR_CH is None:
+                OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=True, gpu_mem=int(gpu_utils.get_gpu_memory_fraction() * 1000))
+        else:
+            os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
+            os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.27'
+            
+            if OCR_EN is None:
+                OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+            if OCR_JP is None:
+                OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+            if OCR_CH is None:
+                OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
     except Exception as e:
         log.error(f"Failed to initialize PaddleOCR: {e}")
         raise
