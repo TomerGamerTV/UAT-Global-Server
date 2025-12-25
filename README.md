@@ -302,19 +302,15 @@ This bot can optionally use an NVIDIA GPU to accelerate certain operations. Foll
 3. Install **cuDNN v8.6.0 (October 3rd, 2022) for CUDA 11.x**
 
    * Download the ZIP folder from [NVIDIA cuDNN](https://developer.nvidia.com/rdp/cudnn-archive)
-4. Extract the ZIP and move its contents to the respective CUDA folders:
+4. Extract the ZIP and move its contents to the respective CUDA folders for example:
 
    ```
    cudnn-windows-x86_64-8.6.0.163_cuda11-archive\cudnn-windows-x86_64-8.6.0.163_cuda11-archive\bin
    → C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin
    ```
 
-   ```
-   Move the lib and include folders similarly to:
-   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8
-   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\libnvvp
-   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin
-   ```
+   You are to do this for all the folders
+   
 5. Add the following three folders to your system **PATH**:
 
    * `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\bin`
@@ -334,7 +330,7 @@ This bot can optionally use an NVIDIA GPU to accelerate certain operations. Foll
 
    Rename it to `zlibwapi.dll`.
 
-   Thats it
+not done
 
 
 Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
