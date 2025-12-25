@@ -162,7 +162,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 ## Changelogs
 - **25/12/2025**  
 Showtime mode ui stuck fix.
-Always find and click next.png as a last resort       
+Always find and click next.png as a last resort
+made gpu public (due to increase in speed getting stuck due to slow load times are now more common) hence
+made decision making restart if ocr/template match isnt used for 10 seconds    
 
 - **23/12/2025**  
 fixed date phrasing fail causing a loop.
