@@ -43,8 +43,6 @@ _gpu_available = gpu_utils.detect_gpu_capabilities()
 _opencv_gpu = gpu_utils.configure_opencv_gpu()
 if _gpu_available:
     log.info(f"GPU acceleration enabled: PaddleOCR=Yes, OpenCV={'Yes' if _opencv_gpu else 'No'}")
-else:
-    log.info("GPU acceleration disabled: using CPU mode")
 
 start_time = 0
 end_time = 24
