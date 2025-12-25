@@ -348,8 +348,9 @@ paddlepaddle==2.6.2
 to:
 paddlepaddle-gpu==2.6.2
 ```
+Reboot
 
-That should be all iirc
+That should be all iirc if not go make a issue
 
 
 Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
