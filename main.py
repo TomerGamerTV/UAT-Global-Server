@@ -537,13 +537,6 @@ if __name__ == '__main__':
             scheduler.start()
     except Exception:
         pass
-    
-    try:
-        import bot.base.log as logger
-        logger.start_inactivity_monitor()
-    except Exception:
-        pass
-    
     print("🚀 UAT running on http://127.0.0.1:8071")
     if os.environ.get("UAT_AUTORESTART", "0") != "1":
         threading.Thread(target=lambda: (time.sleep(1), __import__('webbrowser').open("http://127.0.0.1:8071")), daemon=True).start()
