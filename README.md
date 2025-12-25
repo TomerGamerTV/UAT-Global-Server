@@ -18,7 +18,9 @@
 
 # **A automation tool for Uma Musume: Pretty Derby**
 
-# [GPU acceleration guide (click me later)](#gpu-setup)
+# [GPU acceleration guide (click me later)](#gpu-setup)    oh yeah good luck to AMD fuckers. not my problem lolol 
+  
+
 
 ### Things this bot can do
 - ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card are all automated.
