@@ -337,7 +337,7 @@ pip uninstall paddlepaddle
 
 8. Install GPU version of PaddlePaddle:
 ```bash
-pip install paddlepaddle-gpu==2.6.2
+pip install paddlepaddle-gpu==2.6.2 -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 9. Update `requirements.txt` to prevent reinstalling CPU version:
