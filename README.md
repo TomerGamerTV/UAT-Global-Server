@@ -330,7 +330,26 @@ This bot can optionally use an NVIDIA GPU to accelerate certain operations. Foll
 
    Rename it to `zlibwapi.dll`.
 
-not done
+7. Uninstall CPU version of PaddlePaddle:
+```bash
+pip uninstall paddlepaddle
+```
+
+8. Install GPU version of PaddlePaddle:
+```bash
+pip install paddlepaddle-gpu==2.6.2 -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+9. Update `requirements.txt` to prevent reinstalling CPU version:
+```bash
+Open requirements.txt and change line 71 from:
+paddlepaddle==2.6.2
+
+to:
+paddlepaddle-gpu==2.6.2
+```
+
+That should be all iirc
 
 
 Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
