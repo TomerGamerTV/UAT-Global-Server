@@ -90,6 +90,7 @@ TITLE = [
     "Items Selected", #44
     "Auto Select", #45
     "Session Error", #46
+    "areer Playthrough Difficulty Se" #47
 ]
 
 
@@ -630,6 +631,9 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[34]:  # New Difficulty Unlocked
             # Limited time: Fuji Kiseki Show
             ctx.ctrl.click(360, 850, "Confirm unlock new difficulty")
+            
+        if title_text == TITLE[47]:  # fuji event
+            ctx.ctrl.click(504,1176, "fuji")
 
         if title_text in (TITLE[37], TITLE[38]):
             ctx.ctrl.click_by_point(STORY_REWARDS_COLLECTED_CLOSE)

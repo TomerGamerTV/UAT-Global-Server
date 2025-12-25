@@ -16,6 +16,7 @@ class TaskExecuteMode(Enum):
     TASK_EXECUTE_MODE_CRON_JOB = 2
     TASK_EXECUTE_MODE_LOOP = 3
     TASK_EXECUTE_MODE_TEAM_TRIALS = 4
+    TASK_EXECUTE_MODE_FULL_AUTO = 5
 
 
 class TaskStatus(Enum):

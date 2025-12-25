@@ -158,7 +158,7 @@ class Executor:
             # Launch application
             log.debug("Starting: "+manifest.app_package_name)
             ctx.ctrl.start_app(manifest.app_package_name, manifest.app_activity_name)
-
+            ctx.ctrl.click(355, 1200, "task start")
             
             
             def screen_watchdog():

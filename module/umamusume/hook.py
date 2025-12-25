@@ -51,11 +51,37 @@ def tt_next_sequence(ctx: UmamusumeContext):
         pass
 
 def complete_team_trials(ctx: UmamusumeContext):
-    log.info("tt done - ending task")
+    mode_name = getattr(ctx.task.task_execute_mode, "name", None)
     ctx.ctrl.click(355, 1200, "tt2")
     time.sleep(1)
     ctx.ctrl.click(355, 1200, "tt1")
-    ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+    if mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+        log.info("tt done in full auto - switching to career mode")
+        ctx.task.detail.do_tt_next = False
+    else:
+        log.info("tt done - ending task")
+        ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+
+def check_and_resume_team_trials(ctx: UmamusumeContext):
+    mode_name = getattr(ctx.task.task_execute_mode, "name", None)
+    if mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+        try:
+            img = ctx.current_screen
+            if img is not None:
+                pixel = img[67, 456]
+                b, g, r = int(pixel[0]), int(pixel[1]), int(pixel[2])
+                target_r, target_g, target_b = 81, 76, 89
+                tolerance = 5
+                if (abs(r - target_r) <= tolerance and 
+                    abs(g - target_g) <= tolerance and 
+                    abs(b - target_b) <= tolerance):
+                    log.info(f"pixel now matches - aborting tt mode, switching back to career")
+                    ctx.task.detail.do_tt_next = False
+                    ctx.ctrl.click(552, 1082, "resume career instead")
+                    return
+        except Exception as e:
+            log.warning(f"pixel check failed: {e}")
+    ctx.ctrl.click(522, 1228, "team trials resume")
 
 REF_CANT_TT_REGION = Template("cant_tt", UMAMUSUME_REF_TEMPLATE_PATH, 
                                ImageMatchConfig(match_area=Area(369, 586, 439, 609)))
@@ -67,7 +93,7 @@ RULES_BY_MODE = {
     "TASK_EXECUTE_MODE_TEAM_TRIALS": [
         {"type": "image", "ref": REF_CANT_TT_REGION, "action": complete_team_trials},
         {"type": "image", "ref": REF_CANT_TT2_REGION, "action": complete_team_trials},
-        {"type": "image", "ref": REF_HOME_GIFT, "action": lambda ctx: ctx.ctrl.click(522, 1228, "team trials resume")},
+        {"type": "image", "ref": REF_HOME_GIFT, "action": check_and_resume_team_trials},
         {"type": "image", "ref": REF_TEAM_TRIALS, "action": lambda ctx: ctx.ctrl.click(106, 812, "team trials resume2")},
         {"type": "image", "ref": REF_TEAM_RACE, "action": lambda ctx: ctx.ctrl.click(351, 839, "team trials resume3")},
         {"type": "image", "ref": REF_SELECT_OPP, "action": lambda ctx: ctx.ctrl.click(73, 278, "team trials resume4")},
@@ -85,7 +111,14 @@ def apply_rules(ctx: UmamusumeContext, img_gray):
     mode = getattr(ctx.task.task_execute_mode, "name", None)
     if not mode:
         return False
-    rules = RULES_BY_MODE.get(mode, [])
+    
+    if mode == "TASK_EXECUTE_MODE_FULL_AUTO":
+        if getattr(ctx.task.detail, "do_tt_next", False):
+            rules = RULES_BY_MODE.get("TASK_EXECUTE_MODE_TEAM_TRIALS", [])
+        else:
+            return False
+    else:
+        rules = RULES_BY_MODE.get(mode, [])
     title_raw = None
     need_title = any(r.get("type") == "title" for r in rules)
     if need_title:
@@ -108,21 +141,6 @@ def apply_rules(ctx: UmamusumeContext, img_gray):
         except Exception:
             pass
     return False
-    mode = getattr(ctx.task.task_execute_mode, "name", None)
-    if not mode:
-        return False
-    rules = RULES_BY_MODE.get(mode, [])
-    for r in rules:
-        try:
-            if r.get("type") == "image":
-                if image_match(img_gray, r["ref"]).find_match:
-                    r["action"](ctx)
-                    return True
-            elif r.get("type") == "title":
-                pass
-        except Exception:
-            pass
-    return False
 
 
 def before_hook(ctx: UmamusumeContext):
@@ -130,21 +148,59 @@ def before_hook(ctx: UmamusumeContext):
     if apply_rules(ctx, img):
         return
     if image_match(img, REF_HOME_GIFT).find_match:
-        if ctx.task.task_execute_mode.name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
-            ctx.ctrl.click(0, 0, "team trials resume 1")
+        mode_name = ctx.task.task_execute_mode.name
+        if mode_name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
+            ctx.ctrl.click(522, 1228, "team trials resume")
+            return
+        elif mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+            if getattr(ctx.task.detail, "do_tt_next", False):
+                ctx.ctrl.click(522, 1228, "team trials resume")
+                return
+            else:
+                try:
+                    screen = ctx.current_screen
+                    if screen is not None:
+                        pixel = screen[67, 456]
+                        b, g, r = int(pixel[0]), int(pixel[1]), int(pixel[2])
+                        target_r, target_g, target_b = 81, 76, 89
+                        tolerance = 5
+                        if not (abs(r - target_r) <= tolerance and 
+                                abs(g - target_g) <= tolerance and 
+                                abs(b - target_b) <= tolerance):
+                            log.info(f"pixel does not match - switching to tt mode")
+                            ctx.task.detail.do_tt_next = True
+                            ctx.ctrl.click(522, 1228, "team trials resume")
+                            return
+                        else:
+                            log.info(f"pixel matches - continuing career mode")
+                except Exception as e:
+                    log.warning(f"pixel check failed: {e}")
+                ctx.ctrl.click(552, 1082, "resume 1")
         else:
             ctx.ctrl.click(552, 1082, "resume 1")
         time.sleep(1)
         img = cv2.cvtColor(ctx.ctrl.get_screen(), cv2.COLOR_BGR2GRAY)
         if image_match(img, REF_RESUME_CAREER).find_match:
-            if ctx.task.task_execute_mode.name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
-                ctx.ctrl.click(0, 0, "team trials resume 2")
+            mode_name = ctx.task.task_execute_mode.name
+            if mode_name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
+                ctx.ctrl.click(710, 10, "skip resume career")
+            elif mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+                if getattr(ctx.task.detail, "do_tt_next", False):
+                    ctx.ctrl.click(710, 10, "skip resume career")
+                else:
+                    ctx.ctrl.click(505, 908, "resume 2")
             else:
                 ctx.ctrl.click(505, 908, "resume 2")
         return
     if image_match(img, REF_RESUME_CAREER).find_match:
-        if ctx.task.task_execute_mode.name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
-            ctx.ctrl.click(0, 0, "team trials resume 2")
+        mode_name = ctx.task.task_execute_mode.name
+        if mode_name == "TASK_EXECUTE_MODE_TEAM_TRIALS":
+            ctx.ctrl.click(710, 10, "skip resume career")
+        elif mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+            if getattr(ctx.task.detail, "do_tt_next", False):
+                ctx.ctrl.click(710, 10, "skip resume career")
+            else:
+                ctx.ctrl.click(505, 908, "resume 2")
         else:
             ctx.ctrl.click(505, 908, "resume 2")
         return

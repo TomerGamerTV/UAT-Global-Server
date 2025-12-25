@@ -918,8 +918,16 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
 def script_main_menu(ctx: UmamusumeContext):
     if ctx.cultivate_detail.cultivate_finish:
-        ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
-        return
+        mode_name = getattr(ctx.task.task_execute_mode, "name", None)
+        if mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+            log.info("career run completed in full auto mode - resetting for next run")
+            ctx.cultivate_detail.cultivate_finish = False
+            ctx.cultivate_detail.turn_info = None
+            ctx.cultivate_detail.turn_info_history = []
+            return
+        else:
+            ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+            return
     ctx.ctrl.click_by_point(TO_CULTIVATE_SCENARIO_CHOOSE)
 
 
