@@ -64,12 +64,6 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
     if target is None or target.size == 0:
         return ImageMatchResult()
     try:
-        import bot.base.log as logger
-        if logger.get_abort_flag().is_set():
-            return ImageMatchResult()
-    except Exception:
-        pass
-    try:
         arr = getattr(template, 'template_img', None)
         if arr is None:
             arr = getattr(template, 'template_image', None)

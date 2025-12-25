@@ -182,12 +182,6 @@ def reset_ocr():
 
 
 def ocr(img, lang="en"):
-    try:
-        import bot.base.log as logger
-        if logger.get_abort_flag().is_set():
-            return []
-    except Exception:
-        pass
     o = get_ocr(lang)
     return o.ocr(img, cls=False)
 
@@ -237,12 +231,6 @@ def parse_text_items(result):
 # ocr_line 文字识别图片，返回所有出现的文字
 
 def ocr_line(img, lang="en"):
-    try:
-        import bot.base.log as logger
-        if logger.get_abort_flag().is_set():
-            return ""
-    except Exception:
-        pass
     raw = ocr(img, lang)
     items = parse_text_items(raw)
     text = ""
@@ -252,12 +240,6 @@ def ocr_line(img, lang="en"):
 
 
 def ocr_digits(img):
-    try:
-        import bot.base.log as logger
-        if logger.get_abort_flag().is_set():
-            return ""
-    except Exception:
-        pass
     raw = get_ocr("en").ocr(img, cls=False)
     items = parse_text_items(raw)
     if not items:
