@@ -1976,8 +1976,17 @@ def script_not_found_ui(ctx: UmamusumeContext):
             
     except Exception as e:
         log.debug(f"Goal detection fallback failed: {str(e)}")
-    img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
-            # Original fallback if goal detection fails
+    try:
+        from module.umamusume.asset.template import REF_NEXT
+        img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+        next_match = image_match(img, REF_NEXT)
+        if next_match.find_match:
+            center_x = next_match.center_point[0]
+            center_y = next_match.center_point[1]
+            ctx.ctrl.click(center_x, center_y, "Next button")
+            return
+    except Exception:
+        pass
     log.debug("🔍 No specific UI detected - using default fallback click")
     ctx.ctrl.click(719, 1, "Default fallback click")
 
