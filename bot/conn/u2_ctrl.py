@@ -85,6 +85,11 @@ class U2AndroidController(AndroidController):
             load_persisted()
         except Exception:
             pass
+        try:
+            import bot.base.log as logger
+            logger.register_controller(self)
+        except Exception:
+            pass
 
     def in_fallback_block(self, name):
         if isinstance(name, str) and name == "Default fallback click":
