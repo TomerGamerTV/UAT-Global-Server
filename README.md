@@ -149,7 +149,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **25/12/2025**  
-Showtime mode ui stuck fix.      
+Showtime mode ui stuck fix.
+Always find and click next.png as a last resort       
 
 - **23/12/2025**  
 fixed date phrasing fail causing a loop.
