@@ -41,6 +41,10 @@ class Executor:
         self.detect_ui_results_write_lock = threading.Lock()
         self.detect_ui_results = []
         self.executor = ThreadPoolExecutor(max_workers=CONFIG.bot.auto.cpu_alloc)
+        try:
+            logger.register_executor(self)
+        except Exception:
+            pass
 
     def ensure_pool(self):
         if self.executor is None or getattr(self.executor, "_shutdown", False):
@@ -85,6 +89,12 @@ class Executor:
             pass
 
     def detect_ui(self, ui_list: list[UI], target) -> UI:
+        try:
+            if logger.get_abort_flag().is_set():
+                logger.clear_abort_flag()
+                return NOT_FOUND_UI
+        except Exception:
+            pass
         target = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
         self.ensure_pool()
         if self.executor is None or getattr(self.executor, "_shutdown", False):
