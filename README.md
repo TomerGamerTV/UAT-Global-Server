@@ -1,12 +1,3 @@
-# Merry Christmas, go spend time with your family while you can.   
-<img width="1585" height="453" alt="image" src="https://github.com/user-attachments/assets/e11cdf12-3994-4048-a0e6-82fb0bbacbc9" />   
-
-
-
-
-
-
-
 # UMAMUSUME AUTO TRAINER
 [![Discord](https://img.shields.io/badge/Discord-join-green?logo=discord&logoColor=white)](https://discord.gg/8nwNZdxd72)  
 **Discord that im not in I dont own and will never look at (you guys can go hang out ig but dont try contacting me there)**
