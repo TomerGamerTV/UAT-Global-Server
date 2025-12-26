@@ -56,7 +56,7 @@ def _get_adb_path():
     return os.path.join("deps", "adb", "adb.exe")
 
 
-def _run_adb(args, timeout=10, capture_output=True, text=True):
+def _run_adb(args, timeout=15, capture_output=True, text=True):
     """Run an adb command with the bundled binary and return CompletedProcess."""
     adb_path = _get_adb_path()
     return subprocess.run([adb_path] + args, capture_output=capture_output, text=text, timeout=timeout)
@@ -73,21 +73,64 @@ def _soft_recover_device(device_id):
     """
     try:
         print("   ♻️  Attempting auto-recovery (safe)…")
+        
+        # 1. Try simple reconnect for offline devices
+        try:
+            print("   🔄 Attempting 'adb reconnect offline'...")
+            _run_adb(["reconnect", "offline"], timeout=10)
+            # Give it a moment to reconnect
+            time.sleep(2)
+            # Check if it worked
+            res = _run_adb(["devices"], timeout=5)
+            if device_id in res.stdout and "offline" not in res.stdout:
+                print("   ✅ Device seems back online!")
+                return
+        except Exception:
+            pass
+            
+        # 1.5 Special handling for emulators (often stuck offline)
+        if device_id.startswith("emulator-"):
+            try:
+                # emulator-5554 -> port 5554 (console) -> port 5555 (adb)
+                serial_port = int(device_id.split("-")[1])
+                adb_port = serial_port + 1
+                print(f"   💊 attempting to re-engage emulator via TCP {adb_port}...")
+                _run_adb(["connect", f"127.0.0.1:{adb_port}"], timeout=10)
+                time.sleep(1)
+            except Exception:
+                pass
+
+        # 2. Heavier recovery
         # Best-effort forward removal (ignore failures)
         try:
             _run_adb(["-s", device_id, "forward", "--remove-all"], timeout=5)
         except Exception:
             pass
 
-        # Restart adb server
+        # Kill any existing adb processes to clear stale connections
         try:
-            _run_adb(["kill-server"], timeout=5)
+            print("   🧹 Cleaning up stale ADB processes...")
+            subprocess.run(["taskkill", "/F", "/IM", "adb.exe", "/T"], capture_output=True, timeout=5)
+            time.sleep(1)
         except Exception:
             pass
-        _run_adb(["start-server"], timeout=10)
 
-        # Ensure target device comes back online
-        _run_adb(["-s", device_id, "wait-for-device"], timeout=20)
+        # Restart adb server
+        try:
+            _run_adb(["kill-server"], timeout=10)
+        except Exception:
+            pass
+        _run_adb(["start-server"], timeout=15)
+
+        # Ensure target device comes back online - increased timeout to 60s
+        print(f"   ⏳ Waiting for device {device_id} to reconnect (up to 60s)...")
+        try:
+            _run_adb(["-s", device_id, "wait-for-device"], timeout=60)
+        except subprocess.TimeoutExpired:
+            print("   🥶 Device still unresponsive.")
+            if device_id.startswith("emulator-"):
+                print("   👉 ACTION REQUIRED: Your emulator appears frozen. Please restart the emulator manually.")
+            raise
 
         # Ping device quickly
         pong = _run_adb(["-s", device_id, "shell", "echo", "pong"], timeout=5)
@@ -196,7 +239,8 @@ def get_adb_devices():
         for line in lines:
             if line.strip() and '\t' in line:
                 device_id, status = line.split('\t')
-                if status == 'device':
+                # Accept offline devices so we can try to recover them
+                if status == 'device' or status == 'offline':
                     devices.append(device_id)
         
         # If no devices found, try restarting ADB server
@@ -214,7 +258,7 @@ def get_adb_devices():
                 for line in lines:
                     if line.strip() and '\t' in line:
                         device_id, status = line.split('\t')
-                        if status == 'device':
+                        if status == 'device' or status == 'offline':
                             devices.append(device_id)
         
         return devices
@@ -328,13 +372,22 @@ def run_health_checks():
     """Run health checks after device selection"""
     print(" Running connection health checks...")
     
-    # Test ADB connection
+    # Test ADB connection - increased timeout to 15s
     try:
         adb_path = _get_adb_path()
         result = subprocess.run([adb_path, "devices"], 
-                              capture_output=True, text=True, timeout=10)
-        if result.returncode == 0 and selected_device in result.stdout:
-            print("✅ ADB connection: OK")
+                              capture_output=True, text=True, timeout=15)
+        
+        if result.returncode == 0:
+            output = result.stdout
+            if selected_device in output:
+                if "offline" in output:
+                     print("❌ ADB connection: OK but device is OFFLINE")
+                     return False
+                print("✅ ADB connection: OK")
+            else:
+                 print("❌ ADB connection: Device not listed")
+                 return False
         else:
             print("❌ ADB connection: FAILED")
             return False
@@ -342,10 +395,10 @@ def run_health_checks():
         print(f"❌ ADB health check failed: {e}")
         return False
     
-    # Test device responsiveness
+    # Test device responsiveness - increased timeout to 15s
     try:
         result = subprocess.run([adb_path, "-s", selected_device, "shell", "echo", "test"], 
-                              capture_output=True, text=True, timeout=10)
+                              capture_output=True, text=True, timeout=15)
         if result.returncode == 0:
             print("✅ Device responsiveness: OK")
         else:

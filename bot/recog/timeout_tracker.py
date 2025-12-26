@@ -52,7 +52,7 @@ class RecognitionTimeoutTracker:
                 log.error(f"Timeout monitor error: {e}")
 
 tracker = RecognitionTimeoutTracker(timeout_seconds=10)
-tracker.start()
+# tracker.start()  <-- Removed auto-start to prevent import side-effects
 
 def reset_timeout():
     tracker.reset()
