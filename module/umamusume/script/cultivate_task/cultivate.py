@@ -1077,38 +1077,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 return
     except Exception:
         pass
-    try:
-        if isinstance(event_name, str) and event_name.strip().lower() == "tutorial":
-            try:
-                _, choices = parse_cultivate_event(ctx, img)
-            except Exception:
-                choices = []
-
-            if not isinstance(choices, list):
-                choices = []
-            if len(choices) == 0 or len(choices) > 5:
-                try:
-                    time.sleep(0.25)
-                    img_retry = ctx.ctrl.get_screen()
-                    _, choices2 = parse_cultivate_event(ctx, img_retry)
-                    if isinstance(choices2, list) and len(choices2) > 0:
-                        choices = choices2
-                except Exception:
-                    pass
-
-            if len(choices) == 5:
-                target_pt = choices[4]
-                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5 override")
-                ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
-                return
-    except Exception:
-        pass
-    choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
-    if not isinstance(choice_index, int) or choice_index <= 0:
-        return
-    if choice_index > 5:
-        choice_index = 2
-
+    
     try:
         _, selectors = parse_cultivate_event(ctx, img)
     except Exception:
@@ -1126,6 +1095,22 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 log.info(len(selectors))
         except Exception:
             pass
+    
+    try:
+        if isinstance(event_name, str) and event_name.strip().lower() == "tutorial":
+            if isinstance(selectors, list) and len(selectors) == 5:
+                target_pt = selectors[4]
+                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5 override")
+                ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
+                return
+    except Exception:
+        pass
+    
+    choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
+    if not isinstance(choice_index, int) or choice_index <= 0:
+        return
+    if choice_index > 5:
+        choice_index = 2
     if isinstance(selectors, list) and len(selectors) > 0:
         idx = int(choice_index)
         if idx < 1:

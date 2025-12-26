@@ -321,14 +321,24 @@ def purge_all(reason: str = ""):
         pass
 
     try:
-        from bot.recog.ocr import reset_ocr
+        from bot.recog.ocr import reset_ocr, clear_ocr_cache
+        clear_ocr_cache()
         reset_ocr()
         log.info("purge: OCR reset")
     except Exception:
         pass
 
     try:
+        from bot.recog.image_matcher import clear_image_match_cache
+        clear_image_match_cache()
+        log.info("purge: image match cache cleared")
+    except Exception:
         pass
+
+    try:
+        from module.umamusume.script.cultivate_task.parse import clear_parse_caches
+        clear_parse_caches()
+        log.info("purge: parse caches cleared")
     except Exception:
         pass
 

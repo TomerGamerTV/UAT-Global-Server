@@ -7,5 +7,5 @@ bot:
   gpu:
     device_id: 0
     enabled: auto
-    memory_fraction: 0.5
+    memory_fraction: 0.3
 version: 0.0.1
