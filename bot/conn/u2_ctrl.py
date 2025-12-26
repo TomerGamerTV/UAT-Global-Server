@@ -197,7 +197,22 @@ class U2AndroidController(AndroidController):
 
     # init_env 初始化环境
     def init_env(self) -> None:
-        self.u2client = u2.connect(self.config.device_name)
+        try:
+            # Short timeout for initial connection attempt
+            self.u2client = u2.connect(self.config.device_name)
+            # Try a simple RPC to verify connection
+            _ = self.u2client.window_size()
+        except Exception as e:
+            log.warning(f"Initial u2 connection failed: {e}. Retrying with forward cleanup...")
+            try:
+                # Clean forwards which often cause 7912 port conflicts on Windows
+                subprocess.run([self.path + "adb.exe", "-s", self.config.device_name, "forward", "--remove-all"], 
+                             capture_output=True, timeout=5)
+                time.sleep(0.5)
+                self.u2client = u2.connect(self.config.device_name)
+            except Exception as e2:
+                log.error(f"Failed to connect to device {self.config.device_name}: {e2}")
+                raise
 
     # get_screen 获取图片
     def get_screen(self, to_gray=False):
@@ -288,12 +303,24 @@ class U2AndroidController(AndroidController):
 
     # execute_adb_shell 执行adb命令
     def execute_adb_shell(self, cmd, sync):
-        cmd = os.run_cmd(self.path + "adb -s " + self.config.device_name + " " + cmd)
+        cmd_str = self.path + "adb -s " + self.config.device_name + " " + cmd
+        proc = os.run_cmd(cmd_str)
         if sync:
-            cmd.communicate()
+            try:
+                # Add a broad 30s timeout to prevent hanging the main loop
+                proc.communicate(timeout=30)
+            except subprocess.TimeoutExpired:
+                log.error(f"ADB command timed out: {cmd_str}")
+                proc.kill()
+                proc.communicate()
         else:
-            threading.Thread(target=cmd.communicate, args=()).start()
-        return cmd
+            def _wait():
+                try:
+                    proc.communicate(timeout=60)
+                except Exception:
+                    proc.kill()
+            threading.Thread(target=_wait, daemon=True).start()
+        return proc
 
     def recover_home_and_reopen(self):
         try:
