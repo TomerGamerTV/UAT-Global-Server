@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import bot.base.log as logger
 
 log = logger.get_logger(__name__)
@@ -8,6 +9,8 @@ _GPU_AVAILABLE = None
 _GPU_DEVICE_COUNT = 0
 _GPU_MEMORY_FRACTION = 0.3
 _GPU_DEVICE_ID = 0
+_LAST_GPU_CACHE_CLEAR = 0
+_GPU_CACHE_CLEAR_INTERVAL = 11.0
 
 def detect_gpu_capabilities():
     global _GPU_AVAILABLE, _GPU_DEVICE_COUNT
@@ -80,13 +83,20 @@ def configure_paddle_gpu():
         log.error(f"Failed to configure Paddle GPU: {e}")
 
 def clear_gpu_cache():
+    global _LAST_GPU_CACHE_CLEAR
+    
     if not is_gpu_available():
+        return
+    
+    current_time = time.time()
+    if current_time - _LAST_GPU_CACHE_CLEAR < _GPU_CACHE_CLEAR_INTERVAL:
         return
     
     try:
         import paddle
         if hasattr(paddle.device, 'cuda') and hasattr(paddle.device.cuda, 'empty_cache'):
             paddle.device.cuda.empty_cache()
+            _LAST_GPU_CACHE_CLEAR = current_time
     except Exception as e:
         log.debug(f"Failed to clear GPU cache: {e}")
 

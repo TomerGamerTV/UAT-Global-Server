@@ -316,7 +316,6 @@ def purge_all(reason: str = ""):
     try:
         if os.environ.get('UAT_DISABLE_MKLDNN', None) is None:
             os.environ['UAT_DISABLE_MKLDNN'] = '1'
-            log.info("purge: set UAT_DISABLE_MKLDNN=1 for next OCR init")
     except Exception:
         pass
 

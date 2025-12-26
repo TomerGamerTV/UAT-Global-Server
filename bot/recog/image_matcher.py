@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import hashlib
+from collections import OrderedDict
 
 from bot.base.common import ImageMatchMode
 from bot.base.resource import Template
@@ -10,7 +11,31 @@ from bot.recog.timeout_tracker import reset_timeout
 
 log = logger.get_logger(__name__)
 
-_image_match_cache = {}
+class LRUCache:
+    def __init__(self, maxsize=4500):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+    
+    def get(self, key):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def set(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.maxsize:
+            self.cache.popitem(last=False)
+    
+    def clear(self):
+        self.cache.clear()
+    
+    def __contains__(self, key):
+        return key in self.cache
+
+_image_match_cache = LRUCache(maxsize=4500)
 
 def _compute_match_cache_key(img, template):
     try:
@@ -56,8 +81,10 @@ def clip_roi(img, area):
 def image_match(target, template: Template) -> ImageMatchResult:
     reset_timeout()
     cache_key = _compute_match_cache_key(target, template)
-    if cache_key and cache_key in _image_match_cache:
-        return _image_match_cache[cache_key]
+    if cache_key:
+        cached = _image_match_cache.get(cache_key)
+        if cached is not None:
+            return cached
     try:
         if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
             tgt = to_gray(target)
@@ -74,7 +101,7 @@ def image_match(target, template: Template) -> ImageMatchResult:
             else:
                 result = template_match(tgt, template, template.image_match_config.match_accuracy)
                 if cache_key:
-                    _image_match_cache[cache_key] = result
+                    _image_match_cache.set(cache_key, result)
                 return result
         else:
             log.error("unsupported match mode")

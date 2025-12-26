@@ -1,5 +1,7 @@
 import cv2
 import importlib, sys, threading
+from functools import lru_cache
+from collections import OrderedDict
 paddleocr = None
 from difflib import SequenceMatcher
 import bot.base.log as logger
@@ -14,7 +16,31 @@ _paddleocr_import_lock = threading.RLock()
 _USE_GPU = False
 _GPU_INITIALIZED = False
 
-_ocr_result_cache = {}
+class LRUCache:
+    def __init__(self, maxsize=7000):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+    
+    def get(self, key):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def set(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.maxsize:
+            self.cache.popitem(last=False)
+    
+    def clear(self):
+        self.cache.clear()
+    
+    def __contains__(self, key):
+        return key in self.cache
+
+_ocr_result_cache = LRUCache(maxsize=7000)
 
 def _compute_ocr_cache_key(img, lang):
     try:
@@ -207,22 +233,22 @@ def reset_ocr():
         except Exception:
             pass
         paddleocr = None
-        try:
-            import gc as _gc
-            _gc.collect()
-        except Exception:
-            pass
+
 
 
 def ocr(img, lang="en"):
     reset_timeout()
+    gpu_utils.clear_gpu_cache()
+    
     cache_key = _compute_ocr_cache_key(img, lang)
-    if cache_key and cache_key in _ocr_result_cache:
-        return _ocr_result_cache[cache_key]
+    if cache_key:
+        cached = _ocr_result_cache.get(cache_key)
+        if cached is not None:
+            return cached
     o = get_ocr(lang)
     result = o.ocr(img, cls=False)
     if cache_key:
-        _ocr_result_cache[cache_key] = result
+        _ocr_result_cache.set(cache_key, result)
     if _USE_GPU:
         gpu_utils.clear_gpu_cache()
     return result
@@ -277,8 +303,9 @@ def ocr_line(img, lang="en"):
     cache_key = _compute_ocr_cache_key(img, lang)
     if cache_key:
         line_key = f"line:{cache_key}"
-        if line_key in _ocr_result_cache:
-            return _ocr_result_cache[line_key]
+        cached = _ocr_result_cache.get(line_key)
+        if cached is not None:
+            return cached
     raw = ocr(img, lang)
     items = parse_text_items(raw)
     text = ""
@@ -286,7 +313,7 @@ def ocr_line(img, lang="en"):
         text += candidate
     if cache_key:
         line_key = f"line:{cache_key}"
-        _ocr_result_cache[line_key] = text
+        _ocr_result_cache.set(line_key, text)
     if _USE_GPU:
         gpu_utils.clear_gpu_cache()
     return text
@@ -297,8 +324,9 @@ def ocr_digits(img):
     cache_key = _compute_ocr_cache_key(img, "en")
     if cache_key:
         digit_key = f"digit:{cache_key}"
-        if digit_key in _ocr_result_cache:
-            return _ocr_result_cache[digit_key]
+        cached = _ocr_result_cache.get(digit_key)
+        if cached is not None:
+            return cached
     raw = get_ocr("en").ocr(img, cls=False)
     items = parse_text_items(raw)
     if _USE_GPU:
@@ -310,7 +338,7 @@ def ocr_digits(img):
         result = best
     if cache_key:
         digit_key = f"digit:{cache_key}"
-        _ocr_result_cache[digit_key] = result
+        _ocr_result_cache.set(digit_key, result)
     return result
 
 # find_text_pos 查找目标文字在图片中的位置

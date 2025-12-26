@@ -518,7 +518,6 @@ if __name__ == '__main__':
 
     from module.umamusume.script.cultivate_task.event.manifest import warmup_event_index
     warmup_event_index()
-
     # Start the bot
     register_app(UmamusumeManifest)
     restored = False
