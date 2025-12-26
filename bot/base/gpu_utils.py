@@ -6,7 +6,7 @@ log = logger.get_logger(__name__)
 
 _GPU_AVAILABLE = None
 _GPU_DEVICE_COUNT = 0
-_GPU_MEMORY_FRACTION = 0.5
+_GPU_MEMORY_FRACTION = 0.3
 _GPU_DEVICE_ID = 0
 
 def detect_gpu_capabilities():
@@ -73,8 +73,22 @@ def configure_paddle_gpu():
         
         os.environ['FLAGS_fraction_of_gpu_memory_to_use'] = str(_GPU_MEMORY_FRACTION)
         os.environ['FLAGS_allocator_strategy'] = 'auto_growth'
+        os.environ['FLAGS_eager_delete_tensor_gb'] = '0'
+        os.environ['FLAGS_memory_optimize_strategy'] = '1'
+        os.environ['FLAGS_fast_eager_deletion_mode'] = 'true'
     except Exception as e:
         log.error(f"Failed to configure Paddle GPU: {e}")
+
+def clear_gpu_cache():
+    if not is_gpu_available():
+        return
+    
+    try:
+        import paddle
+        if hasattr(paddle.device, 'cuda') and hasattr(paddle.device.cuda, 'empty_cache'):
+            paddle.device.cuda.empty_cache()
+    except Exception as e:
+        log.debug(f"Failed to clear GPU cache: {e}")
 
 def configure_opencv_gpu():
     try:

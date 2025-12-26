@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import hashlib
 
 from bot.base.common import ImageMatchMode
 from bot.base.resource import Template
@@ -8,6 +9,20 @@ import bot.base.log as logger
 from bot.recog.timeout_tracker import reset_timeout
 
 log = logger.get_logger(__name__)
+
+_image_match_cache = {}
+
+def _compute_match_cache_key(img, template):
+    try:
+        img_hash = hashlib.md5(img.tobytes()).hexdigest()
+        template_hash = hashlib.md5(template.template_img.tobytes()).hexdigest() if hasattr(template, 'template_img') and template.template_img is not None else str(id(template))
+        return f"{img_hash}:{template_hash}"
+    except:
+        return None
+
+def clear_image_match_cache():
+    global _image_match_cache
+    _image_match_cache.clear()
 
 
 class ImageMatchResult:
@@ -40,6 +55,9 @@ def clip_roi(img, area):
 
 def image_match(target, template: Template) -> ImageMatchResult:
     reset_timeout()
+    cache_key = _compute_match_cache_key(target, template)
+    if cache_key and cache_key in _image_match_cache:
+        return _image_match_cache[cache_key]
     try:
         if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
             tgt = to_gray(target)
@@ -54,7 +72,10 @@ def image_match(target, template: Template) -> ImageMatchResult:
                     res.matched_area = ((p1[0] + x1, p1[1] + y1), (p2[0] + x1, p2[1] + y1))
                 return res
             else:
-                return template_match(tgt, template, template.image_match_config.match_accuracy)
+                result = template_match(tgt, template, template.image_match_config.match_accuracy)
+                if cache_key:
+                    _image_match_cache[cache_key] = result
+                return result
         else:
             log.error("unsupported match mode")
     except Exception as e:
