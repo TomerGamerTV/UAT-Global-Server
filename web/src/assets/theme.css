@@ -43,6 +43,8 @@ body:after{content:"";position:fixed;inset:-2px;border:2px solid rgba(255,255,25
 .btn:hover{transform:translateY(-1px)}
 .btn--primary,.btn-primary{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important;box-shadow:0 8px 20px rgba(255,45,163,.25)}
 .btn--primary:hover,.btn-primary:hover{background:var(--accent-2)!important;border-color:var(--accent-2)!important}
+:root[data-theme="blue"] .btn--primary,
+:root[data-theme="blue"] .btn-primary{color:#000!important;box-shadow:0 8px 20px rgba(0,217,255,.25)}
 .btn--outline,.btn-outline-primary{background:transparent!important;border-color:var(--accent)!important;color:var(--accent)!important}
 .btn--outline:hover,.btn-outline-primary:hover{background:rgba(255,45,163,.12)!important;color:#fff!important}
 .btn-danger,.btn-outline-danger{border-color:#ff4d6d!important;color:#ff4d6d!important;background:transparent}
@@ -133,6 +135,7 @@ select.form-control{-webkit-appearance:none;-moz-appearance:none;appearance:none
 
 .btn.auto-btn{background:var(--accent);border-color:var(--accent);color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.2)}
 .auto-btn:hover{background:var(--accent-2);border-color:var(--accent-2);color:#fff}
+:root[data-theme="blue"] .btn.auto-btn{color:#000!important}
 .auto-btn-red{background:#ff4d6d;color:#fff}
 .auto-btn-orange{background:#ffb74d;color:#101010}
 .auto-btn-green{background:#22c55e;color:#06140c}
@@ -175,6 +178,11 @@ hr{border-color:rgba(255,255,255,.12)}
 .empty-state{color:var(--muted)}
 
 .btn-primary,.btn-info,.btn-success,.btn-warning,.btn-secondary{background:var(--accent)!important;background-color:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important;background-image:none!important;filter:none!important}
+:root[data-theme="blue"] .btn-primary,
+:root[data-theme="blue"] .btn-info,
+:root[data-theme="blue"] .btn-success,
+:root[data-theme="blue"] .btn-warning,
+:root[data-theme="blue"] .btn-secondary{color:#000!important}
 .btn-outline-primary,.btn-outline-info,.btn-outline-success,.btn-outline-warning,.btn-outline-secondary{border-color:var(--accent)!important;color:var(--accent)!important}
 .btn-outline-primary:hover,.btn-outline-info:hover,.btn-outline-success:hover,.btn-outline-warning:hover,.btn-outline-secondary:hover{background:rgba(255,45,163,.12)!important;color:#fff!important;border-color:var(--accent)!important}
 .btn-success,.btn-warning,.btn-info{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
@@ -191,6 +199,11 @@ hr{border-color:rgba(255,255,255,.12)}
 .form-check-input:checked{background-color:var(--accent)!important;border-color:var(--accent)!important}
 .form-check-input:focus{box-shadow:0 0 0 3px rgba(255,45,163,.25)!important;border-color:var(--accent-2)!important}
 .btn-primary,.btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary:not(:disabled):not(.disabled).active{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+:root[data-theme="blue"] .btn-primary,
+:root[data-theme="blue"] .btn-primary:hover,
+:root[data-theme="blue"] .btn-primary:focus,
+:root[data-theme="blue"] .btn-primary:active,
+:root[data-theme="blue"] .btn-primary:not(:disabled):not(.disabled).active{color:#000!important}
 .btn-outline-primary,.btn-outline-primary:hover,.btn-outline-primary:focus,.btn-outline-primary:active,.btn-outline-primary:not(:disabled):not(.disabled).active{border-color:var(--accent)!important;color:var(--accent)!important;background:transparent!important}
 .show>.btn-outline-primary.dropdown-toggle{border-color:var(--accent)!important;color:var(--accent)!important;background:transparent!important}
 
@@ -212,6 +225,8 @@ hr{border-color:rgba(255,255,255,.12)}
 .form-select{background-color:#1a141c!important;color:#fff!important;border:1px solid var(--accent)!important}
 
 .skill-list-header .btn,.race-options-header .btn{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+:root[data-theme="blue"] .skill-list-header .btn,
+:root[data-theme="blue"] .race-options-header .btn{color:#000!important}
 
 .selected-skills-box,.blacklist-box{background:var(--surface-2)!important;border:1px solid var(--accent)!important}
 
@@ -242,6 +257,8 @@ body .empty-state{color:var(--muted)!important}
 
 body .skill-list-header .btn,
 body .race-options-header .btn{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+:root[data-theme="blue"] body .skill-list-header .btn,
+:root[data-theme="blue"] body .race-options-header .btn{color:#000!important}
 
 body .race-filters .btn-group .btn span{background:transparent!important;color:var(--accent)!important;border:1px solid var(--accent)!important;border-radius:4px;font-weight:700}
 

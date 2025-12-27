@@ -66,6 +66,7 @@ export default {
         root.style.setProperty('--accent', '#00d9ff');
         root.style.setProperty('--accent-2', '#5ce1ff');
         root.style.setProperty('--glow', '0 0 18px rgba(0,217,255,.25), 0 0 36px rgba(0,217,255,.12)');
+        root.setAttribute('data-theme', 'blue');
       } else {
         root.style.setProperty('--bg-start', '#08000c');
         root.style.setProperty('--bg-end', '#120015');
@@ -74,6 +75,7 @@ export default {
         root.style.setProperty('--accent', '#ff2da3');
         root.style.setProperty('--accent-2', '#ff5cc6');
         root.style.setProperty('--glow', '0 0 18px rgba(255,45,163,.25), 0 0 36px rgba(255,45,163,.12)');
+        root.setAttribute('data-theme', 'pink');
       }
     }
   }
