@@ -37,6 +37,7 @@
                     <select v-model.number="selectedScenario" class="form-control" id="selectScenario">
                       <option :value="1">URA</option>
                       <option :value="2">Aoharu Cup</option>
+                      <option :value="3">MANT</option>
                     </select>
                   </div>
                 </div>

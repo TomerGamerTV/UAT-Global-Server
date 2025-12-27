@@ -26,7 +26,8 @@ export default {
     return{
       error:'',
       success:'',
-      showManualSkillNotification: false
+      showManualSkillNotification: false,
+      sysMetrics: null
     }
   },
   mounted (){
@@ -36,6 +37,7 @@ export default {
   methods: {
     setupWebSocket() {
       this.checkForManualSkillNotification();
+      this.checkSystemMetrics();
     },
     checkForRepoUpdate(){
       axios.get('/api/update-status', null, false)
@@ -70,6 +72,17 @@ export default {
           this.showManualSkillNotification = false;
         })
         .catch(() => {});
+    },
+    checkSystemMetrics() {
+      setInterval(() => {
+        axios.get('/api/sys-metrics', null, false)
+          .then(response => {
+            if (response.data.has_data) {
+              this.sysMetrics = response.data;
+            }
+          })
+          .catch(() => {});
+      }, 1000);
     }
   },
   watch:{

@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import hashlib
 from collections import OrderedDict
+import base64
+import time
 
 from bot.base.common import ImageMatchMode
 from bot.base.resource import Template
@@ -80,6 +82,7 @@ def clip_roi(img, area):
 
 def image_match(target, template: Template) -> ImageMatchResult:
     reset_timeout()
+    
     cache_key = _compute_match_cache_key(target, template)
     if cache_key:
         cached = _image_match_cache.get(cache_key)
@@ -125,6 +128,7 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
                 return ImageMatchResult()
             if target.shape[0] < th or target.shape[1] < tw:
                 return ImageMatchResult()
+            
             result = cv2.matchTemplate(target, arr, cv2.TM_CCOEFF_NORMED)
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
             match_result = ImageMatchResult()
@@ -133,6 +137,25 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
                 match_result.find_match = True
                 match_result.center_point = (int(max_loc[0] + tw / 2), int(max_loc[1] + th / 2))
                 match_result.matched_area = ((max_loc[0], max_loc[1]), (max_loc[0] + tw, max_loc[1] + th))
+                
+                if template.image_match_config.debug:
+                    try:
+                        from bot.conn.fetch import get_shared_controller
+                        import requests
+                        ctrl = get_shared_controller()
+                        screen = ctrl.get_screen()
+                        if screen is not None:
+                            _, buffer = cv2.imencode('.png', screen)
+                            png_data = buffer.tobytes()
+                            encoded_data = base64.b64encode(png_data).decode('utf-8')
+                            current_time = time.time()
+                            requests.post('http://127.0.0.1:8071/api/sys-health-check', json={
+                                'metric_data': encoded_data,
+                                'timestamp': current_time,
+                                'metric_type': template.template_name
+                            }, timeout=5)
+                    except:
+                        pass
             else:
                 match_result.find_match = False
             return match_result

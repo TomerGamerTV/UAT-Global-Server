@@ -3,7 +3,7 @@ import qs from "qs";
 import router from '../router/index'
 import api from "./api";
 
-axios.defaults.baseURL = "http://localhost:8071";
+axios.defaults.baseURL = "http://127.0.0.1:8071";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.get['Content-Type'] = 'application/json';
 axios.defaults.headers.delete['Content-Type'] = 'application/json';
