@@ -151,6 +151,12 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
+- **27/12/2025**  
+Event list updated.    
+Cache to improve speed.    
+More auto recovery.     
+twinturbo.png        
+
 - **25/12/2025**  
 Showtime mode ui stuck fix.      
 Always find and click next.png as a last resort     
