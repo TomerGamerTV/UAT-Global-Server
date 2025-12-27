@@ -151,10 +151,10 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
-- **27/12/2025**  
-Event list updated.    
-Cache to improve speed.    
-More auto recovery.     
+- **27/12/2025**     
+Fixed vram issue.     
+Event list updated.     
+Cache to improve speed.        
 twinturbo.png        
 
 - **25/12/2025**  
