@@ -71,6 +71,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
     if current_date == -1:
         log.warning("Failed to parse date")
         return
+    # If entering a new turn, record old turn info and create new one
     if ctx.cultivate_detail.turn_info is None or current_date != ctx.cultivate_detail.turn_info.date:
         if ctx.cultivate_detail.turn_info is not None:
             ctx.cultivate_detail.turn_info_history.append(ctx.cultivate_detail.turn_info)
@@ -1267,34 +1268,12 @@ def script_cultivate_race_list(ctx: UmamusumeContext):
                 race_id = ctx.cultivate_detail.turn_info.turn_operation.race_id
                 log.info(f"🔍 Race operation with ID: {race_id}")
                 # If it's a URA race ID or 0 (unknown), try clicking the race button
-                if race_id == 0:
-                    img_gray = ctx.ctrl.get_screen(to_gray=True)
-                    from module.umamusume.asset import REF_SUITABLE_RACE
-                    suitable_race_match = image_match(img_gray, REF_SUITABLE_RACE)
-                    if suitable_race_match.find_match:
-                        center_x = suitable_race_match.center_point[0]
-                        center_y = suitable_race_match.center_point[1]
-                        ctx.ctrl.click(center_x, center_y, "Click suitable race")
-                        time.sleep(0.1)
-                        ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_1)
-                        time.sleep(0.1)
-                        return
-                    else:
-                        log.info("suitable race not found")
-                        ctx.cultivate_detail.turn_info.turn_operation = None
-                        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
-                        return
-                if race_id in [2381, 2382, 2385, 2386, 2387]:
+                if race_id in [2381, 2382, 2385, 2386, 2387] or race_id == 0:
                     log.info("🏆 Detected URA race operation - clicking race button directly")
                     ctx.ctrl.click(319, 1082, "URA Race Button")
                     time.sleep(1)
                     return
         if ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_RACE:
-            race_id = ctx.cultivate_detail.turn_info.turn_operation.race_id
-            if race_id == 0:
-                ctx.cultivate_detail.turn_info.turn_operation = None
-                ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
-                return
             swiped = False
             while True:
                 img = cv2.cvtColor(ctx.ctrl.get_screen(), cv2.COLOR_BGR2RGB)
