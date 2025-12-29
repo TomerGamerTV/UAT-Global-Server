@@ -1,7 +1,15 @@
 # Changelog
 
+## 29/12/2025
+- Changed image in the panel.
+- Renamed 2 support cards from chinese to english.
+- Fixed website being blank.
+- Fixed merge issues.
+- Rewrote the whole readme, split some stuff into different files.
+- Better update checking. 
+
 ## 28/12/2025
-- Removed spyware from the original repo.
+- Removed spyware that existed the original repo.
 - Disconnected this fork from the original repo.
 - Fixed a skill name.
 

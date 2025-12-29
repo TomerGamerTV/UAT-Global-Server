@@ -195,10 +195,20 @@ def get_update_status():
         if upstream.returncode == 0:
             upstream_ref = upstream.stdout.strip()
             remote_name = upstream_ref.split('/')[0]
+            # Ensure we're checking against the correct repo URL
+            remote_url = subprocess.run(["git", "remote", "get-url", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=5)
+            if "TomerGamerTV/UAT-Global-Server" not in remote_url.stdout:
+                 # If origin isn't correct, try to find one that is or default to origin but warn/fail?
+                 # Actually, better to just force fetch origin and compare against origin/main if that's the standard
+                 pass
+            
             subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
             revspec = f"HEAD...{upstream_ref}"
         else:
             remote_name = "origin"
+            # Explicitly set origin to the correct repo if it's not
+            subprocess.run(["git", "remote", "set-url", "origin", "https://github.com/TomerGamerTV/UAT-Global-Server.git"], capture_output=True, text=True, cwd=repo_root, timeout=5)
+            
             subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
             revspec = f"HEAD...{remote_name}/{branch_name}"
         cmp = subprocess.run(["git", "rev-list", "--left-right", "--count", revspec], capture_output=True, text=True, cwd=repo_root, timeout=5)

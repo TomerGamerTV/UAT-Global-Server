@@ -582,7 +582,7 @@ if __name__ == '__main__':
     except Exception:
         restored = False
         was_active = None
-    scheduler_thread = threading.Thread(target=scheduler.init, args=())
+    scheduler_thread = threading.Thread(target=scheduler.init, args=(), daemon=True)
     scheduler_thread.start()
     try:
         if was_active is True or (was_active is None and restored):
