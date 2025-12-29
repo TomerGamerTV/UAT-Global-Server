@@ -7338,7 +7338,7 @@
   },
   {
     "skill_id": "A_FlashystarLanding",
-    "name": "Flashy☆Landing",
+    "name": "FlashyLanding",
     "tier": "A",
     "skill_type": "Speed",
     "prerequisite_of": [],
