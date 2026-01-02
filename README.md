@@ -27,8 +27,9 @@ This tool allows for completely hands-off automation of Uma Musume, handling eve
 - ✅ **Smart Decision Making**: Compares skill hints, plays the claw machine, manages energy efficiently, and more.
 - ✅ **Customizable**: Supports every Uma and Deck type. Nearly every aspect of training is customizable via settings.
 
-### Demo
-[Watch Demo Video](https://github.com/user-attachments/assets/40a5c402-d154-4b02-8a61-96ba07e29319)
+### Tutorial
+
+[![Tutorial Video](https://img.youtube.com/vi/v1m9Plw7M3Y/0.jpg)](https://youtu.be/v1m9Plw7M3Y)
 > *Note: Video may be outdated. Check the changelog for the latest features.*
 
 ---
