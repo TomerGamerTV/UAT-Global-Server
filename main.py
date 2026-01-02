@@ -372,11 +372,11 @@ def run_health_checks():
     """Run health checks after device selection"""
     print(" Running connection health checks...")
     
-    # Test ADB connection - increased timeout to 15s
+    # Test ADB connection - increased timeout to 20s
     try:
         adb_path = _get_adb_path()
         result = subprocess.run([adb_path, "devices"], 
-                              capture_output=True, text=True, timeout=15)
+                              capture_output=True, text=True, timeout=20)
         
         if result.returncode == 0:
             output = result.stdout
@@ -395,18 +395,29 @@ def run_health_checks():
         print(f"❌ ADB health check failed: {e}")
         return False
     
-    # Test device responsiveness - increased timeout to 15s
-    try:
-        result = subprocess.run([adb_path, "-s", selected_device, "shell", "echo", "test"], 
-                              capture_output=True, text=True, timeout=15)
-        if result.returncode == 0:
-            print("✅ Device responsiveness: OK")
-        else:
-            print("❌ Device responsiveness: FAILED")
-            return False
-    except Exception as e:
-        print(f"❌ Device health check failed: {e}")
-        return False
+    # Test device responsiveness - increased timeout to 20s with retries
+    retry_count = 3
+    for attempt in range(retry_count):
+        try:
+            result = subprocess.run([adb_path, "-s", selected_device, "shell", "echo", "test"], 
+                                  capture_output=True, text=True, timeout=20)
+            if result.returncode == 0:
+                print("✅ Device responsiveness: OK")
+                break
+            else:
+                if attempt < retry_count - 1:
+                    print(f"⚠️  Device responsiveness check failed (attempt {attempt+1}/{retry_count}). Retrying...")
+                    time.sleep(2)
+                else:
+                    print("❌ Device responsiveness: FAILED")
+                    return False
+        except Exception as e:
+            if attempt < retry_count - 1:
+                print(f"⚠️  Device responsiveness check error: {e}. Retrying...")
+                time.sleep(2)
+            else:
+                print(f"❌ Device health check failed: {e}")
+                return False
     
     # Test Umamusume detection
     if check_umamusume_running(selected_device):
